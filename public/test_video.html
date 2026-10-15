@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test Video</title></head>
+<body style="background:#111; display:flex; flex-direction:column; align-items:center; padding:30px; font-family:sans-serif; color:white;">
+    <h2>Test Video Direct</h2>
+
+    <h3>Test 1 : Fichier statique direct</h3>
+    <video controls playsinline style="width:400px; background:#000; display:block;">
+        <source src="/SETUP_GABON_APP/public/test_video.mp4" type="video/mp4">
+    </video>
+
+    <h3 style="margin-top:30px;">Test 2 : Via route Laravel</h3>
+    <video controls playsinline style="width:400px; background:#000; display:block;">
+        <source src="/SETUP_GABON_APP/public/produits/2/video" type="video/mp4">
+    </video>
+
+    <h3 style="margin-top:30px;">Infos</h3>
+    <p>Si Test 1 fonctionne mais pas Test 2 → problème Laravel</p>
+    <p>Si aucun ne fonctionne → problème fichier ou navigateur</p>
+    <p><a href="/SETUP_GABON_APP/public/test_video.mp4" style="color:#60a5fa;">Ouvrir le fichier brut dans un onglet</a></p>
+</body>
+</html>
