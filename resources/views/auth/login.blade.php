@@ -31,7 +31,10 @@
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-semibold text-slate-800 mb-1.5">Mot de passe</label>
+                <div class="flex items-baseline justify-between mb-1.5">
+                    <label for="password" class="block text-sm font-semibold text-slate-800">Mot de passe</label>
+                    <a href="{{ route('password.request') }}" class="text-sm font-semibold text-blue-700 hover:text-blue-800 underline">Mot de passe oublié ?</a>
+                </div>
                 <div class="relative">
                     <input type="password" id="password" name="password" required autocomplete="current-password"
                            class="{{ $champ }} pr-12 @error('password') border-rose-500 @else border-slate-300 @enderror"

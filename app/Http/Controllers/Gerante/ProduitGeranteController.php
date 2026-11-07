@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Storage;
 
 class ProduitGeranteController extends Controller
 {
+    /** Nombre maximal de photos en plus de la photo principale. */
+    private const PHOTOS_SUPPLEMENTAIRES_MAX = 8;
+
     public function index(Request $request)
     {
         $query = Produit::with(['category', 'marque']);
@@ -53,19 +56,25 @@ class ProduitGeranteController extends Controller
             'decision_manuelle' => 'nullable|boolean',
             'image' => 'nullable|image|max:10240',
             'video' => 'nullable|mimes:mp4,mov,avi,webm|max:204800',
+            'photos' => 'nullable|array|max:'.self::PHOTOS_SUPPLEMENTAIRES_MAX,
+            'photos.*' => 'image|max:10240',
+            'caracteristiques' => 'nullable|array|max:30',
+            'caracteristiques.*.libelle' => 'nullable|string|max:60',
+            'caracteristiques.*.valeur' => 'nullable|string|max:255',
         ], [
+            'photos.max' => 'Vous pouvez ajouter au plus '.self::PHOTOS_SUPPLEMENTAIRES_MAX.' photos supplémentaires.',
+            'photos.*.image' => 'Chaque photo doit être une image valide (JPG, PNG ou WEBP).',
+            'photos.*.max' => 'Chaque photo doit peser 10 Mo au maximum.',
             'image.max' => 'L\'image est trop lourde. Elle ne doit pas dépasser 10 Mo.',
             'image.image' => 'Le fichier téléchargé doit être une image valide.',
             'video.max' => 'La vidéo est trop lourde. Elle ne doit pas dépasser 200 Mo.',
             'video.mimes' => 'La vidéo doit être au format MP4, MOV, AVI ou WebM.',
         ]);
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('produits', 'public');
-            $validated['image'] = $path;
-        } else {
-            $validated['image'] = 'produits/default.jpg';
-        }
+        // Sans photo, le champ reste vide : les vues affichent alors un visuel neutre
+        $validated['image'] = $request->hasFile('image')
+            ? $request->file('image')->store('produits', 'public')
+            : null;
 
         if ($request->hasFile('video')) {
             $videoPath = $request->file('video')->store('videos', 'public');
@@ -73,14 +82,18 @@ class ProduitGeranteController extends Controller
         }
 
         $validated = $this->normaliserReglesNegociation($validated, $request);
+        $validated['caracteristiques'] = $this->normaliserCaracteristiques($request);
+        unset($validated['photos']);
 
-        Produit::create($validated);
+        $produit = Produit::create($validated);
+        $this->ajouterPhotos($produit, $request);
 
         return redirect()->route('gerante.produits.index')->with('success', 'Produit ajouté avec succès.');
     }
 
     public function edit(Produit $produit)
     {
+        $produit->load('images');
         $categories = Category::all();
         $marques = Marque::all();
 
@@ -104,7 +117,15 @@ class ProduitGeranteController extends Controller
             'decision_manuelle' => 'nullable|boolean',
             'image' => 'nullable|image|max:10240',
             'video' => 'nullable|mimes:mp4,mov,avi,webm|max:204800',
+            'photos' => 'nullable|array|max:'.self::PHOTOS_SUPPLEMENTAIRES_MAX,
+            'photos.*' => 'image|max:10240',
+            'caracteristiques' => 'nullable|array|max:30',
+            'caracteristiques.*.libelle' => 'nullable|string|max:60',
+            'caracteristiques.*.valeur' => 'nullable|string|max:255',
         ], [
+            'photos.max' => 'Vous pouvez ajouter au plus '.self::PHOTOS_SUPPLEMENTAIRES_MAX.' photos supplémentaires.',
+            'photos.*.image' => 'Chaque photo doit être une image valide (JPG, PNG ou WEBP).',
+            'photos.*.max' => 'Chaque photo doit peser 10 Mo au maximum.',
             'image.max' => 'L\'image est trop lourde. Elle ne doit pas dépasser 10 Mo.',
             'image.image' => 'Le fichier téléchargé doit être une image valide.',
             'video.max' => 'La vidéo est trop lourde. Elle ne doit pas dépasser 200 Mo.',
@@ -128,8 +149,12 @@ class ProduitGeranteController extends Controller
         }
 
         $validated = $this->normaliserReglesNegociation($validated, $request);
+        $validated['caracteristiques'] = $this->normaliserCaracteristiques($request);
+        unset($validated['photos']);
 
         $produit->update($validated);
+        $this->supprimerPhotos($produit, $request->input('supprimer_photos', []));
+        $this->ajouterPhotos($produit, $request);
 
         return redirect()->route('gerante.produits.index')->with('success', 'Produit mis à jour avec succès.');
     }
@@ -142,9 +167,65 @@ class ProduitGeranteController extends Controller
         if ($produit->video) {
             Storage::disk('public')->delete($produit->video);
         }
+        Storage::disk('public')->delete($produit->images()->pluck('chemin')->all());
         $produit->delete();
 
         return redirect()->route('gerante.produits.index')->with('success', 'Produit supprimé avec succès.');
+    }
+
+    /**
+     * Enregistre les photos supplémentaires envoyées, à la suite de celles existantes, dans la limite autorisée.
+     */
+    private function ajouterPhotos(Produit $produit, Request $request): void
+    {
+        $photos = $request->file('photos', []);
+        if (empty($photos)) {
+            return;
+        }
+
+        $positionSuivante = (int) $produit->images()->max('position') + 1;
+        $placesRestantes = self::PHOTOS_SUPPLEMENTAIRES_MAX - $produit->images()->count();
+
+        foreach (array_slice($photos, 0, max(0, $placesRestantes)) as $photo) {
+            $produit->images()->create([
+                'chemin' => $photo->store('produits', 'public'),
+                'position' => $positionSuivante++,
+            ]);
+        }
+    }
+
+    /**
+     * Supprime les photos supplémentaires cochées (uniquement celles de ce produit).
+     *
+     * @param  array<int, mixed>  $identifiants
+     */
+    private function supprimerPhotos(Produit $produit, array $identifiants): void
+    {
+        $photos = $produit->images()->whereIn('id', array_map('intval', $identifiants))->get();
+
+        foreach ($photos as $photo) {
+            Storage::disk('public')->delete($photo->chemin);
+            $photo->delete();
+        }
+    }
+
+    /**
+     * Fiche technique : supprime les lignes incomplètes et les espaces superflus.
+     *
+     * @return list<array{libelle: string, valeur: string}>|null
+     */
+    private function normaliserCaracteristiques(Request $request): ?array
+    {
+        $lignes = collect($request->input('caracteristiques', []))
+            ->map(fn ($ligne) => [
+                'libelle' => trim((string) ($ligne['libelle'] ?? '')),
+                'valeur' => trim((string) ($ligne['valeur'] ?? '')),
+            ])
+            ->filter(fn ($ligne) => $ligne['libelle'] !== '' && $ligne['valeur'] !== '')
+            ->values()
+            ->all();
+
+        return $lignes === [] ? null : $lignes;
     }
 
     /**

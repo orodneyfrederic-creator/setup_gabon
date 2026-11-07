@@ -111,6 +111,26 @@
                     </div>
                 </fieldset>
 
+                <section class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6" aria-labelledby="titre-conditions">
+                    <h2 id="titre-conditions" class="font-bold text-slate-900">Avant de confirmer</h2>
+                    <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                        <li class="flex gap-3"><i class="fa-solid fa-truck-fast w-4 mt-1 text-blue-700"></i><span>Livraison gratuite à Libreville sous {{ config('boutique.livraison.delai_heures') }} h après confirmation par la boutique, ou retrait en boutique.</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-rotate-left w-4 mt-1 text-blue-700"></i><span>{{ config('boutique.retractation_jours') }} jours après réception pour changer d'avis, remboursement intégral.</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-shield-halved w-4 mt-1 text-blue-700"></i><span>Garantie boutique : 1 mois sur les ordinateurs, 2 semaines sur les autres produits.</span></li>
+                    </ul>
+                    <label class="mt-5 flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" name="accepte_conditions" value="1" required @checked(old('accepte_conditions'))
+                               class="mt-0.5 w-5 h-5 rounded border-slate-300 text-blue-700 focus:ring-blue-600 shrink-0">
+                        <span class="text-sm text-slate-800">
+                            J'ai lu et j'accepte les <a href="{{ route('legal.cgv') }}" target="_blank" class="font-semibold text-blue-700 underline">conditions générales de vente</a>
+                            et la <a href="{{ route('legal.confidentialite') }}" target="_blank" class="font-semibold text-blue-700 underline">politique de confidentialité</a>.
+                        </span>
+                    </label>
+                    @error('accepte_conditions')
+                        <p class="text-rose-600 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </section>
+
                 <div class="lg:hidden">
                     <button type="submit" class="w-full h-12 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg flex items-center justify-center gap-2">
                         <i class="fa-brands fa-whatsapp"></i>

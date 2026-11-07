@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Gerante;
 use App\Http\Controllers\Controller;
 use App\Models\Commande;
 use App\Models\MouvementStock;
+use App\Notifications\StatutCommandeModifie;
 use App\Services\NegociationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -151,6 +152,14 @@ class CommandeGeranteController extends Controller
             $commande->update(['statut' => $nouveauStatut]);
 
             DB::commit();
+
+            if (in_array($nouveauStatut, StatutCommandeModifie::STATUTS_NOTIFIES, true) && $commande->user) {
+                try {
+                    $commande->user->notify(new StatutCommandeModifie($commande->fresh()));
+                } catch (\Throwable $erreur) {
+                    report($erreur);
+                }
+            }
 
             return back()->with('success', "Statut de la commande mis à jour : {$nouveauStatut}.");
         } catch (\Exception $e) {

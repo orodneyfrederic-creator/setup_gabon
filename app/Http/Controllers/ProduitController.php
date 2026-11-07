@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Marque;
 use App\Models\Produit;
+use App\Services\ImagePartageService;
 use App\Services\NegociationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProduitController extends Controller
 {
@@ -13,10 +16,34 @@ class ProduitController extends Controller
         protected NegociationService $negociationService
     ) {}
 
+    /**
+     * Tris proposés au client : clé d'URL => libellé.
+     *
+     * @var array<string, string>
+     */
+    public const TRIS = [
+        'recent' => 'Nouveautés',
+        'prix_croissant' => 'Prix croissant',
+        'prix_decroissant' => 'Prix décroissant',
+        'nom' => 'Nom (A → Z)',
+    ];
+
     public function index(Request $request)
     {
+        // Lecture tolérante des filtres : une valeur invalide dans l'URL est ignorée plutôt que de bloquer la page
+        $entierPositif = fn (string $cle) => filter_var($request->query($cle), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: null;
+        $filtres = [
+            'marque' => $entierPositif('marque'),
+            'prix_min' => filter_var($request->query('prix_min'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) === false ? null : (int) $request->query('prix_min'),
+            'prix_max' => filter_var($request->query('prix_max'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) === false ? null : (int) $request->query('prix_max'),
+            'tri' => array_key_exists((string) $request->query('tri'), self::TRIS) ? $request->query('tri') : 'recent',
+        ];
+
         // On récupère les Catégories pour la section "Catégories d'abord"
         $categories = Category::all();
+
+        // Marques réellement présentes au catalogue, pour le filtre
+        $marques = Marque::whereHas('produits')->orderBy('nom')->get(['id', 'nom']);
 
         // Requête de recherches et filtrage des produits
         $query = Produit::with(['category', 'marque']);
@@ -33,18 +60,68 @@ class ProduitController extends Controller
             $query->where('id_cat', $request->category);
         }
 
-        $produits = $query->latest()->paginate(12)->withQueryString();
+        if (filled($filtres['marque'] ?? null)) {
+            $query->where('id_m', $filtres['marque']);
+        }
 
-        return view('home', compact('produits', 'categories'));
+        // Fourchette de prix : les bornes inversées par erreur sont remises dans l'ordre
+        $prixMin = $filtres['prix_min'] ?? null;
+        $prixMax = $filtres['prix_max'] ?? null;
+        if ($prixMin !== null && $prixMax !== null && $prixMin > $prixMax) {
+            [$prixMin, $prixMax] = [$prixMax, $prixMin];
+        }
+        if ($prixMin !== null) {
+            $query->where('prix_unitaire', '>=', $prixMin);
+        }
+        if ($prixMax !== null) {
+            $query->where('prix_unitaire', '<=', $prixMax);
+        }
+
+        if ($request->boolean('en_stock')) {
+            $query->where('quantite', '>', 0);
+        }
+
+        match ($filtres['tri'] ?? 'recent') {
+            'prix_croissant' => $query->orderBy('prix_unitaire')->orderBy('id'),
+            'prix_decroissant' => $query->orderByDesc('prix_unitaire')->orderBy('id'),
+            'nom' => $query->orderBy('designation'),
+            default => $query->latest()->orderByDesc('id'),
+        };
+
+        $produits = $query->paginate(12)->withQueryString();
+        $tris = self::TRIS;
+
+        return view('home', compact('produits', 'categories', 'marques', 'tris', 'prixMin', 'prixMax'));
     }
 
     public function show($id)
     {
-        $produit = Produit::with(['category', 'marque'])->findOrFail($id);
+        $produit = Produit::with(['category', 'marque', 'images'])->findOrFail($id);
         $categories = Category::all(); // On les passe au cas où le layout en a besoin
         $estNegociable = $this->negociationService->isNegociable($produit);
 
         return view('produits.show', compact('produit', 'categories', 'estNegociable'));
+    }
+
+    /**
+     * Image d'aperçu pour le partage du lien produit (WhatsApp, Facebook) : 1200 × 630, allégée.
+     */
+    public function imagePartage(int $id, ImagePartageService $imagePartageService)
+    {
+        $produit = Produit::findOrFail($id);
+        $vignette = $imagePartageService->cheminVignette($produit);
+
+        if ($vignette) {
+            return response()->file(Storage::disk('public')->path($vignette), [
+                'Content-Type' => 'image/jpeg',
+                'Cache-Control' => 'public, max-age=604800',
+            ]);
+        }
+
+        // Sans vignette (pas d'image ou GD absent) : image d'origine, ou visuel générique de la boutique
+        return $produit->image
+            ? redirect(asset('storage/'.$produit->image))
+            : redirect(asset('img/partage-setup.jpg'));
     }
 
     /**

@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Commande;
 use App\Models\LigneCommande;
 use App\Models\Produit;
+use App\Models\User;
+use App\Notifications\CommandeEnregistree;
+use App\Notifications\NouvelleCommandeBoutique;
 use App\Services\NegociationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class CheckoutController extends Controller
 {
@@ -27,7 +31,7 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Traiter et enregistrer la commande, puis rediriger directement vers WhatsApp.
+     * Traiter et enregistrer la commande, afficher l'accusé de réception puis proposer l'envoi sur WhatsApp.
      * SÉCURITÉ : Le prix catalogue et le prix négocié sont strictement vérifiés côté serveur.
      * Une offre négociée est consommée avec un verrou transactionnel pessimiste (lockForUpdate).
      */
@@ -38,10 +42,12 @@ class CheckoutController extends Controller
             'methode_paiement' => ['required', 'string', 'in:especes,airtel_money,moov_money'],
             'adresse_livraison' => ['required', 'string', 'max:500'],
             'notes' => ['nullable', 'string', 'max:500'],
+            'accepte_conditions' => ['accepted'],
         ], [
             'items.required' => 'Votre panier est vide.',
             'methode_paiement.required' => 'Veuillez sélectionner un mode de paiement.',
             'adresse_livraison.required' => 'Veuillez préciser votre lieu ou adresse de livraison à Libreville.',
+            'accepte_conditions.accepted' => 'Veuillez lire et accepter les conditions générales de vente pour commander.',
         ]);
 
         $cartItems = json_decode($request->items, true);
@@ -124,6 +130,10 @@ class CheckoutController extends Controller
                 'date_c' => now(),
                 'statut' => 'en_attente',
                 'montant_c' => $totalMontant,
+                'adresse_livraison' => trim($request->adresse_livraison),
+                'methode_paiement' => $request->methode_paiement,
+                'conditions_acceptees_at' => now(),
+                'version_conditions' => config('boutique.version_conditions'),
             ]);
 
             foreach ($lignes as $ligne) {
@@ -139,6 +149,8 @@ class CheckoutController extends Controller
             }
 
             DB::commit();
+
+            $this->notifierCommande($commande, $user);
 
             // Formatage du message WhatsApp officiel
             $labelsPaiement = [
@@ -172,14 +184,35 @@ class CheckoutController extends Controller
             $msg .= "\n *TOTAL À PAYER* : {$totalStr} FCFA\n\n";
             $msg .= "_La commande est enregistrée dans votre système sous le statut 'En attente de confirmation'._";
 
-            $whatsappUrl = 'https://wa.me/24166131270?text='.urlencode($msg);
+            $whatsappUrl = 'https://wa.me/'.config('boutique.whatsapp').'?text='.urlencode($msg);
 
-            return redirect()->away($whatsappUrl);
+            // Accusé de réception immédiat avec récapitulatif (loi n°025/2021, art. 52) avant l'envoi sur WhatsApp
+            return redirect()
+                ->route('orders.show', $commande->id)
+                ->with('commande_confirmee', true)
+                ->with('whatsapp_url', $whatsappUrl);
 
         } catch (\Exception $e) {
             DB::rollBack();
 
             return back()->with('error', 'Erreur lors de la validation de la commande : '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Envoie l'accusé de réception au client et l'alerte à la boutique.
+     * Un échec d'envoi est journalisé sans bloquer la commande, déjà enregistrée.
+     */
+    private function notifierCommande(Commande $commande, User $client): void
+    {
+        try {
+            $client->notify(new CommandeEnregistree($commande));
+
+            if (config('boutique.email')) {
+                Notification::route('mail', config('boutique.email'))->notify(new NouvelleCommandeBoutique($commande));
+            }
+        } catch (\Throwable $erreur) {
+            report($erreur);
         }
     }
 }

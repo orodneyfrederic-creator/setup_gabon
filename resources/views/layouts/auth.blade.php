@@ -55,7 +55,11 @@
 
     <footer class="border-t border-slate-200 bg-white">
         <div class="max-w-md mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-            <p>© {{ date('Y') }} SETUP-Gabon</p>
+            <p class="flex flex-wrap justify-center gap-x-3">
+                <span>© {{ date('Y') }} SETUP-Gabon</span>
+                <a href="{{ route('legal.cgv') }}" class="hover:text-blue-700">CGV</a>
+                <a href="{{ route('legal.confidentialite') }}" class="hover:text-blue-700">Confidentialité</a>
+            </p>
             <a href="https://wa.me/24166131270" target="_blank" rel="noopener" class="flex items-center gap-1.5 hover:text-blue-700">
                 <i class="fa-brands fa-whatsapp"></i>
                 <span>Besoin d'aide ? <span class="chiffres">+241 66 13 12 70</span></span>

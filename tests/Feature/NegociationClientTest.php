@@ -57,6 +57,7 @@ class NegociationClientTest extends TestCase
             'items' => json_encode($items),
             'methode_paiement' => 'especes',
             'adresse_livraison' => 'Libreville, Louis',
+            'accepte_conditions' => '1',
         ]);
     }
 

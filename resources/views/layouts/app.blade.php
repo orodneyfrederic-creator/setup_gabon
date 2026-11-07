@@ -6,6 +6,25 @@
     <meta name="theme-color" content="#283888">
     <title>@yield('title', 'Matériel informatique à Libreville') | SETUP-Gabon</title>
     <meta name="description" content="@yield('meta_description', 'Ordinateurs, imprimantes et accessoires informatiques en stock à Libreville. Commandez en ligne et finalisez sur WhatsApp avec SETUP-Gabon.')">
+    @php
+        $titrePartage = trim(View::yieldContent('title', 'Matériel informatique à Libreville')).' | SETUP-Gabon';
+        $descriptionPartage = trim(View::yieldContent('meta_description', 'Ordinateurs, imprimantes et accessoires informatiques en stock à Libreville. Commandez en ligne et finalisez sur WhatsApp avec SETUP-Gabon.'));
+        $urlCanonique = trim(View::yieldContent('url_canonique', url()->current()));
+    @endphp
+    <link rel="canonical" href="{{ $urlCanonique }}">
+    {{-- Aperçu de partage (WhatsApp, Facebook, X) --}}
+    <meta property="og:site_name" content="SETUP-Gabon">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:title" content="{{ $titrePartage }}">
+    <meta property="og:description" content="{{ $descriptionPartage }}">
+    <meta property="og:url" content="{{ $urlCanonique }}">
+    <meta property="og:image" content="@yield('og_image', asset('img/partage-setup.jpg'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="@yield('og_image_alt', 'SETUP-Gabon, boutique informatique à Libreville')">
+    <meta name="twitter:card" content="summary_large_image">
+    @stack('donnees_structurees')
     @include('layouts.partials.theme')
     <!-- Alpine.js Plugins & Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.1/dist/cdn.min.js"></script>
@@ -566,7 +585,13 @@
 
         <div class="border-t border-slate-200">
             <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
-                <p>© {{ date('Y') }} SETUP-Gabon. Tous droits réservés.</p>
+                <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="Informations légales">
+                    <span>© {{ date('Y') }} SETUP-Gabon</span>
+                    <a href="{{ route('legal.cgv') }}" class="hover:text-blue-700">CGV</a>
+                    <a href="{{ route('legal.retours') }}" class="hover:text-blue-700">Retours et garanties</a>
+                    <a href="{{ route('legal.confidentialite') }}" class="hover:text-blue-700">Confidentialité</a>
+                    <a href="{{ route('legal.mentions') }}" class="hover:text-blue-700">Mentions légales</a>
+                </nav>
                 <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span>Paiement :</span>
                     <span class="text-slate-700 font-medium">espèces</span><span aria-hidden="true">·</span>

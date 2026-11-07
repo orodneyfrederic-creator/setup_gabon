@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Disallow: /gerante
+Disallow: /checkout
+Disallow: /mon-compte
+Disallow: /commandes
+
+# Plan du site : https://<votre-domaine>/sitemap.xml (à déclarer dans Google Search Console)

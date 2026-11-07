@@ -15,6 +15,7 @@ class Category extends Model
         'image',
         'negociable',
         'remise_max_pct',
+        'garantie_jours',
     ];
 
     protected function casts(): array
@@ -22,6 +23,7 @@ class Category extends Model
         return [
             'negociable' => 'boolean',
             'remise_max_pct' => 'integer',
+            'garantie_jours' => 'integer',
         ];
     }
 

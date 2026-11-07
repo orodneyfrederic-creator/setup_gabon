@@ -40,6 +40,14 @@
                         <label class="block text-sm font-bold text-slate-700 mb-1">Description (Optionnel)</label>
                         <textarea name="description" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none transition-all">{{ old('description', $category->description) }}</textarea>
                     </div>
+                    <div>
+                        <label for="garantie_jours" class="block text-sm font-bold text-slate-700 mb-1">Garantie boutique (jours)</label>
+                        <input type="number" id="garantie_jours" name="garantie_jours" min="0" max="3650" value="{{ old('garantie_jours', $category->garantie_jours) }}" required
+                               class="w-40 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+                        <p class="text-xs text-slate-500 mt-1">Affichée sur chaque fiche produit de la catégorie. Engagement actuel : 30 jours pour les ordinateurs, 14 jours pour le reste.</p>
+                        @error('garantie_jours') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
 
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Image de la catégorie</label>

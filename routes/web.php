@@ -16,6 +16,7 @@ use App\Http\Controllers\Gerante\ProduitGeranteController;
 use App\Http\Controllers\Gerante\SavController;
 use App\Http\Controllers\Gerante\StockController;
 use App\Http\Controllers\GeranteController;
+use App\Http\Controllers\MotDePasseOublieController;
 use App\Http\Controllers\NegociationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProduitController;
@@ -28,9 +29,17 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [ProduitController::class, 'index'])->name('home');
 Route::get('/a-propos', [PageController::class, 'about'])->name('about');
+
+// Pages légales (loi n°025/2021 sur les transactions électroniques, loi n°001/2011 modifiée sur les données personnelles)
+Route::get('/conditions-generales-de-vente', [PageController::class, 'cgv'])->name('legal.cgv');
+Route::get('/mentions-legales', [PageController::class, 'mentionsLegales'])->name('legal.mentions');
+Route::get('/confidentialite', [PageController::class, 'confidentialite'])->name('legal.confidentialite');
+Route::get('/retours-et-garanties', [PageController::class, 'retoursGaranties'])->name('legal.retours');
+Route::get('/sitemap.xml', [PageController::class, 'sitemap'])->name('sitemap');
 Route::get('/categories', [ProduitController::class, 'categories'])->name('categories.index');
 Route::get('/produits/{id}', [ProduitController::class, 'show'])->name('produits.show');
 Route::get('/produits/{id}/video', [ProduitController::class, 'streamVideo'])->name('produits.video');
+Route::get('/produits/{id}/apercu.jpg', [ProduitController::class, 'imagePartage'])->whereNumber('id')->name('produits.apercu');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,9 +48,16 @@ Route::get('/produits/{id}/video', [ProduitController::class, 'streamVideo'])->n
 */
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    // Limite les tentatives pour empêcher de deviner un mot de passe par essais successifs
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:connexion');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
+
+    // Mot de passe oublié (comptes clients)
+    Route::get('/mot-de-passe-oublie', [MotDePasseOublieController::class, 'demande'])->name('password.request');
+    Route::post('/mot-de-passe-oublie', [MotDePasseOublieController::class, 'envoyerLien'])->middleware('throttle:6,1')->name('password.email');
+    Route::get('/reinitialiser-mot-de-passe/{token}', [MotDePasseOublieController::class, 'formulaire'])->name('password.reset');
+    Route::post('/reinitialiser-mot-de-passe', [MotDePasseOublieController::class, 'enregistrer'])->middleware('throttle:6,1')->name('password.update');
 });
 
 /*

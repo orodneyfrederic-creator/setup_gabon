@@ -33,6 +33,9 @@ class CategorieController extends Controller
             'nom' => 'required|string|max:255|unique:categories,nom',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'garantie_jours' => 'required|integer|min:0|max:3650',
+        ], [
+            'garantie_jours.required' => 'Indiquez la durée de garantie boutique (en jours).',
         ]);
 
         if ($request->hasFile('image')) {
@@ -55,6 +58,9 @@ class CategorieController extends Controller
             'nom' => 'required|string|max:255|unique:categories,nom,'.$category->id,
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'garantie_jours' => 'required|integer|min:0|max:3650',
+        ], [
+            'garantie_jours.required' => 'Indiquez la durée de garantie boutique (en jours).',
         ]);
 
         if ($request->hasFile('image')) {

@@ -137,7 +137,7 @@
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Image du produit</label>
                     <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 transition-colors">
-                    <p class="text-xs text-slate-500 mt-1">Formats : JPG, PNG, WEBP (max. 2 Mo)</p>
+                    <p class="text-xs text-slate-500 mt-1">Formats : JPG, PNG, WEBP (max. 10 Mo)</p>
                     <p class="text-xs text-slate-600 mt-2 bg-blue-50 rounded-lg px-3 py-2 leading-relaxed"><strong class="font-semibold">Pour une belle fiche :</strong> produit posé sur un fond blanc ou uni, bien centré, à la lumière du jour, photo prise de face. Évitez le comptoir et les reflets.</p>
                     @error('image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -145,10 +145,12 @@
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Vidéo de présentation (optionnelle)</label>
                     <input type="file" name="video" accept="video/mp4,video/quicktime,video/x-msvideo,video/webm" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 transition-colors">
-                    <p class="text-[11px] text-slate-400 mt-1">Formats : MP4, MOV, AVI, WEBM (Max 50 Mo)</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Formats : MP4, MOV, AVI, WEBM (max. 200 Mo)</p>
                     @error('video') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
+
+            @include('gerante.produits.partials.photos-fiche')
 
             <!-- Submit -->
             <div class="flex justify-end pt-4 border-t border-slate-100">

@@ -12,6 +12,7 @@ class Produit extends Model
     protected $fillable = [
         'designation',
         'description',
+        'caracteristiques',
         'prix_unitaire',
         'prix_achat',
         'quantite',
@@ -38,12 +39,47 @@ class Produit extends Model
             'remise_max_pct' => 'integer',
             'nb_tours_max' => 'integer',
             'decision_manuelle' => 'boolean',
+            'caracteristiques' => 'array',
         ];
     }
 
     public function negociations()
     {
         return $this->hasMany(Negociation::class, 'id_p');
+    }
+
+    /**
+     * Photos supplémentaires, dans l'ordre choisi par la gérante.
+     */
+    public function images()
+    {
+        return $this->hasMany(ProduitImage::class, 'id_p')->orderBy('position')->orderBy('id');
+    }
+
+    /**
+     * Toutes les photos du produit : la principale d'abord, puis les supplémentaires.
+     *
+     * @return list<string>
+     */
+    public function galerie(): array
+    {
+        return array_values(array_filter([
+            $this->image,
+            ...$this->images->pluck('chemin')->all(),
+        ]));
+    }
+
+    /**
+     * Lignes de la fiche technique, sans les lignes vides.
+     *
+     * @return list<array{libelle: string, valeur: string}>
+     */
+    public function ficheTechnique(): array
+    {
+        return array_values(array_filter(
+            $this->caracteristiques ?? [],
+            fn ($ligne) => filled($ligne['libelle'] ?? null) && filled($ligne['valeur'] ?? null)
+        ));
     }
 
     public function category()
@@ -69,6 +105,28 @@ class Produit extends Model
     public function getPrixAttribute()
     {
         return $this->prix_unitaire;
+    }
+
+    /**
+     * Durée de la garantie boutique, fixée par la catégorie (14 jours par défaut).
+     */
+    public function garantieJours(): int
+    {
+        return $this->category?->garantie_jours ?? (int) config('boutique.garantie.autres_jours');
+    }
+
+    /**
+     * Garantie exprimée en langage courant : « 1 mois », « 2 semaines »…
+     */
+    public function libelleGarantie(): string
+    {
+        $jours = $this->garantieJours();
+
+        return match (true) {
+            $jours % 30 === 0 => ($jours / 30).' mois',
+            $jours % 7 === 0 => ($jours / 7).' semaine'.($jours > 7 ? 's' : ''),
+            default => $jours.' jours',
+        };
     }
 
     public function scopeStockBas($query)

@@ -19,6 +19,29 @@
     </div>
     <p class="chiffres -mt-4 mb-6 text-slate-500">Passée le {{ \Carbon\Carbon::parse($commande->date_c)->translatedFormat('d F Y à H\hi') }}</p>
 
+    {{-- ACCUSÉ DE RÉCEPTION (loi n°025/2021, art. 52) --}}
+    @if (session('commande_confirmee'))
+        <section class="mb-6 bg-emerald-50 border border-emerald-200 rounded-xl p-5 sm:p-6" role="status">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-circle-check text-emerald-600 text-xl mt-0.5"></i>
+                <div class="flex-1">
+                    <h2 class="font-bold text-slate-900">Commande n° {{ $commande->id }} enregistrée</h2>
+                    <p class="mt-1 text-sm text-slate-700">
+                        Dernière étape : envoyez-la à la boutique sur WhatsApp. La boutique vous recontacte pour confirmer la livraison, sous {{ config('boutique.livraison.delai_heures') }} h après confirmation.
+                    </p>
+                    @if (session('whatsapp_url'))
+                        <a href="{{ session('whatsapp_url') }}" target="_blank" rel="noopener"
+                           class="mt-4 inline-flex h-12 px-5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold items-center gap-2 transition-colors">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            Envoyer ma commande sur WhatsApp
+                        </a>
+                    @endif
+                    <p class="mt-3 text-xs text-slate-600">Ce récapitulatif reste disponible à tout moment dans « Mes commandes ».</p>
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- SUIVI --}}
     <section class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 mb-6" aria-label="Suivi de la commande">
         @if ($estAnnulee)
@@ -82,6 +105,31 @@
                 </li>
             @endforeach
         </ul>
+        @if ($commande->adresse_livraison || $commande->methode_paiement || $commande->conditions_acceptees_at)
+            <dl class="px-5 sm:px-6 py-4 border-t border-slate-200 grid sm:grid-cols-3 gap-4 text-sm">
+                @if ($commande->adresse_livraison)
+                    <div>
+                        <dt class="text-slate-500">Livraison</dt>
+                        <dd class="mt-0.5 text-slate-900">{{ $commande->adresse_livraison }}</dd>
+                    </div>
+                @endif
+                @if ($commande->methode_paiement)
+                    <div>
+                        <dt class="text-slate-500">Paiement à la réception</dt>
+                        <dd class="mt-0.5 text-slate-900">{{ $commande->libelleMethodePaiement() }}</dd>
+                    </div>
+                @endif
+                @if ($commande->conditions_acceptees_at)
+                    <div>
+                        <dt class="text-slate-500">Conditions de vente</dt>
+                        <dd class="mt-0.5 text-slate-900">
+                            Acceptées le {{ $commande->conditions_acceptees_at->translatedFormat('d/m/Y à H\hi') }}
+                            · <a href="{{ route('legal.cgv') }}" class="text-blue-700 underline">consulter</a>
+                        </dd>
+                    </div>
+                @endif
+            </dl>
+        @endif
         <dl class="px-5 sm:px-6 py-4 border-t border-slate-200 bg-slate-50 rounded-b-xl space-y-1.5 text-sm">
             <div class="flex justify-between text-slate-600">
                 <dt>Livraison</dt>

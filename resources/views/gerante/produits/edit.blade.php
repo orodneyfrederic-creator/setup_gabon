@@ -150,10 +150,12 @@
                         </div>
                     @endif
                     <input type="file" name="video" accept="video/mp4,video/quicktime,video/x-msvideo,video/webm" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 transition-colors">
-                    <p class="text-xs text-slate-400 mt-1">Laissez vide pour conserver la vidéo actuelle (Max 50 Mo).</p>
+                    <p class="text-xs text-slate-400 mt-1">Laissez vide pour conserver la vidéo actuelle (max. 200 Mo).</p>
                     @error('video') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
+
+            @include('gerante.produits.partials.photos-fiche')
 
             <!-- Submit -->
             <div class="flex justify-end pt-4 border-t border-slate-100">

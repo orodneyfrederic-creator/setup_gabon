@@ -2,10 +2,48 @@
 
 @section('title', request('search') ? 'Recherche « '.request('search').' »' : 'Matériel informatique à Libreville')
 
+@if(! request('search') && ! request('category'))
+    @push('donnees_structurees')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'Store',
+                'name' => 'SETUP-Gabon',
+                'url' => route('home'),
+                'image' => asset('img/partage-setup.jpg'),
+                'logo' => asset('img/logo.png'),
+                'telephone' => config('boutique.telephone'),
+                'email' => config('boutique.email'),
+                'priceRange' => 'FCFA',
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'streetAddress' => 'Petit Paris, galerie Mouenga',
+                    'addressLocality' => 'Libreville',
+                    'addressCountry' => 'GA',
+                ],
+                'openingHoursSpecification' => [[
+                    '@type' => 'OpeningHoursSpecification',
+                    'dayOfWeek' => ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    'opens' => '07:30',
+                    'closes' => '20:00',
+                ]],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
+        </script>
+    @endpush
+@endif
+
 @section('content')
 @php
     $categorieActive = request('category') ? $categories->firstWhere('id', request('category')) : null;
-    $estAccueil = ! request('search') && ! $categorieActive && $produits->currentPage() === 1;
+    $marqueActive = request('marque') ? $marques->firstWhere('id', (int) request('marque')) : null;
+    $filtresActifs = array_filter([
+        'marque' => $marqueActive ? 'Marque : '.$marqueActive->nom : null,
+        'prix_min' => $prixMin !== null ? 'À partir de '.number_format($prixMin, 0, ',', ' ').' FCFA' : null,
+        'prix_max' => $prixMax !== null ? 'Jusqu\'à '.number_format($prixMax, 0, ',', ' ').' FCFA' : null,
+        'en_stock' => request()->boolean('en_stock') ? 'En stock uniquement' : null,
+    ]);
+    $triActif = array_key_exists((string) request('tri'), $tris) ? request('tri') : 'recent';
+    $estAccueil = ! request('search') && ! $categorieActive && $filtresActifs === [] && $triActif === 'recent' && $produits->currentPage() === 1;
 @endphp
 
     {{-- INTRODUCTION : la vraie boutique, et les faits qui comptent pour commander --}}
@@ -80,23 +118,98 @@
     @endif
 
     {{-- EN-TÊTE DE LISTE --}}
-    <div class="mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
-        <div>
-            @if(request('search'))
-                <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Résultats pour « {{ request('search') }} »</h2>
-            @elseif($categorieActive)
-                <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{{ $categorieActive->nom }}</h2>
-            @else
-                <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Tous nos produits</h2>
-            @endif
-        </div>
-        <p class="chiffres text-sm text-slate-500">
+    <div class="mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
+        @php
+            $titreListe = request('search') ? 'Résultats pour « '.request('search').' »' : ($categorieActive?->nom ?? 'Tous nos produits');
+        @endphp
+        @if($estAccueil)
+            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{{ $titreListe }}</h2>
+        @else
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{{ $titreListe }}</h1>
+        @endif
+        <p class="chiffres text-sm text-slate-500" aria-live="polite">
             {{ $produits->total() }} {{ $produits->total() > 1 ? 'produits' : 'produit' }}
-            @if(request('search') || $categorieActive)
-                · <a href="{{ route('home') }}#catalogue" class="text-blue-700 hover:text-blue-800 underline">Effacer les filtres</a>
+            @if(request('search') || $categorieActive || $filtresActifs !== [])
+                · <a href="{{ route('home') }}#catalogue" class="text-blue-700 hover:text-blue-800 underline">Tout effacer</a>
             @endif
         </p>
     </div>
+
+    {{-- FILTRES ET TRI --}}
+    <form method="GET" action="{{ route('home') }}#catalogue" class="mb-6" x-data="{ ouvert: {{ $filtresActifs !== [] ? 'true' : 'false' }} }" aria-label="Filtrer et trier les produits">
+        @if(request('search'))
+            <input type="hidden" name="search" value="{{ request('search') }}">
+        @endif
+        @if($categorieActive)
+            <input type="hidden" name="category" value="{{ $categorieActive->id }}">
+        @endif
+
+        <div class="flex items-center justify-between gap-3">
+            <button type="button" @click="ouvert = !ouvert" :aria-expanded="ouvert" aria-controls="panneau-filtres"
+                    class="h-10 px-4 rounded-lg border border-slate-300 bg-white text-sm font-semibold text-slate-800 hover:border-slate-400 flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-xs text-slate-500"></i>
+                Filtrer
+                @if(count($filtresActifs) > 0)
+                    <span class="chiffres min-w-[1.25rem] h-5 px-1 rounded-full bg-blue-700 text-white text-[11px] font-bold flex items-center justify-center">{{ count($filtresActifs) }}</span>
+                @endif
+            </button>
+            <label class="flex items-center gap-2 text-sm text-slate-600">
+                <span class="hidden sm:inline">Trier par</span>
+                <select name="tri" onchange="this.form.submit()" aria-label="Trier par"
+                        class="h-10 pl-3 pr-8 rounded-lg border border-slate-300 bg-white text-sm font-semibold text-slate-800 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none">
+                    @foreach($tris as $cle => $libelle)
+                        <option value="{{ $cle }}" @selected($triActif === $cle)>{{ $libelle }}</option>
+                    @endforeach
+                </select>
+            </label>
+        </div>
+
+        <div id="panneau-filtres" x-show="ouvert" x-cloak x-collapse>
+            <div class="mt-3 bg-white border border-slate-200 rounded-xl p-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
+                <label class="block">
+                    <span class="block text-sm font-semibold text-slate-800 mb-1.5">Marque</span>
+                    <select name="marque" class="w-full h-11 pl-3 pr-8 rounded-lg border border-slate-300 bg-white text-sm focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none">
+                        <option value="">Toutes les marques</option>
+                        @foreach($marques as $marque)
+                            <option value="{{ $marque->id }}" @selected($marqueActive?->id === $marque->id)>{{ $marque->nom }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <fieldset>
+                    <legend class="block text-sm font-semibold text-slate-800 mb-1.5">Prix (FCFA)</legend>
+                    <div class="flex items-center gap-2">
+                        <input type="number" name="prix_min" value="{{ $prixMin }}" min="0" step="1000" inputmode="numeric" placeholder="Min." aria-label="Prix minimum en FCFA"
+                               class="chiffres w-full h-11 px-3 rounded-lg border border-slate-300 text-sm focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none">
+                        <span class="text-slate-400" aria-hidden="true">–</span>
+                        <input type="number" name="prix_max" value="{{ $prixMax }}" min="0" step="1000" inputmode="numeric" placeholder="Max." aria-label="Prix maximum en FCFA"
+                               class="chiffres w-full h-11 px-3 rounded-lg border border-slate-300 text-sm focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none">
+                    </div>
+                </fieldset>
+                <label class="flex items-center gap-3 h-11 cursor-pointer">
+                    <input type="checkbox" name="en_stock" value="1" @checked(request()->boolean('en_stock')) class="w-5 h-5 rounded border-slate-300 text-blue-700 focus:ring-blue-600">
+                    <span class="text-sm font-medium text-slate-800">En stock uniquement</span>
+                </label>
+                <button type="submit" class="h-11 px-5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold">
+                    Appliquer
+                </button>
+            </div>
+        </div>
+
+        @if($filtresActifs !== [])
+            <ul class="mt-3 flex flex-wrap gap-2" aria-label="Filtres actifs">
+                @foreach($filtresActifs as $cle => $libelle)
+                    <li>
+                        <a href="{{ route('home', request()->except([$cle, 'page'])) }}#catalogue"
+                           class="h-8 pl-3 pr-2 rounded-full bg-blue-50 text-blue-800 text-sm font-medium inline-flex items-center gap-1.5 hover:bg-blue-100"
+                           aria-label="Retirer le filtre {{ $libelle }}">
+                            {{ $libelle }}
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+    </form>
 
     {{-- GRILLE PRODUITS --}}
     @if($produits->count() > 0)

@@ -3,6 +3,36 @@
 @section('title', $produit->designation)
 @section('meta_description', \Illuminate\Support\Str::limit(trim(($produit->description ?: $produit->designation).' – '.number_format($produit->prix_unitaire, 0, ',', ' ').' FCFA chez SETUP-Gabon, Libreville.'), 155))
 
+@section('og_type', 'product')
+@section('og_image', route('produits.apercu', $produit->id))
+@section('og_image_alt', $produit->designation)
+@section('url_canonique', route('produits.show', $produit->id))
+
+@push('donnees_structurees')
+    <script type="application/ld+json">
+        {!! json_encode(array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'Product',
+            'name' => $produit->designation,
+            'sku' => $produit->reference,
+            'description' => \Illuminate\Support\Str::limit(trim($produit->description ?: $produit->designation), 500),
+            'image' => array_map(fn ($chemin) => asset('storage/'.$chemin), $produit->galerie()) ?: null,
+            'category' => $produit->category?->nom,
+            'brand' => $produit->marque && strcasecmp(trim($produit->marque->nom), 'Sans marque') !== 0
+                ? ['@type' => 'Brand', 'name' => $produit->marque->nom]
+                : null,
+            'offers' => [
+                '@type' => 'Offer',
+                'url' => route('produits.show', $produit->id),
+                'price' => (int) $produit->prix_unitaire,
+                'priceCurrency' => 'XAF',
+                'availability' => $produit->quantite > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'seller' => ['@type' => 'Organization', 'name' => 'SETUP-Gabon'],
+            ],
+        ]), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
+    </script>
+@endpush
+
 @section('content')
 @php
     $enStock = $produit->quantite > 0;
@@ -211,11 +241,33 @@
 
 <div class="grid lg:grid-cols-12 gap-6 lg:gap-12 items-start">
 
-    {{-- VISUEL --}}
-    <div class="lg:col-span-7">
-        <div class="relative bg-white border border-slate-200 rounded-2xl overflow-hidden aspect-square sm:aspect-[4/3] lg:aspect-square">
-            @if($produit->image)
-                <img src="{{ asset('storage/' . $produit->image) }}" alt="{{ $produit->designation }}" class="w-full h-full object-contain">
+    {{-- VISUEL : galerie de photos --}}
+    @php $photos = array_map(fn ($chemin) => asset('storage/'.$chemin), $produit->galerie()); @endphp
+    <div class="lg:col-span-7"
+         x-data="{
+             photos: @js($photos),
+             active: 0,
+             debutToucher: null,
+             precedente() { this.active = (this.active - 1 + this.photos.length) % this.photos.length },
+             suivante() { this.active = (this.active + 1) % this.photos.length },
+         }"
+         @keydown.left.window="if (photos.length > 1 && !document.activeElement.closest('input, textarea')) precedente()"
+         @keydown.right.window="if (photos.length > 1 && !document.activeElement.closest('input, textarea')) suivante()">
+        <div class="relative bg-white border border-slate-200 rounded-2xl overflow-hidden aspect-square sm:aspect-[4/3] lg:aspect-square"
+             @touchstart.passive="debutToucher = $event.touches[0].clientX"
+             @touchend.passive="if (debutToucher !== null && photos.length > 1) { const ecart = $event.changedTouches[0].clientX - debutToucher; if (Math.abs(ecart) > 40) { ecart < 0 ? suivante() : precedente() } } debutToucher = null">
+            @if(count($photos) > 0)
+                <img :src="photos[active]" src="{{ $photos[0] }}" :alt="@js($produit->designation) + ', photo ' + (active + 1) + ' sur ' + photos.length" alt="{{ $produit->designation }}"
+                     class="w-full h-full object-contain">
+                @if(count($photos) > 1)
+                    <button type="button" @click="precedente()" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 flex items-center justify-center" aria-label="Photo précédente">
+                        <i class="fa-solid fa-chevron-left text-sm"></i>
+                    </button>
+                    <button type="button" @click="suivante()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 flex items-center justify-center" aria-label="Photo suivante">
+                        <i class="fa-solid fa-chevron-right text-sm"></i>
+                    </button>
+                    <span class="chiffres absolute right-3 top-3 px-2 py-0.5 rounded-md bg-slate-950/70 text-white text-xs" x-text="(active + 1) + ' / ' + photos.length" aria-live="polite"></span>
+                @endif
             @else
                 <div class="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
                     <i class="fa-solid fa-laptop text-6xl"></i>
@@ -230,6 +282,22 @@
                 </button>
             @endif
         </div>
+
+        @if(count($photos) > 1)
+            <ul class="mt-3 flex gap-2 overflow-x-auto scrollbar-none" aria-label="Photos du produit">
+                @foreach($photos as $index => $photo)
+                    <li class="shrink-0">
+                        <button type="button" @click="active = {{ $index }}"
+                                class="block w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 bg-white transition-colors"
+                                :class="active === {{ $index }} ? 'border-blue-700' : 'border-transparent hover:border-slate-300'"
+                                :aria-current="active === {{ $index }} ? 'true' : 'false'"
+                                aria-label="Afficher la photo {{ $index + 1 }}">
+                            <img src="{{ $photo }}" alt="" loading="lazy" class="w-full h-full object-cover">
+                        </button>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
     </div>
 
     {{-- ACHAT --}}
@@ -316,6 +384,10 @@
                 <span><strong class="font-semibold text-slate-900">Livraison gratuite</strong> à Libreville, ou retrait à la boutique de Petit Paris.</span>
             </li>
             <li class="flex gap-3">
+                <i class="fa-solid fa-shield-halved w-5 mt-0.5 text-blue-700"></i>
+                <span><strong class="font-semibold text-slate-900">Garantie boutique {{ $produit->libelleGarantie() }}</strong> et {{ config('boutique.retractation_jours') }} jours pour changer d'avis. <a href="{{ route('legal.retours') }}" class="text-blue-700 underline">En savoir plus</a></span>
+            </li>
+            <li class="flex gap-3">
                 <i class="fa-solid fa-wallet w-5 mt-0.5 text-blue-700"></i>
                 <span>Paiement en espèces, Airtel Money ou Moov Money. Rien n'est débité en ligne.</span>
             </li>
@@ -326,8 +398,29 @@
                 </span>
             </li>
         </ul>
+
+        <a href="https://wa.me/?text={{ rawurlencode($produit->designation.' – '.number_format($produit->prix_unitaire, 0, ',', ' ').' FCFA chez SETUP-Gabon : '.route('produits.show', $produit->id)) }}"
+           target="_blank" rel="noopener"
+           class="mt-5 inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-white hover:border-slate-400 transition-colors">
+            <i class="fa-brands fa-whatsapp"></i>
+            Partager ce produit
+        </a>
     </div>
 </div>
+
+@if(count($produit->ficheTechnique()) > 0)
+    <section class="mt-8 pt-8 lg:mt-12 lg:pt-10 border-t border-slate-200 grid lg:grid-cols-12 gap-4 lg:gap-6" aria-labelledby="titre-fiche">
+        <h2 id="titre-fiche" class="lg:col-span-4 text-xl font-bold tracking-tight text-slate-900">Fiche technique</h2>
+        <dl class="lg:col-span-8 max-w-[68ch] divide-y divide-slate-200 border-y border-slate-200 text-[15px]">
+            @foreach($produit->ficheTechnique() as $ligne)
+                <div class="py-3 grid grid-cols-5 gap-4">
+                    <dt class="col-span-2 text-slate-500">{{ $ligne['libelle'] }}</dt>
+                    <dd class="col-span-3 text-slate-900 font-medium">{{ $ligne['valeur'] }}</dd>
+                </div>
+            @endforeach
+        </dl>
+    </section>
+@endif
 
 @if($produit->description)
     <section class="mt-8 pt-8 lg:mt-12 lg:pt-10 border-t border-slate-200 grid lg:grid-cols-12 gap-4 lg:gap-6">

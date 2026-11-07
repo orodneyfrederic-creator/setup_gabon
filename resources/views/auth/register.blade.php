@@ -84,6 +84,10 @@
             <button type="submit" class="w-full h-12 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg transition-colors">
                 Créer mon compte
             </button>
+            <p class="text-xs text-slate-500 leading-relaxed">
+                Vos informations servent uniquement à gérer votre compte et vos commandes. Vous pouvez les consulter, les corriger ou les faire supprimer à tout moment :
+                voir notre <a href="{{ route('legal.confidentialite') }}" class="font-semibold text-blue-700 underline">politique de confidentialité</a>.
+            </p>
         </form>
     </div>
 
