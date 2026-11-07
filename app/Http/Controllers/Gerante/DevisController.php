@@ -18,18 +18,20 @@ class DevisController extends Controller
     {
         $query = Devis::query();
 
-        if ($request->has('search') && ! empty($request->search)) {
+        if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('numero', 'like', "%{$search}%")
-                ->orWhere('client_nom', 'like', "%{$search}%")
-                ->orWhere('client_entreprise', 'like', "%{$search}%");
+            $query->where(function ($sousRequete) use ($search) {
+                $sousRequete->where('numero', 'like', "%{$search}%")
+                    ->orWhere('client_nom', 'like', "%{$search}%")
+                    ->orWhere('client_entreprise', 'like', "%{$search}%");
+            });
         }
 
-        if ($request->has('statut') && ! empty($request->statut)) {
+        if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
 
-        $devis = $query->latest()->paginate(15);
+        $devis = $query->latest()->paginate(15)->withQueryString();
 
         return view('gerante.devis.index', compact('devis'));
     }

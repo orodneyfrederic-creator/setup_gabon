@@ -5,11 +5,8 @@
     <!-- EN-TÊTE DE PAGE -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-headset text-blue-600"></i>
-                <span>Ticket SAV : {{ $sav->reference }}</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Détails du dossier et suivi de la réparation / garantie</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Ticket SAV : {{ $sav->reference }}</h1>
+            <p class="mt-1 text-slate-500">Détails du dossier et suivi de la réparation / garantie</p>
         </div>
         <div>
             <a href="{{ route('gerante.sav.index') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">

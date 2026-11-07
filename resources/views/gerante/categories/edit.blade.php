@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-tags text-amber-600"></i>
-                <span>Modifier la Catégorie</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Mise à jour de : {{ $category->nom }}</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Modifier la catégorie</h1>
+            <p class="mt-1 text-slate-500">Mise à jour de : {{ $category->nom }}</p>
         </div>
         <div>
             <a href="{{ route('gerante.categories.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">

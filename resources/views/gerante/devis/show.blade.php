@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice text-blue-700"></i>
-                <span>Devis {{ $devi->reference }}</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Créé le {{ $devi->created_at->format('d/m/Y à H:i') }}</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Devis {{ $devi->numero }}</h1>
+            <p class="mt-1 text-slate-500">Créé le {{ $devi->created_at->format('d/m/Y à H:i') }}</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
             @if($devi->statut === 'brouillon')
@@ -85,11 +82,11 @@
                             <i class="fa-solid fa-check"></i> Marquer comme Accepté
                         </button>
                     </form>
-                    <form action="{{ route('gerante.devis.status', $devi) }}" method="POST" class="mt-3">
+                    <form action="{{ route('gerante.devis.status', $devi) }}" method="POST" class="mt-3" onsubmit="return confirm('Refuser ce devis ?');">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="statut" value="refuse">
-                        <button type="submit" class="w-full py-2 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold rounded-xl transition-colors flex items-center justify-center gap-2" onsubmit="return confirm('Refuser ce devis ?');">
+                        <button type="submit" class="w-full py-2 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
                             <i class="fa-solid fa-xmark"></i> Marquer comme Refusé
                         </button>
                     </form>
@@ -153,10 +150,10 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Désignation</th>
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">P.U</th>
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Qté</th>
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Sous-Total</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500">Désignation</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500 text-right">P.U.</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500 text-center">Qté</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500 text-right">Sous-total</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">

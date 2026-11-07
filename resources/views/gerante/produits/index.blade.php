@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-boxes-stacked text-violet-700"></i>
-                <span>Gestion des Produits</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Catalogue des produits de la boutique</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Produits</h1>
+            <p class="mt-1 text-slate-500">Catalogue des produits de la boutique</p>
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('gerante.produits.create') }}" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -39,12 +36,12 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Image</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Réf / Désignation</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Catégorie / Marque</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Prix</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Stock</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Image</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Réf. / désignation</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Catégorie / marque</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Prix</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Stock</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

@@ -45,9 +45,9 @@
                     <div class="px-6 py-3 flex justify-between items-start gap-4">
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-slate-800">{{ $ligne->designation }}</p>
-                            <p class="text-xs text-slate-400">{{ number_format($ligne->prix_unitaire, 0, ',', ' ') }} XAF × {{ $ligne->quantite }}</p>
+                            <p class="text-xs text-slate-400">{{ number_format($ligne->prix_unitaire, 0, ',', ' ') }} FCFA × {{ $ligne->quantite }}</p>
                         </div>
-                        <p class="text-sm font-black text-slate-900 shrink-0">{{ number_format($ligne->total_ligne, 0, ',', ' ') }} XAF</p>
+                        <p class="text-sm font-black text-slate-900 shrink-0">{{ number_format($ligne->total_ligne, 0, ',', ' ') }} FCFA</p>
                     </div>
                 @endforeach
             </div>
@@ -55,7 +55,7 @@
             {{-- Total --}}
             <div class="px-6 py-5 bg-emerald-50 border-t-2 border-emerald-200 flex justify-between items-center">
                 <span class="font-bold text-emerald-900 text-lg">TOTAL</span>
-                <span class="text-2xl font-black text-emerald-700">{{ number_format($vente->montant_total, 0, ',', ' ') }} XAF</span>
+                <span class="text-2xl font-black text-emerald-700">{{ number_format($vente->montant_total, 0, ',', ' ') }} FCFA</span>
             </div>
 
             <div class="px-6 py-4 text-center text-xs text-slate-400 border-t border-slate-100">

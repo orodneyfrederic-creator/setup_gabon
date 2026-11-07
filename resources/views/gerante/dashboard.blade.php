@@ -1,263 +1,107 @@
 @extends('layouts.app')
 
-@section('content')
+@section('title', 'Tableau de bord')
 
-    {{-- EN-TÊTE DU DASHBOARD --}}
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+@section('content')
+@php
+    $nbATraiter = $commandesEnAttente + $negociationsEnAttente + $alertesStock->count();
+@endphp
+
+    {{-- EN-TÊTE --}}
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-gauge-high text-blue-700"></i>
-                <span>Tableau de bord</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">
-                Bienvenue, <span class="font-semibold text-slate-700">{{ Auth::guard('staff')->user()?->email ?? Auth::user()?->prenom . ' ' . Auth::user()?->nom }}</span> — Espace Gérante
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Tableau de bord</h1>
+            <p class="chiffres mt-1 text-slate-500">
+                {{ number_format($chiffreAffaires, 0, ',', ' ') }} FCFA de chiffre d'affaires sur {{ $periodeJours }} jours ·
+                <a href="{{ route('gerante.analytics.index') }}" class="font-semibold text-blue-700 hover:underline">voir les statistiques</a>
             </p>
         </div>
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('gerante.produits.create') }}" class="h-11 px-4 rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 text-sm font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-plus text-xs"></i> Ajouter un produit
+            </a>
+            <a href="{{ route('gerante.pos.index') }}" class="h-11 px-4 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-cash-register text-xs"></i> Nouvelle vente
+            </a>
+        </div>
     </div>
 
-    {{-- STATISTIQUES RAPIDES --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-
-        {{-- Carte : Clients --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0">
-                <i class="fa-solid fa-users"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-slate-900">{{ $totalClients }}</p>
-                <p class="text-xs text-slate-500 font-medium">Clients inscrits</p>
-            </div>
-        </div>
-
-        {{-- Carte : Commandes --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
-                <i class="fa-solid fa-box"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-slate-900">{{ $totalCommandes }}</p>
-                <p class="text-xs text-slate-500 font-medium">Commandes</p>
-            </div>
-        </div>
-
-        {{-- Carte : Produits --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl shrink-0">
-                <i class="fa-solid fa-boxes-stacked"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-slate-900">{{ $totalProduits }}</p>
-                <p class="text-xs text-slate-500 font-medium">Produits actifs</p>
-            </div>
-        </div>
-
-        {{-- Carte : Chiffre d'affaires --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
-                <i class="fa-solid fa-sack-dollar"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-slate-900">{{ number_format($chiffreAffaires, 0, ',', ' ') }} FCFA</p>
-                <p class="text-xs text-slate-500 font-medium">Chiffre d'affaires</p>
-            </div>
-        </div>
-
-    </div>
-
-    {{-- ALERTES STOCK --}}
-    @if($alertesStock->count() > 0)
-    <div class="mb-8 bg-red-50 border border-red-200 rounded-2xl p-5">
-        <h2 class="font-bold text-red-800 flex items-center gap-2 mb-3">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            Alerte stock bas ({{ $alertesStock->count() }} produits)
+    {{-- À TRAITER --}}
+    <section class="mb-8" aria-labelledby="titre-a-traiter">
+        <h2 id="titre-a-traiter" class="text-sm font-semibold text-slate-900 mb-3">
+            À traiter <span class="font-normal text-slate-500 first-letter:uppercase">· {{ now()->translatedFormat('l d F') }}</span>
+            @if($nbATraiter === 0)
+                <span class="font-normal text-slate-500">· tout est à jour</span>
+            @endif
         </h2>
-        <div class="space-y-2">
-            @foreach($alertesStock as $produit)
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-4 py-3 rounded-lg border border-red-100 shadow-sm">
-                <div>
-                    <p class="text-sm font-semibold text-slate-800">{{ $produit->designation }}</p>
-                    <p class="text-xs text-slate-500">Réf : {{ $produit->reference }}</p>
-                </div>
-                <div class="flex items-center justify-between sm:justify-end gap-3 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-md">
-                        En stock : {{ $produit->quantite }}
+        <div class="grid sm:grid-cols-3 gap-3">
+            <a href="{{ route('gerante.commandes.index', ['statut' => 'en_attente']) }}" class="group bg-white border rounded-xl p-4 flex items-center gap-4 transition-colors {{ $commandesEnAttente ? 'border-amber-300 hover:border-amber-400' : 'border-slate-200 hover:border-slate-300' }}">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center {{ $commandesEnAttente ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-400' }}"><i class="fa-solid fa-bag-shopping"></i></span>
+                <span class="flex-1">
+                    <span class="block text-sm font-semibold text-slate-900">Commandes en ligne</span>
+                    <span class="chiffres block text-sm {{ $commandesEnAttente ? 'text-amber-800' : 'text-slate-500' }}">{{ $commandesEnAttente }} en attente</span>
+                </span>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
+            </a>
+            <a href="{{ route('gerante.negociations.index', ['statut' => 'en_attente_gerante']) }}" class="group bg-white border rounded-xl p-4 flex items-center gap-4 transition-colors {{ $negociationsEnAttente ? 'border-rose-300 hover:border-rose-400' : 'border-slate-200 hover:border-slate-300' }}">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center {{ $negociationsEnAttente ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-400' }}"><i class="fa-solid fa-handshake-simple"></i></span>
+                <span class="flex-1">
+                    <span class="block text-sm font-semibold text-slate-900">Négociations</span>
+                    <span class="chiffres block text-sm {{ $negociationsEnAttente ? 'text-rose-700' : 'text-slate-500' }}">{{ $negociationsEnAttente }} à décider</span>
+                </span>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
+            </a>
+            <a href="#stock-bas" class="group bg-white border rounded-xl p-4 flex items-center gap-4 transition-colors {{ $alertesStock->count() ? 'border-amber-300 hover:border-amber-400' : 'border-slate-200 hover:border-slate-300' }}">
+                <span class="w-10 h-10 rounded-lg flex items-center justify-center {{ $alertesStock->count() ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-400' }}"><i class="fa-solid fa-boxes-stacked"></i></span>
+                <span class="flex-1">
+                    <span class="block text-sm font-semibold text-slate-900">Stock bas</span>
+                    <span class="chiffres block text-sm {{ $alertesStock->count() ? 'text-amber-800' : 'text-slate-500' }}">{{ $alertesStock->count() }} {{ $alertesStock->count() > 1 ? 'produits' : 'produit' }} sous le seuil</span>
+                </span>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
+            </a>
+        </div>
+    </section>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+        {{-- DERNIÈRES COMMANDES --}}
+        <section class="bg-white border border-slate-200 rounded-xl">
+            <div class="px-5 pt-5 pb-3 flex items-center justify-between">
+                <h2 class="font-semibold text-slate-900">Dernières commandes en ligne</h2>
+                <a href="{{ route('gerante.commandes.index') }}" class="text-sm font-semibold text-blue-700 hover:underline">Tout voir</a>
+            </div>
+            @forelse($dernieresCommandes as $cmd)
+                <a href="{{ route('gerante.commandes.show', $cmd) }}" class="px-5 py-3 flex items-center gap-4 border-t border-slate-100 hover:bg-slate-50">
+                    <span class="chiffres text-sm font-semibold text-slate-900 w-12">#{{ $cmd->id }}</span>
+                    <span class="flex-1 min-w-0 text-sm text-slate-700 truncate">{{ $cmd->user?->prenom }} {{ $cmd->user?->nom }}</span>
+                    @include('account.partials.statut', ['statut' => $cmd->statut])
+                    <span class="chiffres text-sm font-semibold text-slate-900 w-32 text-right">{{ number_format($cmd->montant_c, 0, ',', ' ') }} FCFA</span>
+                </a>
+            @empty
+                <p class="px-5 py-8 border-t border-slate-100 text-sm text-slate-500 text-center">Aucune commande en ligne pour le moment.</p>
+            @endforelse
+        </section>
+
+        {{-- STOCK BAS --}}
+        <section id="stock-bas" class="bg-white border border-slate-200 rounded-xl scroll-mt-24">
+            <div class="px-5 pt-5 pb-3 flex items-center justify-between">
+                <h2 class="font-semibold text-slate-900">Stock bas</h2>
+                <a href="{{ route('gerante.stock.index') }}" class="text-sm font-semibold text-blue-700 hover:underline">Gérer le stock</a>
+            </div>
+            @forelse($alertesStock as $produit)
+                <div class="px-5 py-3 flex items-center gap-4 border-t border-slate-100">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-900 truncate">{{ $produit->designation }}</p>
+                        <p class="text-xs text-slate-500">Réf. {{ $produit->reference }}</p>
+                    </div>
+                    <span class="chiffres text-sm font-semibold {{ $produit->quantite === 0 ? 'text-rose-700' : 'text-amber-800' }}">
+                        {{ $produit->quantite === 0 ? 'Épuisé' : $produit->quantite.' restant'.($produit->quantite > 1 ? 's' : '') }}
                     </span>
-                    <a href="{{ route('gerante.stock.index') }}" class="text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium underline">
-                        Réapprovisionner
-                    </a>
+                    <a href="{{ route('gerante.stock.index') }}" class="text-sm font-semibold text-blue-700 hover:underline shrink-0">Réapprovisionner</a>
                 </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-    @endif
-
-    {{-- SECTIONS DE GESTION --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-        {{-- Gestion des produits --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <h2 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-boxes-stacked text-violet-600"></i>
-                    Gestion des produits
-                </h2>
-            </div>
-            <div class="p-5 space-y-3 flex-1">
-                <a href="{{ route('gerante.produits.create') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-plus text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-violet-700 transition-colors">Ajouter un produit</p>
-                        <p class="text-xs text-slate-400">Créer une nouvelle fiche produit</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <a href="{{ route('gerante.produits.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-list text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-violet-700 transition-colors">Voir tous les produits</p>
-                        <p class="text-xs text-slate-400">Modifier, activer ou supprimer</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <a href="{{ route('gerante.stock.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-boxes-packing text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-violet-700 transition-colors">Gestion du stock</p>
-                        <p class="text-xs text-slate-400">Entrées, sorties et ajustements</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <a href="{{ route('gerante.categories.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-tags text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-amber-700 transition-colors">Catégories</p>
-                        <p class="text-xs text-slate-400">Gérer les catégories</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <a href="{{ route('gerante.marques.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-copyright text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors">Marques</p>
-                        <p class="text-xs text-slate-400">Gérer les marques</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-            </div>
-        </div>
-
-        {{-- Gestion des clients & facturation --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <h2 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-users text-blue-600"></i>
-                    Clients & Documents
-                </h2>
-            </div>
-            <div class="p-5 space-y-3 flex-1">
-                <a href="{{ route('gerante.clients.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-users text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">Liste des clients</p>
-                        <p class="text-xs text-slate-400">Consulter les comptes inscrits</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <a href="{{ route('gerante.devis.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-file-invoice text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">Devis & Factures</p>
-                        <p class="text-xs text-slate-400">Créer devis et gérer factures</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-
-            </div>
-        </div>
-
-        {{-- Caisse & Outils --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <h2 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-cash-register text-emerald-600"></i>
-                    Ventes & Analytics
-                </h2>
-            </div>
-            <div class="p-5 space-y-3 flex-1">
-                <a href="{{ route('gerante.pos.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-cash-register text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors">Caisse (POS)</p>
-                        <p class="text-xs text-slate-400">Enregistrer une vente en boutique</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <a href="{{ route('gerante.analytics.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-chart-line text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors">Analytics Avancés</p>
-                        <p class="text-xs text-slate-400">Graphiques et statistiques</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-            </div>
-        </div>
-
-        {{-- Accès rapides --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <h2 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-bolt text-rose-500"></i>
-                    Accès rapides
-                </h2>
-            </div>
-            <div class="p-5 space-y-3 flex-1">
-                <a href="{{ route('home') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group border border-slate-100">
-                    <div class="w-9 h-9 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-shop text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-slate-800 group-hover:text-rose-600 transition-colors">Voir la boutique</p>
-                        <p class="text-xs text-slate-400">Vue client de la boutique</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 transition-colors group border border-slate-100 text-left">
-                        <div class="w-9 h-9 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-right-from-bracket text-sm"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-slate-800 group-hover:text-rose-600 transition-colors">Se déconnecter</p>
-                            <p class="text-xs text-slate-400">Fermer la session</p>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-300 text-xs ml-auto"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-
+            @empty
+                <p class="px-5 py-8 border-t border-slate-100 text-sm text-slate-500 text-center">Aucun produit sous son seuil d'alerte.</p>
+            @endforelse
+        </section>
     </div>
 
 @endsection
-

@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-file-signature text-blue-700"></i>
-                <span>Nouveau Devis</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Créer une proposition commerciale pour un client</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Nouveau devis</h1>
+            <p class="mt-1 text-slate-500">Créer une proposition commerciale pour un client</p>
         </div>
         <div>
             <a href="{{ route('gerante.devis.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -83,11 +80,11 @@
                         <table class="w-full text-left border-collapse" id="lignesTable">
                             <thead>
                                 <tr class="bg-white border-b border-slate-100">
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-1/2">Produit</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-1/6">P.U (FCFA)</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-1/6">Qté</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-1/6 text-right">S-Total</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider w-12 text-center"></th>
+                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 w-1/2">Produit</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 w-1/6">P.U. (FCFA)</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 w-1/6">Qté</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 w-1/6 text-right">S-Total</th>
+                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 w-12 text-center"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100" id="lignesBody">

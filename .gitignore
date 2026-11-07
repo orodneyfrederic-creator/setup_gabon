@@ -29,3 +29,4 @@ Thumbs.db
 /storage/app/public/videos/*
 !/storage/app/public/videos/.gitignore
 update_video.php
+.impeccable/review/

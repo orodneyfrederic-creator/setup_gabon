@@ -5,11 +5,8 @@
     <!-- EN-TÊTE DE PAGE -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-user-gear text-blue-600"></i>
-                <span>Fiche Client : {{ $client->prenom }} {{ $client->nom }}</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Détails du compte et historique des activités</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Fiche client : {{ $client->prenom }} {{ $client->nom }}</h1>
+            <p class="mt-1 text-slate-500">Détails du compte et historique des activités</p>
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('gerante.clients.index') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -27,7 +24,7 @@
                 </div>
                 <div>
                     <h2 class="text-base font-bold text-slate-900">{{ $client->prenom }} {{ $client->nom }}</h2>
-                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full">Client Inscrit</span>
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full">Client Inscrit</span>
                 </div>
             </div>
             <div class="space-y-2 text-xs border-t border-slate-100 pt-3">
@@ -74,10 +71,10 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Commande #</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Date</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Montant</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Commande #</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Date</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Statut</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Montant</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

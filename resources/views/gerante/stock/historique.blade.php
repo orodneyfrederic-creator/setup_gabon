@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left text-violet-700"></i>
-                <span>Historique du stock</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Produit : {{ $produit->reference }} - {{ $produit->designation }}</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Historique du stock</h1>
+            <p class="mt-1 text-slate-500">Produit : {{ $produit->reference }} - {{ $produit->designation }}</p>
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('gerante.stock.create_mouvement', $produit) }}" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -61,11 +58,11 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
-                                <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Type</th>
-                                <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Quantité</th>
-                                <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Motif</th>
-                                <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Effectué par</th>
+                                <th class="px-4 py-3 text-xs font-bold text-slate-500">Date</th>
+                                <th class="px-4 py-3 text-xs font-bold text-slate-500">Type</th>
+                                <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Quantité</th>
+                                <th class="px-4 py-3 text-xs font-bold text-slate-500">Motif</th>
+                                <th class="px-4 py-3 text-xs font-bold text-slate-500">Effectué par</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">

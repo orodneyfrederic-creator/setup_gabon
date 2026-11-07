@@ -5,32 +5,34 @@ namespace App\Http\Controllers\Gerante;
 use App\Http\Controllers\Controller;
 use App\Models\Commande;
 use App\Models\Devis;
-use App\Models\Facture;
 use App\Models\LigneVentePos;
 use App\Models\VentePos;
+use App\Services\ChiffreAffairesService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, ChiffreAffairesService $chiffreAffairesService)
     {
         // Période sélectionnée (7, 30 ou 90 jours)
-        $period = $request->get('period', '30');
-        $startDate = Carbon::now()->subDays((int) $period)->startOfDay();
+        $periodeDemandee = $request->integer('period', ChiffreAffairesService::PERIODE_PAR_DEFAUT_JOURS);
+        $period = (string) (in_array($periodeDemandee, [7, 30, 90], true) ? $periodeDemandee : ChiffreAffairesService::PERIODE_PAR_DEFAUT_JOURS);
+        $startDate = $chiffreAffairesService->debutPeriode((int) $period);
 
-        // 1. Chiffres clés principaux
-        $caPos = VentePos::where('created_at', '>=', $startDate)->sum('montant_total');
-        $caOnline = Commande::where('created_at', '>=', $startDate)->where('statut', '!=', 'annulee')->sum('montant_c');
-        $caTotal = $caPos + $caOnline;
+        // 1. Chiffres clés : même calcul que le tableau de bord (caisse + en ligne confirmé/livré + factures payées)
+        $chiffreAffaires = $chiffreAffairesService->calculer($startDate);
+        $caPos = $chiffreAffaires['caisse'];
+        $caOnline = $chiffreAffaires['en_ligne'];
+        $totalFacturesPayees = $chiffreAffaires['factures'];
+        $caTotal = $chiffreAffaires['total'];
 
         $nbVentesPos = VentePos::where('created_at', '>=', $startDate)->count();
         $nbCommandesOnline = Commande::where('created_at', '>=', $startDate)->count();
 
         $panierMoyenPos = $nbVentesPos > 0 ? round($caPos / $nbVentesPos) : 0;
         $totalDevis = Devis::where('created_at', '>=', $startDate)->count();
-        $totalFacturesPayees = Facture::where('created_at', '>=', $startDate)->where('statut', 'payee')->sum('montant_total');
 
         // 2. Évolution Ventes (Jour par jour pour le graphique de tendance)
         $dates = [];
@@ -43,7 +45,9 @@ class AnalyticsController extends Controller
             $dates[] = $date->format('d/m');
 
             $posSum = VentePos::whereDate('created_at', $dateStr)->sum('montant_total');
-            $onlineSum = Commande::whereDate('created_at', $dateStr)->where('statut', '!=', 'annulee')->sum('montant_c');
+            $onlineSum = Commande::whereDate('created_at', $dateStr)
+                ->whereIn('statut', ChiffreAffairesService::STATUTS_COMMANDE_ENCAISSES)
+                ->sum('montant_c');
 
             $salesPosData[] = (float) $posSum;
             $salesOnlineData[] = (float) $onlineSum;

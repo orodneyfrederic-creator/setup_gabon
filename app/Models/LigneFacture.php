@@ -13,6 +13,7 @@ class LigneFacture extends Model
 
     protected $fillable = [
         'id_facture',
+        'id_p',
         'designation',
         'quantite',
         'prix_unitaire',

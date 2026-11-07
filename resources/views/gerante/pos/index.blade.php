@@ -3,16 +3,9 @@
 @section('content')
 
     {{-- HEADER --}}
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center">
-                <i class="fa-solid fa-cash-register text-lg"></i>
-            </div>
-            <div>
-                <h1 class="text-xl font-black text-slate-900 leading-tight">Caisse (POS)</h1>
-                <p class="text-xs text-slate-400">Enregistrement des ventes directes</p>
-            </div>
-        </div>
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Caisse</h1>
+        <p class="mt-1 text-slate-500">Touchez un produit pour l'ajouter à la vente, puis encaissez.</p>
     </div>
 
     @if($errors->any())
@@ -34,10 +27,10 @@
                     name="search"
                     value="{{ $search }}"
                     placeholder="Rechercher un produit..."
-                    class="flex-1 px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
+                    class="flex-1 h-11 px-4 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 bg-white"
                     id="pos-search-input"
                 >
-                <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold transition-colors">
+                <button type="submit" class="h-11 px-4 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm font-semibold transition-colors" aria-label="Rechercher">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
                 @if($search)
@@ -53,7 +46,7 @@
                     <button
                         type="button"
                         onclick='ajouterAuPanier({{ $produit->id }}, {{ json_encode($produit->designation) }}, {{ $produit->prix_unitaire }}, {{ $produit->quantite }})'
-                        class="bg-white border border-slate-200 rounded-2xl p-3 text-left hover:border-emerald-400 hover:shadow-md transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        class="bg-white border border-slate-200 rounded-xl p-2.5 text-left hover:border-blue-400 hover:shadow-md active:scale-[0.98] transition group"
                         id="produit-btn-{{ $produit->id }}"
                     >
                         <div class="w-full aspect-square bg-slate-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
@@ -63,9 +56,9 @@
                                 <i class="fa-solid fa-box text-slate-300 text-2xl"></i>
                             @endif
                         </div>
-                        <p class="text-xs font-bold text-slate-800 truncate group-hover:text-emerald-700 transition-colors">{{ $produit->designation }}</p>
-                        <p class="text-emerald-600 font-black text-sm mt-0.5">{{ number_format($produit->prix_unitaire, 0, ',', ' ') }} XAF</p>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Stock : {{ $produit->quantite }}</p>
+                        <p class="text-sm font-medium text-slate-900 truncate group-hover:text-blue-700 transition-colors">{{ $produit->designation }}</p>
+                        <p class="chiffres text-slate-900 font-bold text-sm mt-0.5">{{ number_format($produit->prix_unitaire, 0, ',', ' ') }} FCFA</p>
+                        <p class="chiffres text-xs mt-0.5 {{ $produit->quantite <= $produit->seuil_alerte ? 'text-amber-800' : 'text-slate-500' }}">{{ $produit->quantite }} en stock</p>
                     </button>
                 @empty
                     <div class="col-span-full text-center py-12 text-slate-400">
@@ -78,11 +71,10 @@
 
         {{-- COLONNE DROITE : Panier --}}
         <div class="flex flex-col gap-4">
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col sticky top-4">
+            <div class="bg-white border border-slate-200 rounded-xl flex flex-col sticky top-24">
                 <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/60 flex items-center gap-2">
-                    <i class="fa-solid fa-cart-shopping text-emerald-600"></i>
-                    <h2 class="font-bold text-slate-800 text-sm">Panier</h2>
-                    <span id="panier-count" class="ml-auto bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full">0 article(s)</span>
+                    <h2 class="font-semibold text-slate-900">Vente en cours</h2>
+                    <span id="panier-count" class="chiffres ml-auto bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">Aucun article</span>
                 </div>
 
                 {{-- Articles du panier --}}
@@ -97,7 +89,7 @@
                 <div class="px-5 py-4 border-t border-slate-200 bg-slate-50/60">
                     <div class="flex justify-between items-center mb-4">
                         <span class="font-bold text-slate-700 text-sm">Total</span>
-                        <span id="panier-total" class="text-xl font-black text-emerald-700">0 XAF</span>
+                        <span id="panier-total" class="chiffres text-2xl font-bold text-slate-900">0 FCFA</span>
                     </div>
 
                     {{-- Formulaire de validation --}}
@@ -136,7 +128,7 @@
                                         </div>
                                         <div>
                                             <p class="text-slate-800 font-bold">Espèces</p>
-                                            <p class="text-[10px] text-slate-400 font-normal">Paiement physique en monnaie</p>
+                                            <p class="text-[11px] text-slate-400 font-normal">Paiement physique en monnaie</p>
                                         </div>
                                     </button>
 
@@ -147,7 +139,7 @@
                                         </div>
                                         <div>
                                             <p class="text-slate-800 font-bold">Carte bancaire</p>
-                                            <p class="text-[10px] text-slate-400 font-normal">Terminal de paiement (TPE)</p>
+                                            <p class="text-[11px] text-slate-400 font-normal">Terminal de paiement (TPE)</p>
                                         </div>
                                     </button>
 
@@ -158,7 +150,7 @@
                                         </div>
                                         <div>
                                             <p class="text-slate-800 font-bold">Mobile Money</p>
-                                            <p class="text-[10px] text-slate-400 font-normal">Airtel Money / Moov Money</p>
+                                            <p class="text-[11px] text-slate-400 font-normal">Airtel Money / Moov Money</p>
                                         </div>
                                     </button>
 
@@ -238,8 +230,8 @@
                         Panier vide
                     </p>
                 `;
-                count.textContent = '0 article(s)';
-                totalEl.textContent = '0 XAF';
+                count.textContent = 'Aucun article';
+                totalEl.textContent = '0 FCFA';
                 sauvegarderPanier();
                 return;
             }
@@ -259,20 +251,20 @@
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-semibold text-slate-800 truncate">${item.designation}</p>
-                        <p class="text-[11px] text-slate-400">${Number(item.prix_unitaire).toLocaleString('fr-FR')} XAF × ${item.quantite}</p>
+                        <p class="text-[11px] text-slate-400">${Number(item.prix_unitaire).toLocaleString('fr-FR')} FCFA × ${item.quantite}</p>
                     </div>
                     <div class="flex items-center gap-1">
                         <button type="button" onclick="modifierQuantite(${item.id}, -1)" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-red-100 hover:text-red-600 text-slate-600 text-xs font-black flex items-center justify-center transition-colors">−</button>
                         <span class="text-xs font-bold text-slate-700 w-5 text-center">${item.quantite}</span>
                         <button type="button" onclick="modifierQuantite(${item.id}, 1)" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-700 text-slate-600 text-xs font-black flex items-center justify-center transition-colors">+</button>
                     </div>
-                    <p class="text-xs font-black text-emerald-700 w-20 text-right">${Number(sousTotal).toLocaleString('fr-FR')} XAF</p>
+                    <p class="text-xs font-black text-emerald-700 w-20 text-right">${Number(sousTotal).toLocaleString('fr-FR')} FCFA</p>
                 `;
                 liste.appendChild(row);
             });
 
-            count.textContent = nbArticles + ' article(s)';
-            totalEl.textContent = Number(total).toLocaleString('fr-FR') + ' XAF';
+            count.textContent = nbArticles + (nbArticles > 1 ? ' articles' : ' article');
+            totalEl.textContent = Number(total).toLocaleString('fr-FR') + ' FCFA';
             sauvegarderPanier();
         }
 

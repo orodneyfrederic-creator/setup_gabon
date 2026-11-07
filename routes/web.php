@@ -6,14 +6,17 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Gerante\AnalyticsController;
 use App\Http\Controllers\Gerante\CategorieController;
 use App\Http\Controllers\Gerante\ClientGeranteController;
+use App\Http\Controllers\Gerante\CommandeGeranteController;
 use App\Http\Controllers\Gerante\DevisController;
 use App\Http\Controllers\Gerante\FactureController;
 use App\Http\Controllers\Gerante\MarqueController;
+use App\Http\Controllers\Gerante\NegociationGeranteController;
 use App\Http\Controllers\Gerante\PosController;
 use App\Http\Controllers\Gerante\ProduitGeranteController;
 use App\Http\Controllers\Gerante\SavController;
 use App\Http\Controllers\Gerante\StockController;
 use App\Http\Controllers\GeranteController;
+use App\Http\Controllers\NegociationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProduitController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +60,12 @@ Route::middleware('auth:web,staff')->group(function () {
     // Historique et Détails des Commandes
     Route::get('/commandes', [AccountController::class, 'orders'])->name('orders.index');
     Route::get('/commandes/{id}', [AccountController::class, 'showOrder'])->name('orders.show');
+
+    // Négociation de Prix Client
+    Route::post('/produits/{produit}/negocier', [NegociationController::class, 'initier'])->name('negociations.initier');
+    Route::post('/negociations/{negociation}/offre', [NegociationController::class, 'proposer'])->middleware('throttle:15,1')->name('negociations.proposer');
+    Route::post('/negociations/{negociation}/accepter', [NegociationController::class, 'accepterContreOffre'])->name('negociations.accepter');
+    Route::post('/negociations/{negociation}/abandonner', [NegociationController::class, 'abandonner'])->name('negociations.abandonner');
 
     // Passage à la Caisse / Validation de Commande
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -113,4 +122,16 @@ Route::middleware(['auth:staff,web', 'role:gerante'])->prefix('gerante')->name('
 
     // Analytics
     Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+    // Négociations Gérante
+    Route::get('negociations', [NegociationGeranteController::class, 'index'])->name('negociations.index');
+    Route::get('negociations/regles', [NegociationGeranteController::class, 'regles'])->name('negociations.regles');
+    Route::post('negociations/regles', [NegociationGeranteController::class, 'updateRegles'])->name('negociations.regles.update');
+    Route::get('negociations/{negociation}', [NegociationGeranteController::class, 'show'])->name('negociations.show');
+    Route::post('negociations/{negociation}/decision', [NegociationGeranteController::class, 'decider'])->name('negociations.decider');
+
+    // Commandes en ligne Gérante (Confirmation et Sortie Stock)
+    Route::get('commandes', [CommandeGeranteController::class, 'index'])->name('commandes.index');
+    Route::get('commandes/{commande}', [CommandeGeranteController::class, 'show'])->name('commandes.show');
+    Route::patch('commandes/{commande}/statut', [CommandeGeranteController::class, 'updateStatut'])->name('commandes.statut');
 });

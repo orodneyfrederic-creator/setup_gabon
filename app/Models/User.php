@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class, 'id_ut');
     }
 
+    public function negociations()
+    {
+        return $this->hasMany(Negociation::class, 'id_ut');
+    }
+
     public function conversations()
     {
         return $this->hasMany(Conversation::class, 'id_ut_client');

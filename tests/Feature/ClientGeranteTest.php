@@ -32,7 +32,7 @@ class ClientGeranteTest extends TestCase
             ->get(route('gerante.clients.index'));
 
         $response->assertStatus(200);
-        $response->assertSee('Liste des Clients');
+        $response->assertSee('Clients');
         $response->assertSee('jean.ndong@gmail.com');
         $response->assertSee('Jean Ndong');
     }
@@ -58,7 +58,7 @@ class ClientGeranteTest extends TestCase
             ->get(route('gerante.clients.show', $client->id));
 
         $response->assertStatus(200);
-        $response->assertSee('Fiche Client : Marc Obame');
+        $response->assertSee('Fiche client : Marc Obame');
         $response->assertSee('marc.obame@gmail.com');
     }
 }

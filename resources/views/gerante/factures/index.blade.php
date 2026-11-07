@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice-dollar text-emerald-600"></i>
-                <span>Gestion des Factures</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Suivi des factures générées à partir des devis</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Factures</h1>
+            <p class="mt-1 text-slate-500">Suivi des factures générées à partir des devis</p>
         </div>
         <div>
             <a href="{{ route('gerante.devis.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -33,7 +30,7 @@
                 </div>
                 <select name="statut" onchange="this.form.submit()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
                     <option value="">Tous les statuts</option>
-                    <option value="impayee" {{ request('statut') === 'impayee' ? 'selected' : '' }}>Impayée</option>
+                    <option value="emise" {{ request('statut') === 'emise' ? 'selected' : '' }}>Impayée</option>
                     <option value="payee" {{ request('statut') === 'payee' ? 'selected' : '' }}>Payée</option>
                     <option value="annulee" {{ request('statut') === 'annulee' ? 'selected' : '' }}>Annulée</option>
                 </select>
@@ -45,11 +42,11 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Référence / Date</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Client</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Montant Total</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Référence / date</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Client</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Montant total</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Statut</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -69,7 +66,7 @@
                                 <p class="text-sm font-black text-slate-900">{{ number_format($f->montant_total, 0, ',', ' ') }} FCFA</p>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                @if($f->statut === 'impayee')
+                                @if($f->statut === 'emise')
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-rose-100 text-rose-800">
                                         <i class="fa-solid fa-circle-exclamation mr-1"></i> Impayée
                                     </span>
@@ -85,13 +82,13 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('gerante.factures.show', $f) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-700 flex items-center justify-center transition-colors" title="Voir les détails">
+                                    <a href="{{ route('gerante.factures.show', $f) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-700 flex items-center justify-center transition-colors" title="Voir les détails" aria-label="Voir les détails">
                                         <i class="fa-solid fa-eye text-xs"></i>
                                     </a>
-                                    <a href="{{ route('gerante.factures.pdf', $f) }}?print=1" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-700 flex items-center justify-center transition-colors" title="Imprimer le PDF">
+                                    <a href="{{ route('gerante.factures.pdf', $f) }}?print=1" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-700 flex items-center justify-center transition-colors" title="Imprimer le PDF" aria-label="Imprimer le PDF">
                                         <i class="fa-solid fa-print text-xs"></i>
                                     </a>
-                                    <a href="{{ route('gerante.factures.pdf', $f) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Télécharger PDF">
+                                    <a href="{{ route('gerante.factures.pdf', $f) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Télécharger PDF" aria-label="Télécharger PDF">
                                         <i class="fa-solid fa-download text-xs"></i>
                                     </a>
                                 </div>

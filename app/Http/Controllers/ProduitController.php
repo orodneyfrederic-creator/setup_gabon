@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Produit;
+use App\Services\NegociationService;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
 {
+    public function __construct(
+        protected NegociationService $negociationService
+    ) {}
+
     public function index(Request $request)
     {
         // On récupère les Catégories pour la section "Catégories d'abord"
@@ -17,8 +22,11 @@ class ProduitController extends Controller
         $query = Produit::with(['category', 'marque']);
 
         if ($request->filled('search')) {
-            $query->where('designation', 'like', '%'.$request->search.'%')
-                ->orWhere('description', 'like', '%'.$request->search.'%');
+            // Regroupé entre parenthèses pour que le filtre catégorie s'applique aux deux conditions
+            $query->where(function ($sousRequete) use ($request) {
+                $sousRequete->where('designation', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
+            });
         }
 
         if ($request->filled('category')) {
@@ -34,8 +42,9 @@ class ProduitController extends Controller
     {
         $produit = Produit::with(['category', 'marque'])->findOrFail($id);
         $categories = Category::all(); // On les passe au cas où le layout en a besoin
+        $estNegociable = $this->negociationService->isNegociable($produit);
 
-        return view('produits.show', compact('produit', 'categories'));
+        return view('produits.show', compact('produit', 'categories', 'estNegociable'));
     }
 
     /**

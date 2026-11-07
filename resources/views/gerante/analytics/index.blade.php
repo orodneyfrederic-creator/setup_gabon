@@ -11,7 +11,7 @@
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
             <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2.5">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-chart-line text-lg"></i>
                 </div>
                 <span>Analytics & Rapports Avancés</span>
@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="mt-3 flex items-center gap-2 text-[11px] text-slate-500 font-semibold border-t border-slate-100 pt-2">
-                <span class="text-emerald-600 font-bold">POS : {{ number_format($caPos, 0, ',', ' ') }}</span> | <span>En ligne : {{ number_format($caOnline, 0, ',', ' ') }}</span>
+                <span class="text-emerald-600 font-bold">POS : {{ number_format($caPos, 0, ',', ' ') }}</span> | <span>En ligne : {{ number_format($caOnline, 0, ',', ' ') }}</span> | <span>Factures : {{ number_format($totalFacturesPayees, 0, ',', ' ') }}</span>
             </div>
         </div>
 
@@ -168,7 +168,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                        <tr class="text-[11px] font-bold text-slate-400 border-b border-slate-100">
                             <th class="pb-2">Produit</th>
                             <th class="pb-2 text-center">Quantité vendue</th>
                             <th class="pb-2 text-right">Chiffre réalisé</th>

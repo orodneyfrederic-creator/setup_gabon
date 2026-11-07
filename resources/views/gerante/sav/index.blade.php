@@ -5,11 +5,8 @@
     <!-- EN-TÊTE DE PAGE -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-headset text-blue-600"></i>
-                <span>Tickets SAV (Service Après-Vente)</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Gérez les retours, réparations et garanties de vos clients</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Tickets SAV</h1>
+            <p class="mt-1 text-slate-500">Gérez les retours, réparations et garanties de vos clients</p>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
             <a href="{{ route('gerante.sav.create') }}" class="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -43,12 +40,12 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Référence</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Client & Contact</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Produit</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Retour Prévu</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Référence</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Client et contact</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Produit</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Statut</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Retour prévu</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

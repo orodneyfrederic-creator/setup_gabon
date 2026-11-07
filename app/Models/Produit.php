@@ -13,6 +13,7 @@ class Produit extends Model
         'designation',
         'description',
         'prix_unitaire',
+        'prix_achat',
         'quantite',
         'seuil_alerte',
         'image',
@@ -20,7 +21,30 @@ class Produit extends Model
         'reference',
         'id_cat',
         'id_m',
+        'negociable',
+        'remise_max_pct',
+        'nb_tours_max',
+        'decision_manuelle',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'prix_unitaire' => 'integer',
+            'prix_achat' => 'integer',
+            'quantite' => 'integer',
+            'seuil_alerte' => 'integer',
+            'negociable' => 'boolean',
+            'remise_max_pct' => 'integer',
+            'nb_tours_max' => 'integer',
+            'decision_manuelle' => 'boolean',
+        ];
+    }
+
+    public function negociations()
+    {
+        return $this->hasMany(Negociation::class, 'id_p');
+    }
 
     public function category()
     {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Marque;
 use App\Models\Produit;
+use App\Services\NegociationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,10 +42,15 @@ class ProduitGeranteController extends Controller
             'designation' => 'required|string|max:255',
             'description' => 'nullable|string',
             'prix_unitaire' => 'required|numeric|min:0',
+            'prix_achat' => 'nullable|integer|min:0',
             'quantite' => 'required|integer|min:0',
             'seuil_alerte' => 'nullable|integer|min:0',
             'id_cat' => 'required|exists:categories,id',
             'id_m' => 'required|exists:marques,id',
+            'negociable' => 'nullable|in:inherit,0,1',
+            'remise_max_pct' => 'nullable|integer|min:0|max:50',
+            'nb_tours_max' => 'nullable|integer|min:1|max:10',
+            'decision_manuelle' => 'nullable|boolean',
             'image' => 'nullable|image|max:10240',
             'video' => 'nullable|mimes:mp4,mov,avi,webm|max:204800',
         ], [
@@ -66,6 +72,8 @@ class ProduitGeranteController extends Controller
             $validated['video'] = $this->convertVideoToBaseline($videoPath);
         }
 
+        $validated = $this->normaliserReglesNegociation($validated, $request);
+
         Produit::create($validated);
 
         return redirect()->route('gerante.produits.index')->with('success', 'Produit ajouté avec succès.');
@@ -86,9 +94,14 @@ class ProduitGeranteController extends Controller
             'designation' => 'required|string|max:255',
             'description' => 'nullable|string',
             'prix_unitaire' => 'required|numeric|min:0',
+            'prix_achat' => 'nullable|integer|min:0',
             'seuil_alerte' => 'nullable|integer|min:0',
             'id_cat' => 'required|exists:categories,id',
             'id_m' => 'required|exists:marques,id',
+            'negociable' => 'nullable|in:inherit,0,1',
+            'remise_max_pct' => 'nullable|integer|min:0|max:50',
+            'nb_tours_max' => 'nullable|integer|min:1|max:10',
+            'decision_manuelle' => 'nullable|boolean',
             'image' => 'nullable|image|max:10240',
             'video' => 'nullable|mimes:mp4,mov,avi,webm|max:204800',
         ], [
@@ -114,6 +127,8 @@ class ProduitGeranteController extends Controller
             $validated['video'] = $this->convertVideoToBaseline($videoPath);
         }
 
+        $validated = $this->normaliserReglesNegociation($validated, $request);
+
         $produit->update($validated);
 
         return redirect()->route('gerante.produits.index')->with('success', 'Produit mis à jour avec succès.');
@@ -130,6 +145,26 @@ class ProduitGeranteController extends Controller
         $produit->delete();
 
         return redirect()->route('gerante.produits.index')->with('success', 'Produit supprimé avec succès.');
+    }
+
+    /**
+     * Convertit les champs de négociation du formulaire en valeurs de colonne.
+     * "inherit" (ou vide) => null : le produit hérite de la règle de sa catégorie.
+     *
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function normaliserReglesNegociation(array $validated, Request $request): array
+    {
+        $validated['negociable'] = match ($request->input('negociable')) {
+            '1' => true,
+            '0' => false,
+            default => null,
+        };
+        $validated['nb_tours_max'] = $validated['nb_tours_max'] ?? NegociationService::DEFAULT_NB_TOURS_MAX;
+        $validated['decision_manuelle'] = $request->boolean('decision_manuelle');
+
+        return $validated;
     }
 
     /**

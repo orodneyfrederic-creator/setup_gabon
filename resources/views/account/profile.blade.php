@@ -1,108 +1,76 @@
 @extends('layouts.app')
 
+@section('title', 'Mes informations')
+
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
-    <!-- Entête -->
-    <div class="bg-gradient-to-r from-blue-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-2xl bg-blue-600/30 border border-blue-500/40 text-blue-300 flex items-center justify-center font-bold text-2xl shadow">
-                <i class="fa-solid fa-user-gear"></i>
-            </div>
+@php
+    $champ = 'w-full h-12 px-3.5 bg-white border rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
+    $bordure = fn (string $nom) => $errors->has($nom) ? 'border-rose-500' : 'border-slate-300';
+@endphp
+<div class="max-w-4xl mx-auto">
+    {{-- Le titre « Mon Compte Personnel » est conservé pour les liens et repères existants --}}
+    @include('account.partials.entete', ['titre' => 'Mon Compte Personnel', 'sousTitre' => 'Vos coordonnées servent à la boutique pour confirmer et livrer vos commandes.'])
+
+    <form method="POST" action="{{ route('account.profile.update') }}" class="space-y-6" novalidate>
+        @csrf
+
+        <section class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 grid lg:grid-cols-3 gap-6">
             <div>
-                <h1 class="text-xl sm:text-2xl font-bold">Mon Compte Personnel</h1>
-                <p class="text-xs text-blue-200 mt-1">Gérez vos informations personnelles et vos préférences.</p>
+                <h2 class="font-bold text-slate-900">Coordonnées</h2>
+                <p class="text-sm text-slate-500 mt-1">Le téléphone est utilisé pour vous joindre sur WhatsApp.</p>
             </div>
+            <div class="lg:col-span-2 grid sm:grid-cols-2 gap-5">
+                <div>
+                    <label for="prenom" class="block text-sm font-semibold text-slate-800 mb-1.5">Prénom</label>
+                    <input type="text" id="prenom" name="prenom" value="{{ old('prenom', $user->prenom) }}" required autocomplete="given-name" class="{{ $champ }} {{ $bordure('prenom') }}">
+                    @error('prenom') <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="nom" class="block text-sm font-semibold text-slate-800 mb-1.5">Nom</label>
+                    <input type="text" id="nom" name="nom" value="{{ old('nom', $user->nom) }}" required autocomplete="family-name" class="{{ $champ }} {{ $bordure('nom') }}">
+                    @error('nom') <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-slate-800 mb-1.5">Adresse e-mail</label>
+                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required autocomplete="email" inputmode="email" class="{{ $champ }} {{ $bordure('email') }}">
+                    @error('email') <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="tel" class="block text-sm font-semibold text-slate-800 mb-1.5">Téléphone WhatsApp</label>
+                    <input type="tel" id="tel" name="tel" value="{{ old('tel', $user->tel) }}" placeholder="+241 07 00 00 00" autocomplete="tel" inputmode="tel" class="chiffres {{ $champ }} {{ $bordure('tel') }}">
+                    @error('tel') <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p> @enderror
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 grid lg:grid-cols-3 gap-6">
+            <div>
+                <h2 class="font-bold text-slate-900">Mot de passe</h2>
+                <p class="text-sm text-slate-500 mt-1">Laissez vide pour garder le mot de passe actuel.</p>
+            </div>
+            <div class="lg:col-span-2 grid sm:grid-cols-2 gap-5">
+                <div class="sm:col-span-2 sm:max-w-[calc(50%-0.625rem)]">
+                    <label for="current_password" class="block text-sm font-semibold text-slate-800 mb-1.5">Mot de passe actuel</label>
+                    <input type="password" id="current_password" name="current_password" autocomplete="current-password" class="{{ $champ }} {{ $bordure('current_password') }}">
+                    @error('current_password') <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="new_password" class="block text-sm font-semibold text-slate-800 mb-1.5">Nouveau mot de passe</label>
+                    <input type="password" id="new_password" name="new_password" autocomplete="new-password" class="{{ $champ }} {{ $bordure('new_password') }}">
+                    @error('new_password') <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="new_password_confirmation" class="block text-sm font-semibold text-slate-800 mb-1.5">Confirmer le nouveau</label>
+                    <input type="password" id="new_password_confirmation" name="new_password_confirmation" autocomplete="new-password" class="{{ $champ }} border-slate-300">
+                </div>
+            </div>
+        </section>
+
+        <div class="flex justify-end">
+            <button type="submit" class="h-12 px-6 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg transition-colors w-full sm:w-auto">
+                Enregistrer les modifications
+            </button>
         </div>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('orders.index') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow flex items-center gap-2">
-                <i class="fa-solid fa-box-archive"></i>
-                <span>Mes Commandes</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Formulaire de modification du profil -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
-        <h2 class="text-base font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-3">
-            <i class="fa-solid fa-id-card text-blue-600"></i>
-            <span>Informations Personnelles</span>
-        </h2>
-
-        @if ($errors->any())
-            <div class="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl mb-6 text-xs space-y-1">
-                @foreach ($errors->all() as $error)
-                    <p><i class="fa-solid fa-circle-exclamation mr-1"></i> {{ $error }}</p>
-                @endforeach
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('account.profile.update') }}" class="space-y-6">
-            @csrf
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- Nom -->
-                <div>
-                    <label for="nom" class="block text-xs font-bold text-slate-700 uppercase mb-1">Nom *</label>
-                    <input type="text" id="nom" name="nom" value="{{ old('nom', $user->nom) }}" required
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <!-- Prénom -->
-                <div>
-                    <label for="prenom" class="block text-xs font-bold text-slate-700 uppercase mb-1">Prénom *</label>
-                    <input type="text" id="prenom" name="prenom" value="{{ old('prenom', $user->prenom) }}" required
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <!-- Email -->
-                <div>
-                    <label for="email" class="block text-xs font-bold text-slate-700 uppercase mb-1">Adresse E-mail *</label>
-                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <!-- Téléphone -->
-                <div>
-                    <label for="tel" class="block text-xs font-bold text-slate-700 uppercase mb-1">Numéro de téléphone</label>
-                    <input type="text" id="tel" name="tel" value="{{ old('tel', $user->tel) }}" placeholder="+241 ..."
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                </div>
-            </div>
-
-            <!-- Modification du mot de passe -->
-            <div class="pt-6 border-t border-slate-100">
-                <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-slate-400"></i>
-                    <span>Changer le mot de passe (optionnel)</span>
-                </h3>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label for="current_password" class="block text-xs font-bold text-slate-700 uppercase mb-1">Mot de passe actuel</label>
-                        <input type="password" id="current_password" name="current_password"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                    </div>
-                    <div>
-                        <label for="new_password" class="block text-xs font-bold text-slate-700 uppercase mb-1">Nouveau mot de passe</label>
-                        <input type="password" id="new_password" name="new_password"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                    </div>
-                    <div>
-                        <label for="new_password_confirmation" class="block text-xs font-bold text-slate-700 uppercase mb-1">Confirmer le nouveau</label>
-                        <input type="password" id="new_password_confirmation" name="new_password_confirmation"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bouton -->
-            <div class="pt-4 flex justify-end">
-                <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    <span>Enregistrer les modifications</span>
-                </button>
-            </div>
-        </form>
-    </div>
+    </form>
 </div>
 @endsection

@@ -3,377 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SETUP-GABON | Accueil</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#283888">
+    <title>@yield('title', 'Matériel informatique à Libreville') | SETUP-Gabon</title>
+    <meta name="description" content="@yield('meta_description', 'Ordinateurs, imprimantes et accessoires informatiques en stock à Libreville. Commandez en ligne et finalisez sur WhatsApp avec SETUP-Gabon.')">
+    @include('layouts.partials.theme')
     <!-- Alpine.js Plugins & Core -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.1/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     <!-- FontAwesome 6 Free CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>[x-cloak] { display: none !important; }</style>
     @stack('styles')
 </head>
-<body class="bg-slate-100 font-sans leading-normal tracking-normal selection:bg-blue-600 selection:text-white">
+<body class="bg-slate-50 text-slate-900 leading-normal min-h-screen flex flex-col">
 
-    <!-- BARRE SUPÉRIEURE (HEADER / NAVBAR BLEU FONCÉ) -->
-    <header class="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 text-white sticky top-0 z-40 shadow-xl border-b border-blue-900/60">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
-            
-            <!-- Bouton Sidebar & Logo Officiel Mis en Avant -->
-            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-                <button id="openSidebar" class="p-1.5 sm:p-2 hover:bg-blue-900/80 text-blue-200 hover:text-white focus:outline-none transition-colors" title="Ouvrir le menu">
-                    <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
+    @php
+        $estGerante = Auth::guard('staff')->check() && Auth::guard('staff')->user()->role === 'gerante';
+    @endphp
+
+    @unless($estGerante)
+    <!-- BANDEAU INFOS PRATIQUES -->
+    <div class="bg-blue-700 text-blue-50 text-[12px]">
+        <div class="max-w-7xl mx-auto px-4 h-8 flex items-center justify-between gap-4">
+            <p class="hidden sm:flex items-center gap-2 truncate">
+                <i class="fa-solid fa-location-dot text-blue-200 text-[11px]"></i>
+                <span>Boutique à Petit Paris, galerie Mouenga, Libreville</span>
+                <span class="text-blue-300" aria-hidden="true">·</span>
+                <span>Mar. – dim. 07h30 – 20h00</span>
+            </p>
+            <a href="https://wa.me/24166131270" target="_blank" rel="noopener" class="flex items-center gap-1.5 font-semibold hover:text-white transition-colors mx-auto sm:mx-0">
+                <i class="fa-brands fa-whatsapp text-[13px] text-amber-300"></i>
+                <span class="chiffres">+241 66 13 12 70</span>
+            </a>
+        </div>
+    </div>
+    @endunless
+
+    <!-- EN-TÊTE -->
+    <header class="bg-white text-slate-900 sticky top-0 z-40 border-b border-slate-200">
+        <div class="{{ $estGerante ? 'px-4 lg:px-6' : 'max-w-7xl mx-auto px-4' }} h-16 flex items-center gap-3 sm:gap-6">
+
+            <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+                <button id="openSidebar" class="-ml-2 w-10 h-10 rounded-lg flex items-center justify-center text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-colors {{ $estGerante ? 'lg:hidden' : '' }}" aria-label="Ouvrir le menu">
+                    <i class="fa-solid fa-bars text-lg"></i>
                 </button>
-
-                <!-- LOGO OFFICIEL -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2 text-white font-bold text-lg hover:text-blue-300 transition-colors">
-                    <img src="{{ asset('img/logo.png') }}" alt="SETUP-GABON" class="h-7 sm:h-9 w-auto object-contain">
+                <a href="{{ route('home') }}" class="flex items-center" aria-label="SETUP-Gabon, accueil">
+                    <img src="{{ asset('img/logo.png') }}" alt="SETUP-Gabon" class="h-9 sm:h-10 w-auto object-contain">
                 </a>
             </div>
 
-            <!-- BARRE DE RECHERCHE -->
-            <form action="{{ route('home') }}" method="GET" class="flex-1 max-w-2xl flex">
-                <div class="relative w-full">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-blue-400">
-                        <i class="fa-solid fa-magnifying-glass text-xs sm:text-sm"></i>
-                    </div>
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Rechercher..." 
-                           class="w-full pl-8 sm:pl-10 pr-2 sm:pr-4 py-1.5 sm:py-2 bg-blue-950/80 text-white placeholder-blue-300/60 rounded-l-xl sm:rounded-l-2xl border border-blue-900/80 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-xs sm:text-sm">
+            @if($estGerante)
+                <span class="hidden sm:inline-flex items-center h-7 px-2.5 rounded-md bg-blue-50 text-blue-800 text-xs font-semibold">Espace gérante</span>
+            @else
+            <!-- RECHERCHE (bureau) -->
+            <form action="{{ route('home') }}" method="GET" role="search" class="hidden md:flex flex-1 max-w-xl">
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                <label for="recherche-entete" class="sr-only">Rechercher un produit</label>
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+                    <input id="recherche-entete" type="search" name="search" value="{{ request('search') }}"
+                           placeholder="Ordinateur, imprimante, écran…"
+                           class="w-full h-11 pl-10 pr-28 bg-slate-100 border border-transparent rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none transition">
+                    <button type="submit" class="absolute right-1.5 top-1.5 h-8 px-4 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold transition-colors">
+                        Rechercher
+                    </button>
                 </div>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 sm:px-6 rounded-r-xl sm:rounded-r-2xl flex items-center justify-center transition-colors shadow-md">
-                    <i class="fa-solid fa-magnifying-glass text-xs sm:text-sm"></i>
-                </button>
             </form>
 
-            <!-- NAVIGATION HEADER (ACCUEIL & À PROPOS) -->
-            <nav class="hidden lg:flex items-center gap-2">
-                <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-blue-200 hover:text-white hover:bg-blue-900/50 transition-colors {{ request()->routeIs('home') ? 'bg-blue-900/80 text-white border border-blue-700/50' : '' }}">
-                    <i class="fa-solid fa-house mr-1 text-blue-400"></i>
-                    Accueil
-                </a>
-                <a href="{{ route('about') }}" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-blue-200 hover:text-white hover:bg-blue-900/50 transition-colors {{ request()->routeIs('about') ? 'bg-blue-900/80 text-white border border-blue-700/50' : '' }}">
-                    <i class="fa-solid fa-circle-info mr-1 text-blue-400"></i>
-                    À propos
-                </a>
+            <nav class="hidden lg:flex items-center gap-1 text-sm font-medium" aria-label="Navigation principale">
+                <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('home') ? 'text-blue-700' : 'text-slate-600 hover:text-blue-700' }}">Boutique</a>
+                <a href="{{ route('categories.index') }}" class="px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('categories.*') ? 'text-blue-700' : 'text-slate-600 hover:text-blue-700' }}">Catégories</a>
+                <a href="{{ route('about') }}" class="px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('about') ? 'text-blue-700' : 'text-slate-600 hover:text-blue-700' }}">À propos</a>
             </nav>
+            @endif
 
-            <!-- BOUTONS ACTION (COMPTE & PANIER) -->
-            <div class="flex items-center gap-2 sm:gap-3">
+            <div class="ml-auto flex items-center gap-1 sm:gap-2">
                 @if(Auth::guard('staff')->check() || Auth::check())
                     @php
                         $currentUser = Auth::guard('staff')->user() ?? Auth::user();
                         $userDisplayName = $currentUser->prenom ?? $currentUser->email;
                         $userFullName = isset($currentUser->prenom) ? ($currentUser->prenom . ' ' . $currentUser->nom) : $currentUser->email;
+                        $initiale = mb_strtoupper(mb_substr($currentUser->prenom ?? $currentUser->email, 0, 1));
                     @endphp
                     <div class="relative" id="userMenuWrapper">
-                        <button id="userMenuBtn" onclick="toggleUserMenu()" class="text-sm flex items-center gap-2 py-1.5 px-3 bg-blue-900/40 hover:bg-blue-900/80 border border-blue-800/50 rounded-2xl transition-all focus:outline-none">
-                            <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-                            <div class="text-left hidden sm:block">
-                                <span class="text-[10px] block text-blue-300 uppercase leading-none">Bonjour</span>
-                                <span class="font-bold text-xs text-white flex items-center gap-1">
-                                    {{ $userDisplayName }}
-                                    <i class="fa-solid fa-chevron-down text-[10px] text-blue-300" id="userMenuChevron"></i>
-                                </span>
-                            </div>
+                        <button id="userMenuBtn" onclick="toggleUserMenu()" class="h-10 flex items-center gap-2 pl-1 pr-2 rounded-lg hover:bg-slate-100 transition-colors" aria-haspopup="true" aria-label="Mon compte">
+                            <span class="w-8 h-8 rounded-full bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center font-bold text-sm">{{ $initiale }}</span>
+                            <span class="hidden md:block text-sm font-semibold text-slate-700 max-w-[9rem] truncate">{{ $userDisplayName }}</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform" id="userMenuChevron"></i>
                         </button>
 
-                        <!-- Menu Déroulant (toggle par clic) -->
-                        <div id="userMenu" class="absolute right-0 mt-1 w-56 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 py-1 hidden z-50 overflow-hidden">
-                            <div class="px-4 py-3 border-b border-gray-100 bg-slate-50">
-                                <p class="text-xs font-bold text-slate-900">{{ $userFullName }}</p>
-                                <p class="text-[10px] text-gray-500 truncate">{{ $currentUser->email }}</p>
+                        <div id="userMenu" class="absolute right-0 mt-2 w-60 bg-white text-slate-800 rounded-xl shadow-xl border border-slate-200 py-1.5 hidden z-50">
+                            <div class="px-4 py-2.5 border-b border-slate-100 mb-1">
+                                <p class="text-sm font-semibold text-slate-900 truncate">{{ $userFullName }}</p>
+                                <p class="text-xs text-slate-500 truncate">{{ $currentUser->email }}</p>
                             </div>
-                            @if(Auth::guard('staff')->check() && Auth::guard('staff')->user()->role === 'gerante')
-                                <a href="{{ route('gerante.dashboard') }}" class="block px-4 py-2.5 text-xs font-semibold text-blue-600 hover:bg-blue-50 flex items-center gap-2 transition-colors border-b border-gray-100">
-                                    <i class="fa-solid fa-gauge-high text-blue-500"></i>
-                                    <span>Espace Gérante</span>
+                            @if($estGerante)
+                                <a href="{{ route('gerante.dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                    <i class="fa-solid fa-gauge-high w-4 text-slate-400"></i>
+                                    <span>Espace gérante</span>
                                 </a>
                             @else
-                                <a href="{{ route('account.profile') }}" class="block px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2 transition-colors">
-                                    <i class="fa-solid fa-user-gear text-slate-400"></i>
-                                    <span>Mon Compte</span>
+                                <a href="{{ route('account.profile') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                    <i class="fa-solid fa-user w-4 text-slate-400"></i>
+                                    <span>Mon compte</span>
                                 </a>
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2 transition-colors border-b border-gray-100">
-                                    <i class="fa-solid fa-box-archive text-slate-400"></i>
-                                    <span>Mes Commandes</span>
+                                <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                    <i class="fa-solid fa-box-archive w-4 text-slate-400"></i>
+                                    <span>Mes commandes</span>
                                 </a>
                             @endif
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 mt-1 pt-1">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors">
-                                    <i class="fa-solid fa-right-from-bracket text-rose-500"></i>
+                                <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-rose-50 hover:text-rose-700 transition-colors">
+                                    <i class="fa-solid fa-arrow-right-from-bracket w-4 text-slate-400"></i>
                                     <span>Se déconnecter</span>
                                 </button>
                             </form>
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="py-1.5 px-3 bg-blue-900/40 hover:bg-blue-900/80 border border-blue-800/50 rounded-2xl flex items-center gap-1.5 text-white text-xs font-semibold transition-all">
-                        <i class="fa-solid fa-right-to-bracket text-blue-400"></i>
-                        <span>Connexion</span>
-                    </a>
-                    <a href="{{ route('register') }}" class="hidden sm:flex py-1.5 px-3 bg-blue-600 hover:bg-blue-500 rounded-2xl items-center gap-1.5 text-white text-xs font-semibold transition-all shadow-md">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span>S'inscrire</span>
+                    <a href="{{ route('login') }}" class="h-10 px-3 rounded-lg flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors">
+                        <i class="fa-solid fa-user"></i>
+                        <span class="hidden sm:inline">Se connecter</span>
                     </a>
                 @endif
 
-
-                <!-- BOUTON PANIER CLIENT (INTERACTIF) -->
-                <div class="relative" x-data="clientPanierComponent()">
-                    <button @click="openCart = !openCart" class="relative p-2.5 bg-blue-900/40 hover:bg-blue-900/80 border border-blue-800/50 rounded-2xl flex items-center gap-2 text-white transition-all focus:outline-none">
-                        <div class="relative">
-                            <i class="fa-solid fa-cart-shopping text-blue-300 text-lg"></i>
-                            <span x-text="countArticles" class="absolute -top-2 -right-2 bg-amber-500 text-slate-950 text-[10px] font-black rounded-full w-4 h-4 flex items-center justify-center">0</span>
-                        </div>
-                        <span class="font-bold text-xs hidden md:inline">Panier</span>
+                @unless(Auth::guard('staff')->check())
+                <!-- PANIER CLIENT -->
+                <div class="relative" x-data="clientPanierComponent()" @keydown.escape.window="openCart = false">
+                    <button @click="openCart = !openCart" class="relative h-10 px-3 sm:pr-4 rounded-lg bg-blue-700 hover:bg-blue-800 text-white flex items-center gap-2 transition-colors" :aria-expanded="openCart" aria-label="Ouvrir le panier">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="hidden sm:inline text-sm font-semibold">Panier</span>
+                        <span x-show="countArticles > 0" x-cloak x-text="countArticles" class="chiffres min-w-[1.25rem] h-5 px-1 rounded-full bg-amber-400 text-blue-950 text-[11px] font-bold flex items-center justify-center"></span>
                     </button>
 
-                    <!-- DRAWER / POPUP PANIER CLIENT -->
-                    <div x-show="openCart" 
-                         x-cloak 
+                    <!-- PANNEAU PANIER -->
+                    <div x-show="openCart"
+                         x-cloak
                          @click.outside="openCart = false"
-                         x-transition:enter="transition ease-out duration-150"
-                         x-transition:enter-start="transform opacity-0 scale-95"
-                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
                          x-transition:leave="transition ease-in duration-100"
-                         x-transition:leave-start="transform opacity-100 scale-100"
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-80 sm:w-96 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-100 p-4 z-50">
-                        
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                            <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-cart-shopping text-blue-600"></i>
-                                Votre Panier
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="fixed left-3 right-3 top-24 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-[24rem] bg-white text-slate-800 rounded-xl shadow-2xl border border-slate-200 z-50 flex flex-col max-h-[calc(100vh-7rem)]">
+
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                            <h3 class="font-semibold text-sm text-slate-900">
+                                Votre panier
+                                <span x-show="countArticles > 0" class="chiffres text-slate-500 font-normal" x-text="'(' + countArticles + ' article' + (countArticles > 1 ? 's' : '') + ')'"></span>
                             </h3>
-                            <button @click="openCart = false" class="text-slate-400 hover:text-slate-600 text-xs">
-                                <i class="fa-solid fa-xmark text-base"></i>
+                            <button @click="openCart = false" class="w-8 h-8 -mr-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center" aria-label="Fermer le panier">
+                                <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>
 
-                        <!-- LISTE DES ARTICLES DANS LE PANIER CLIENT -->
-                        <div class="py-2 max-h-64 overflow-y-auto divide-y divide-slate-100">
+                        <div class="flex-1 overflow-y-auto px-4 divide-y divide-slate-100">
                             <template x-if="items.length === 0">
-                                <div class="text-center py-6 text-slate-400 text-xs">
-                                    <i class="fa-solid fa-cart-shopping text-3xl mb-2 opacity-30 block"></i>
-                                    Votre panier est vide.
+                                <div class="text-center py-10">
+                                    <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                                        <i class="fa-solid fa-bag-shopping"></i>
+                                    </div>
+                                    <p class="text-sm font-semibold text-slate-800">Votre panier est vide</p>
+                                    <p class="text-xs text-slate-500 mt-1">Ajoutez un produit depuis la boutique.</p>
                                 </div>
                             </template>
 
-                            <template x-for="(item, index) in items" :key="item.id">
-                                <div class="py-2.5 flex items-center justify-between gap-2">
+                            <template x-for="(item, index) in items" :key="item.id + (item.negociation_id ? '-' + item.negociation_id : '')">
+                                <div class="py-3 flex items-start gap-3">
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-xs font-bold text-slate-800 truncate" x-text="item.designation"></p>
-                                        <p class="text-[11px] text-slate-400" x-text="formatPrix(item.prix) + ' FCFA x ' + item.quantite"></p>
+                                        <p class="text-sm font-medium text-slate-900 line-clamp-2" x-text="item.designation"></p>
+                                        <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                            <template x-if="item.negociation_id">
+                                                <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded">Prix négocié</span>
+                                            </template>
+                                            <template x-if="item.prixCatalogue && item.prixCatalogue > item.prix">
+                                                <span class="chiffres text-xs text-slate-400 line-through" x-text="formatPrix(item.prixCatalogue)"></span>
+                                            </template>
+                                            <span class="chiffres text-sm font-semibold text-slate-900" x-text="formatPrix(item.prix) + ' FCFA'"></span>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center gap-1.5 shrink-0">
-                                        <button @click="modifierQte(item.id, -1)" class="w-6 h-6 rounded bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200">-</button>
-                                        <span class="text-xs font-bold text-slate-700 w-4 text-center" x-text="item.quantite"></span>
-                                        <button @click="modifierQte(item.id, 1)" class="w-6 h-6 rounded bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200">+</button>
-                                        <button @click="supprimer(item.id)" class="text-rose-500 hover:text-rose-700 text-xs ml-1">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
+                                    <div class="flex flex-col items-end gap-2 shrink-0">
+                                        <div class="flex items-center rounded-lg border border-slate-200">
+                                            <button @click="modifierQte(item.id, -1, item.negociation_id)" class="w-8 h-8 text-slate-600 hover:text-blue-700" aria-label="Diminuer la quantité"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                            <span class="chiffres w-6 text-center text-sm font-semibold" x-text="item.quantite"></span>
+                                            <button @click="modifierQte(item.id, 1, item.negociation_id)" class="w-8 h-8 text-slate-600 hover:text-blue-700 disabled:text-slate-300 disabled:cursor-not-allowed" :disabled="item.negociation_id" aria-label="Augmenter la quantité"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                                        </div>
+                                        <button @click="supprimer(item.id, item.negociation_id)" class="text-xs text-slate-500 hover:text-rose-600 underline">Retirer</button>
                                     </div>
                                 </div>
                             </template>
                         </div>
 
-                        <!-- TOTAL ET ACTIONS -->
                         <template x-if="items.length > 0">
-                            <div class="pt-3 border-t border-slate-100 space-y-2">
-                                <div class="flex items-center justify-between text-xs">
-                                    <span class="font-bold text-slate-600">Total :</span>
-                                    <span class="font-black text-sm text-blue-700" x-text="formatPrix(totalMontant) + ' FCFA'"></span>
+                            <div class="px-4 py-4 border-t border-slate-100 space-y-3 bg-slate-50 rounded-b-xl">
+                                <div class="flex items-baseline justify-between">
+                                    <span class="text-sm text-slate-600">Total</span>
+                                    <span class="chiffres text-lg font-bold text-slate-900" x-text="formatPrix(totalMontant) + ' FCFA'"></span>
                                 </div>
-                                <div class="flex flex-col gap-2">
-                                    <a href="{{ route('checkout.index') }}" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md">
-                                        <i class="fa-solid fa-credit-card"></i>
-                                        <span>Valider ma commande</span>
-                                    </a>
-                                    <div class="flex gap-2">
-                                        <button @click="vider()" class="w-1/3 py-2 border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50">
-                                            Vider
-                                        </button>
-                                        @if(Auth::check() || Auth::guard('staff')->check())
-                                            <a :href="'https://wa.me/24166131270?text=' + encodeURIComponent(genererMessageWhatsApp())" target="_blank" class="w-2/3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-                                                <i class="fa-brands fa-whatsapp text-sm"></i>
-                                                <span>WhatsApp</span>
-                                            </a>
-                                        @else
-                                            <a href="{{ route('checkout.index') }}" class="w-2/3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-                                                <i class="fa-brands fa-whatsapp text-sm"></i>
-                                                <span>WhatsApp</span>
-                                            </a>
-                                        @endif
-                                    </div>
-                                </div>
+                                <a href="{{ route('checkout.index') }}" class="w-full h-11 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                    <span>Passer la commande</span>
+                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </a>
+                                <p class="text-[11px] text-slate-500 text-center leading-snug">
+                                    Votre commande est enregistrée puis envoyée à la boutique sur WhatsApp. Paiement à la livraison ou par mobile money.
+                                </p>
+                                <button @click="if (confirm('Vider le panier ?')) { vider(); }" class="w-full text-xs text-slate-500 hover:text-rose-600">Vider le panier</button>
                             </div>
                         </template>
                     </div>
                 </div>
+                @endunless
             </div>
         </div>
+
+        @unless($estGerante)
+        <!-- RECHERCHE (mobile) -->
+        <form action="{{ route('home') }}" method="GET" role="search" class="md:hidden px-4 pb-3">
+            @if(request('category'))
+                <input type="hidden" name="category" value="{{ request('category') }}">
+            @endif
+            <label for="recherche-mobile" class="sr-only">Rechercher un produit</label>
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+                <input id="recherche-mobile" type="search" name="search" value="{{ request('search') }}"
+                       placeholder="Rechercher un produit…"
+                       class="w-full h-11 pl-10 pr-4 bg-slate-100 border border-transparent rounded-xl text-[15px] text-slate-900 placeholder-slate-500 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none transition">
+            </div>
+        </form>
+        @endunless
     </header>
 
-    <!-- SIDEBAR RÉTRACTABLE (MENU LATÉRAL BLEU FONCÉ) -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
-    
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-        <div class="bg-blue-950 text-white p-4 flex items-center justify-between border-b border-blue-900">
-            <h2 class="text-base font-bold flex items-center gap-2 text-blue-200">
-                <i class="fa-solid fa-layer-group text-blue-400"></i>
-                <span>Toutes les Catégories</span>
-            </h2>
-            <button id="closeSidebar" class="p-1 text-blue-300 hover:text-white transition-colors text-lg">
-                <i class="fa-solid fa-xmark"></i>
+    <!-- MENU LATÉRAL -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-950/50 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-[19rem] max-w-[85vw] bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col {{ $estGerante ? 'lg:translate-x-0 lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-64 lg:shadow-none lg:border-r lg:border-slate-200 lg:z-30' : '' }}" aria-label="Menu">
+        <div class="h-16 px-4 flex items-center justify-between border-b border-slate-200 shrink-0 {{ $estGerante ? 'lg:hidden' : '' }}">
+            <img src="{{ asset('img/logo.png') }}" alt="SETUP-Gabon" class="h-9 w-auto object-contain">
+            <button id="closeSidebar" class="w-10 h-10 -mr-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-colors" aria-label="Fermer le menu">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
-        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
-            @if(Auth::guard('staff')->check() && Auth::guard('staff')->user()->role === 'gerante')
-                <!-- DASHBOARD GÉRANTE -->
-                <a href="{{ route('gerante.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-bold text-xs text-blue-950 hover:text-blue-700 transition-colors {{ request()->routeIs('gerante.dashboard') ? 'bg-blue-50 text-blue-700' : '' }}">
-                    <i class="fa-solid fa-gauge-high text-blue-600 text-sm"></i>
-                    <span>Dashboard</span>
-                </a>
+        <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5 text-sm" aria-label="{{ $estGerante ? 'Espace gérante' : 'Navigation' }}">
+            @if($estGerante)
+                @php
+                    $nbCmdEnAttente = \App\Models\Commande::where('statut', 'en_attente')->count();
+                    $nbNegoEnAttente = \App\Models\Negociation::where('statut', 'en_attente_gerante')->count();
+                    $menuGerante = [
+                        null => [
+                            ['Tableau de bord', 'gerante.dashboard', 'gerante.dashboard', 'fa-solid fa-house', null],
+                        ],
+                        'Ventes' => [
+                            ['Caisse', 'gerante.pos.index', 'gerante.pos.*', 'fa-solid fa-cash-register', null],
+                            ['Commandes en ligne', 'gerante.commandes.index', 'gerante.commandes.*', 'fa-solid fa-bag-shopping', $nbCmdEnAttente ?: null],
+                            ['Négociations', 'gerante.negociations.index', 'gerante.negociations.*', 'fa-solid fa-handshake-simple', $nbNegoEnAttente ?: null],
+                            ['Statistiques', 'gerante.analytics.index', 'gerante.analytics.*', 'fa-solid fa-chart-line', null],
+                        ],
+                        'Catalogue' => [
+                            ['Produits', 'gerante.produits.index', 'gerante.produits.*', 'fa-solid fa-box', null],
+                            ['Stock', 'gerante.stock.index', 'gerante.stock.*', 'fa-solid fa-warehouse', null],
+                            ['Catégories', 'gerante.categories.index', 'gerante.categories.*', 'fa-solid fa-tags', null],
+                            ['Marques', 'gerante.marques.index', 'gerante.marques.*', 'fa-solid fa-copyright', null],
+                        ],
+                        'Clients & documents' => [
+                            ['Clients', 'gerante.clients.index', 'gerante.clients.*', 'fa-solid fa-users', null],
+                            ['Devis', 'gerante.devis.index', 'gerante.devis.*', 'fa-solid fa-file-lines', null],
+                            ['Factures', 'gerante.factures.index', 'gerante.factures.*', 'fa-solid fa-file-invoice', null],
+                            ['Service après-vente', 'gerante.sav.index', 'gerante.sav.*', 'fa-solid fa-screwdriver-wrench', null],
+                        ],
+                    ];
+                @endphp
 
-                <!-- SECTION : GESTION DES PRODUITS -->
-                <div x-data="{ open: false }">
-                    <button @click="open = !open" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 font-semibold text-xs text-slate-700 transition-colors">
-                        <i class="fa-solid fa-boxes-stacked text-violet-600 text-sm"></i>
-                        <span class="flex-1 text-left">Gestion des produits</span>
-                        <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
-                    </button>
-                    <div x-show="open" x-collapse x-cloak class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-5">
-                        <a href="{{ route('gerante.produits.create') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-plus text-[10px] text-slate-400"></i>
-                            <span>Ajouter un produit</span>
+                @foreach($menuGerante as $groupe => $liens)
+                    @if($groupe)
+                        <p class="px-3.5 pt-5 pb-1.5 text-xs font-semibold text-slate-500">{{ $groupe }}</p>
+                    @endif
+                    @foreach($liens as [$libelle, $route, $motif, $icone, $badge])
+                        @php $actif = request()->routeIs($motif); @endphp
+                        <a href="{{ route($route) }}" @if($actif) aria-current="page" @endif
+                           class="flex items-center gap-3 px-3.5 h-10 rounded-lg transition-colors {{ $actif ? 'bg-blue-50 text-blue-800 font-semibold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900' }}">
+                            <i class="{{ $icone }} w-4 text-center text-sm {{ $actif ? 'text-blue-700' : 'text-slate-400' }}"></i>
+                            <span class="flex-1">{{ $libelle }}</span>
+                            @if($badge)
+                                <span class="chiffres min-w-[1.375rem] h-[1.375rem] px-1.5 rounded-full text-[11px] font-bold flex items-center justify-center {{ $route === 'gerante.negociations.index' ? 'bg-rose-600 text-white' : 'bg-amber-400 text-blue-950' }}">{{ $badge }}</span>
+                            @endif
                         </a>
-                        <a href="{{ route('gerante.produits.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-list text-[10px] text-slate-400"></i>
-                            <span>Voir tous les produits</span>
-                        </a>
-                        <a href="{{ route('gerante.stock.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-boxes-packing text-[10px] text-slate-400"></i>
-                            <span>Gestion du stock</span>
-                        </a>
-                        <a href="{{ route('gerante.categories.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-tags text-[10px] text-slate-400"></i>
-                            <span>Catégories</span>
-                        </a>
-                        <a href="{{ route('categories.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-500 hover:text-blue-600 transition-colors pl-6">
-                            <i class="fa-solid fa-layer-group text-[10px] text-slate-400"></i>
-                            <span>Voir toutes les catégories</span>
-                        </a>
-                        <a href="{{ route('gerante.marques.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-copyright text-[10px] text-slate-400"></i>
-                            <span>Marques</span>
-                        </a>
-                    </div>
-                </div>
+                    @endforeach
+                @endforeach
 
-                <!-- SECTION : CLIENTS & DOCUMENTS -->
-                <div x-data="{ open: false }">
-                    <button @click="open = !open" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 font-semibold text-xs text-slate-700 transition-colors">
-                        <i class="fa-solid fa-users text-blue-600 text-sm"></i>
-                        <span class="flex-1 text-left">Clients & Documents</span>
-                        <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
-                    </button>
-                    <div x-show="open" x-collapse x-cloak class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-5">
-                        <a href="{{ route('gerante.clients.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-users-line text-[10px] text-slate-400"></i>
-                            <span>Liste des clients</span>
-                        </a>
-                        <a href="{{ route('gerante.devis.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-file-invoice text-[10px] text-slate-400"></i>
-                            <span>Devis</span>
-                        </a>
-                        <a href="{{ route('gerante.factures.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-file-invoice-dollar text-[10px] text-slate-400"></i>
-                            <span>Factures</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- SECTION : VENTES & ANALYTICS -->
-                <div x-data="{ open: false }">
-                    <button @click="open = !open" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 font-semibold text-xs text-slate-700 transition-colors">
-                        <i class="fa-solid fa-cash-register text-emerald-600 text-sm"></i>
-                        <span class="flex-1 text-left">Ventes & Analytics</span>
-                        <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
-                    </button>
-                    <div x-show="open" x-collapse x-cloak class="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-5">
-                        <a href="{{ route('gerante.pos.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-cash-register text-[10px] text-slate-400"></i>
-                            <span>Caisse (POS)</span>
-                        </a>
-                        <a href="{{ route('gerante.analytics.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                            <i class="fa-solid fa-chart-line text-[10px] text-slate-400"></i>
-                            <span>Analytics</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-slate-100 mt-4 space-y-1">
-                    <a href="{{ route('home') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 font-medium text-xs text-slate-600 hover:text-blue-600 transition-colors">
-                        <i class="fa-solid fa-shop text-rose-500 text-sm"></i>
+                <div class="pt-4 mt-4 border-t border-slate-100 space-y-0.5">
+                    <a href="{{ route('home') }}" class="flex items-center gap-3 px-3.5 h-10 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors">
+                        <i class="fa-solid fa-store w-4 text-center text-sm text-slate-400"></i>
                         <span>Voir la boutique</span>
-                    </a>
-                    <a href="{{ route('about') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('about') ? 'bg-blue-50 text-blue-700 font-bold' : '' }}">
-                        <i class="fa-solid fa-circle-info text-blue-600 text-sm"></i>
-                        <span>À propos</span>
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-rose-50 font-medium text-xs text-rose-600 hover:text-rose-700 transition-colors">
-                            <i class="fa-solid fa-right-from-bracket text-rose-500 text-sm"></i>
+                        <button type="submit" class="w-full flex items-center gap-3 px-3.5 h-10 rounded-lg text-slate-700 hover:bg-rose-50 hover:text-rose-700 transition-colors">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center text-sm text-slate-400"></i>
                             <span>Se déconnecter</span>
                         </button>
                     </form>
                 </div>
             @else
                 @auth
-                    <div class="px-3.5 py-2 mb-2 bg-blue-50/80 rounded-xl border border-blue-100">
-                        <p class="text-[10px] uppercase font-bold text-blue-500">Mon Espace Client</p>
-                        <p class="text-xs font-bold text-slate-800 truncate">{{ Auth::user()->prenom }} {{ Auth::user()->nom }}</p>
+                    <div class="px-3.5 py-2 mb-2 bg-blue-50 rounded-lg">
+                        <p class="text-xs font-medium text-blue-700">Espace client</p>
+                        <p class="text-sm font-semibold text-slate-800 truncate">{{ Auth::user()->prenom }} {{ Auth::user()->nom }}</p>
                     </div>
 
-                    <a href="{{ route('account.profile') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('account.profile') ? 'bg-blue-50 text-blue-700 font-bold' : '' }}">
-                        <i class="fa-solid fa-user-gear text-blue-600 text-sm"></i>
+                    <a href="{{ route('account.profile') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('account.profile') ? 'bg-blue-50 text-blue-700 font-semibold' : '' }}">
+                        <i class="fa-solid fa-user-gear text-slate-400 text-sm w-4"></i>
                         <span>Mon Compte</span>
                     </a>
 
-                    <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('orders.*') ? 'bg-blue-50 text-blue-700 font-bold' : '' }}">
-                        <i class="fa-solid fa-box-archive text-blue-600 text-sm"></i>
+                    <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('orders.*') ? 'bg-blue-50 text-blue-700 font-semibold' : '' }}">
+                        <i class="fa-solid fa-box-archive text-slate-400 text-sm w-4"></i>
                         <span>Mes Commandes</span>
                     </a>
                 @endauth
 
-                <a href="{{ route('home') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors">
-                    <i class="fa-solid fa-border-all text-blue-600 text-sm"></i>
+                <a href="{{ route('home') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-700 hover:text-blue-700 transition-colors">
+                    <i class="fa-solid fa-border-all text-slate-400 text-sm w-4"></i>
                     <span>Tous les produits</span>
                 </a>
                 <!-- Accordéon Catégories boutique standard -->
                 <div>
-                    <button onclick="toggleCatMenu()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors">
-                        <i class="fa-solid fa-layer-group text-blue-600 text-sm"></i>
+                    <button onclick="toggleCatMenu()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-700 hover:text-blue-700 transition-colors">
+                        <i class="fa-solid fa-layer-group text-slate-400 text-sm w-4"></i>
                         <span class="flex-1 text-left">Nos catégories</span>
-                        <i id="catChevron" class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform duration-300"></i>
+                        <i id="catChevron" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
                     </button>
                     <div id="catMenu" class="overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0px; opacity: 0;">
                         <div class="pl-4 mt-1 space-y-0.5 border-l-2 border-blue-100 ml-5">
-                            <a href="{{ route('categories.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold text-xs text-blue-600 hover:text-blue-700 transition-colors">
-                                <i class="fa-solid fa-border-all text-[10px]"></i>
+                            <a href="{{ route('categories.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-50 font-semibold text-sm text-blue-600 hover:text-blue-700 transition-colors">
+                                <i class="fa-solid fa-border-all text-xs"></i>
                                 <span>Toutes les catégories</span>
                             </a>
                             @if(isset($categories) && $categories->count() > 0)
                                 @foreach($categories as $cat)
                                     <a href="{{ route('home', ['category' => $cat->id]) }}" 
-                                       class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-50 font-medium text-xs text-slate-600 hover:text-blue-700 transition-colors">
-                                        <i class="fa-solid fa-tag text-slate-300 text-[10px]"></i>
+                                       class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-600 hover:text-blue-700 transition-colors">
+                                        <i class="fa-solid fa-tag text-slate-300 text-xs"></i>
                                         <span>{{ $cat->nom }}</span>
                                     </a>
                                 @endforeach
@@ -382,26 +354,26 @@
                     </div>
                 </div>
 
-                <a href="{{ route('about') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('about') ? 'bg-blue-50 text-blue-700 font-bold' : '' }}">
-                    <i class="fa-solid fa-circle-info text-blue-600 text-sm"></i>
+                <a href="{{ route('about') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-700 hover:text-blue-700 transition-colors {{ request()->routeIs('about') ? 'bg-blue-50 text-blue-700 font-semibold' : '' }}">
+                    <i class="fa-solid fa-circle-info text-slate-400 text-sm w-4"></i>
                     <span>À propos</span>
                 </a>
 
                 @auth
                 <form method="POST" action="{{ route('logout') }}" class="pt-2 border-t border-slate-100 mt-2">
                     @csrf
-                    <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-rose-50 font-medium text-xs text-rose-600 hover:text-rose-700 transition-colors">
-                        <i class="fa-solid fa-right-from-bracket text-rose-500 text-sm"></i>
+                    <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-rose-50 font-medium text-sm text-rose-600 hover:text-rose-700 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket text-slate-400 text-sm w-4"></i>
                         <span>Se déconnecter</span>
                     </button>
                 </form>
                 @else
                 <div class="pt-3 border-t border-slate-100 mt-2 space-y-1">
-                    <a href="{{ route('login') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-blue-50 font-medium text-xs text-slate-700 hover:text-blue-700 transition-colors">
-                        <i class="fa-solid fa-right-to-bracket text-blue-600 text-sm"></i>
+                    <a href="{{ route('login') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-blue-50 font-medium text-sm text-slate-700 hover:text-blue-700 transition-colors">
+                        <i class="fa-solid fa-right-to-bracket text-slate-400 text-sm w-4"></i>
                         <span>Se connecter</span>
                     </a>
-                    <a href="{{ route('register') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs transition-colors shadow">
+                    <a href="{{ route('register') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-colors shadow">
                         <i class="fa-solid fa-user-plus text-sm"></i>
                         <span>Créer un compte</span>
                     </a>
@@ -411,37 +383,33 @@
         </nav>
     </aside>
 
-    <!-- POPUP NOTIFICATIONS (TOASTS EN HAUT À DROITE) -->
-    <div id="toastContainer" class="fixed top-20 right-5 z-50 flex flex-col gap-3 max-w-sm w-full px-4 pointer-events-none">
+    <!-- NOTIFICATIONS -->
+    <div id="toastContainer" class="fixed top-4 inset-x-4 sm:inset-x-auto sm:right-5 sm:top-24 z-[60] flex flex-col gap-3 sm:w-96 pointer-events-none" aria-live="polite">
         @if(session('success'))
-            <div id="toast-success" class="pointer-events-auto bg-slate-900/95 backdrop-blur-md border border-emerald-500/50 text-slate-100 p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-3 transform translate-x-full opacity-0 transition-all duration-500 ease-out" role="alert">
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 font-bold text-sm">
-                        <i class="fa-solid fa-circle-check text-base"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm text-emerald-400">Succès</h4>
-                        <p class="text-xs text-gray-300 mt-0.5 leading-snug">{{ session('success') }}</p>
-                    </div>
-                </div>
-                <button onclick="closeToast('toast-success')" class="text-gray-400 hover:text-white p-1 text-base font-semibold leading-none">
+            <div id="toast-success" class="pointer-events-auto bg-white border border-slate-200 text-slate-800 pl-4 pr-2 py-3 rounded-xl shadow-xl flex items-start gap-3 -translate-y-2 opacity-0 transition-all duration-300 ease-out" role="status">
+                <i class="fa-solid fa-circle-check text-emerald-600 text-lg mt-0.5 shrink-0"></i>
+                <p class="flex-1 text-sm leading-snug pt-0.5">{{ session('success') }}</p>
+                <button onclick="closeToast('toast-success')" class="w-8 h-8 shrink-0 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center" aria-label="Fermer">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
         @endif
 
         @if(session('error'))
-            <div id="toast-error" class="pointer-events-auto bg-slate-900/95 backdrop-blur-md border border-rose-500/50 text-slate-100 p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-3 transform translate-x-full opacity-0 transition-all duration-500 ease-out" role="alert">
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 font-bold text-sm">
-                        <i class="fa-solid fa-circle-xmark text-base"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm text-rose-400">Erreur</h4>
-                        <p class="text-xs text-gray-300 mt-0.5 leading-snug">{{ session('error') }}</p>
-                    </div>
-                </div>
-                <button onclick="closeToast('toast-error')" class="text-gray-400 hover:text-white p-1 text-base font-semibold leading-none">
+            <div id="toast-error" class="pointer-events-auto bg-white border border-rose-200 text-slate-800 pl-4 pr-2 py-3 rounded-xl shadow-xl flex items-start gap-3 -translate-y-2 opacity-0 transition-all duration-300 ease-out" role="alert">
+                <i class="fa-solid fa-circle-exclamation text-rose-600 text-lg mt-0.5 shrink-0"></i>
+                <p class="flex-1 text-sm leading-snug pt-0.5">{{ session('error') }}</p>
+                <button onclick="closeToast('toast-error')" class="w-8 h-8 shrink-0 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        @endif
+
+        @if(session('info'))
+            <div id="toast-info" class="pointer-events-auto bg-white border border-slate-200 text-slate-800 pl-4 pr-2 py-3 rounded-xl shadow-xl flex items-start gap-3 -translate-y-2 opacity-0 transition-all duration-300 ease-out" role="status">
+                <i class="fa-solid fa-circle-info text-blue-600 text-lg mt-0.5 shrink-0"></i>
+                <p class="flex-1 text-sm leading-snug pt-0.5">{{ session('info') }}</p>
+                <button onclick="closeToast('toast-info')" class="w-8 h-8 shrink-0 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center" aria-label="Fermer">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -449,7 +417,7 @@
     </div>
 
     <!-- CONTENU PRINCIPAL -->
-    <main class="max-w-7xl mx-auto px-4 py-6">
+    <main class="flex-1 w-full px-4 py-6 sm:py-8 {{ $estGerante ? 'lg:pl-72 lg:pr-8 xl:pr-10' : 'max-w-7xl mx-auto' }}">
         @yield('content')
     </main>
 
@@ -499,120 +467,116 @@
         function closeToast(id) {
             const el = document.getElementById(id);
             if (el) {
-                el.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => el.remove(), 500);
+                el.classList.add('-translate-y-2', 'opacity-0');
+                setTimeout(() => el.remove(), 300);
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            ['toast-success', 'toast-error'].forEach(id => {
+            ['toast-success', 'toast-error', 'toast-info'].forEach(id => {
                 const toast = document.getElementById(id);
                 if (toast) {
                     setTimeout(() => {
-                        toast.classList.remove('translate-x-full', 'opacity-0');
+                        toast.classList.remove('-translate-y-2', 'opacity-0');
                     }, 100);
 
                     setTimeout(() => {
                         closeToast(id);
-                    }, 4500);
+                    }, id === 'toast-error' ? 9000 : 5000);
                 }
             });
         });
     </script>
-    <!-- FOOTER SETUP GABON -->
-<footer class="bg-slate-900 text-slate-300 border-t border-slate-800 mt-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            
-            <!-- COLONNE 1 : À PROPOS & LOGO -->
-            <div class="space-y-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg ">
-                         <a href="{{ route('home') }}" class="flex items-center gap-2 text-white font-bold text-lg hover:text-blue-300 transition-colors">
-                    <img src="{{ asset('img/logo.png') }}" alt="SETUP-GABON" class="h-9 w-auto object-contain">
-                        </a>
-                    </div>
-                    <span class="text-xl font-black text-white tracking-wider">SETUP <span class="text-blue-500">GABON</span></span>
-                </div>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    Votre partenaire de confiance en vente d'équipements informatiques, composants PC et matériel réseau au Gabon. Qualité et garantie assurées.
+    @unless($estGerante)
+    <!-- PIED DE PAGE -->
+    <footer class="mt-16 bg-white border-t border-slate-200 text-slate-600">
+        <div class="h-1 flex" aria-hidden="true">
+            <span class="flex-1 bg-emerald-600"></span>
+            <span class="flex-1 bg-amber-400"></span>
+            <span class="flex-1 bg-blue-700"></span>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 lg:grid-cols-12 gap-x-6 gap-y-10 text-sm">
+
+            <div class="col-span-2 lg:col-span-4 space-y-4">
+                <a href="{{ route('home') }}" aria-label="SETUP-Gabon, accueil">
+                    <img src="{{ asset('img/logo.png') }}" alt="SETUP-Gabon" class="h-11 w-auto object-contain">
+                </a>
+                <p class="max-w-xs leading-relaxed">
+                    Ordinateurs, imprimantes, écrans et accessoires informatiques, en stock à Libreville.
                 </p>
-                <div class="flex items-center gap-3 pt-2">
-                    <a href="https://www.facebook.com/setupgabon" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-blue-600 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
-                        <i class="fa-brands fa-facebook-f text-xs"></i>
+                <div class="flex items-center gap-2">
+                    <a href="https://www.facebook.com/setupgabon" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg border border-slate-200 text-slate-500 hover:text-blue-700 hover:border-blue-200 flex items-center justify-center transition-colors" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f text-sm"></i>
                     </a>
-                    <a href="https://wa.me/24166131270" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
-                        <i class="fa-brands fa-whatsapp text-xs"></i>
+                    <a href="https://www.linkedin.com/company/setup-gabon/" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg border border-slate-200 text-slate-500 hover:text-blue-700 hover:border-blue-200 flex items-center justify-center transition-colors" aria-label="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in text-sm"></i>
                     </a>
-                    <a href="https://www.linkedin.com/company/setup-gabon/" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-blue-400 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
-                        <i class="fa-brands fa-linkedin-in text-xs"></i>
+                    <a href="https://wa.me/24166131270" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg border border-slate-200 text-slate-500 hover:text-emerald-700 hover:border-emerald-200 flex items-center justify-center transition-colors" aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- COLONNE 2 : NAVIGATIONS RAPIDES -->
-            <div>
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-blue-600 pl-2">Navigation</h3>
-                <ul class="space-y-2.5 text-xs">
-                    <li><a href="{{ route('home') }}" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Accueil</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Catalogue Produits</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Promotions</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Demande de Devis</a></li>
+            <div class="lg:col-span-2">
+                <h3 class="text-slate-900 font-semibold mb-3">Boutique</h3>
+                <ul class="space-y-2">
+                    <li><a href="{{ route('home') }}" class="hover:text-blue-700 transition-colors">Tous les produits</a></li>
+                    <li><a href="{{ route('categories.index') }}" class="hover:text-blue-700 transition-colors">Catégories</a></li>
+                    <li><a href="https://wa.me/24166131270?text={{ rawurlencode('Bonjour SETUP-Gabon, je souhaite recevoir un devis pour :') }}" target="_blank" rel="noopener" class="hover:text-blue-700 transition-colors">Demander un devis</a></li>
+                    <li><a href="{{ route('about') }}" class="hover:text-blue-700 transition-colors">À propos</a></li>
                 </ul>
             </div>
 
-            <!-- COLONNE 3 : SERVICES CLIENTS -->
-            <!-- <div>
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-blue-600 pl-2">Services & SAV</h3>
-                <ul class="space-y-2.5 text-xs">
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Suivi de commande</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Service Après-Vente (SAV)</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Conditions de garantie</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[8px] text-blue-500"></i> Politique de retour</a></li>
-                </ul>
-            </div> -->
-
-            <!-- COLONNE 4 : CONTACT & BOUTIQUE -->
-            <div>
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-blue-600 pl-2">Boutique & Contact</h3>
-                <ul class="space-y-3 text-xs">
-                    <li class="flex items-start gap-2.5">
-                        <i class="fa-solid font-bold fa-location-dot text-blue-500 mt-0.5"></i>
-                        <span> Libreville, Gabon (A Petit Paris, galerie MOUENGA)</span>
-                    </li>
-                    <li class="flex items-center gap-2.5">
-                        <i class="fa-solid fa-phone text-blue-500"></i>
-                        <span>+241 66 13 12 70</span>
-                    </li>
-                    <li class="flex items-center gap-2.5">
-                        <i class="fa-solid fa-envelope text-blue-500"></i>
-                        <a href="mailto:protocolees@gmail.com" class="text-blue-400 hover:text-blue-300">
-                            <span>protocolees@gmail.com</span>
-                        </a>
-                    </li>
-                    <li class="flex items-center gap-2.5">
-                        <i class="fa-solid fa-clock text-blue-500"></i>
-                        <span>Mardi - Dimanche : 07h30 - 20h00</span>
-                    </li>
+            <div class="lg:col-span-2">
+                <h3 class="text-slate-900 font-semibold mb-3">Mon compte</h3>
+                <ul class="space-y-2">
+                    @auth
+                        <li><a href="{{ route('orders.index') }}" class="hover:text-blue-700 transition-colors">Mes commandes</a></li>
+                        <li><a href="{{ route('account.profile') }}" class="hover:text-blue-700 transition-colors">Mes informations</a></li>
+                    @else
+                        <li><a href="{{ route('login') }}" class="hover:text-blue-700 transition-colors">Se connecter</a></li>
+                        <li><a href="{{ route('register') }}" class="hover:text-blue-700 transition-colors">Créer un compte</a></li>
+                    @endauth
+                    <li><a href="{{ route('checkout.index') }}" class="hover:text-blue-700 transition-colors">Finaliser ma commande</a></li>
                 </ul>
             </div>
 
+            <div class="col-span-2 lg:col-span-4">
+                <h3 class="text-slate-900 font-semibold mb-3">Nous trouver</h3>
+                <ul class="space-y-2.5">
+                    <li class="flex gap-3">
+                        <i class="fa-solid fa-location-dot w-4 mt-1 text-blue-700"></i>
+                        <span>Petit Paris, galerie Mouenga<br>Libreville, Gabon</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i class="fa-solid fa-clock w-4 mt-1 text-blue-700"></i>
+                        <span>Du mardi au dimanche, 07h30 – 20h00</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i class="fa-solid fa-phone w-4 mt-1 text-blue-700"></i>
+                        <a href="tel:+24166131270" class="chiffres hover:text-blue-700 transition-colors">+241 66 13 12 70</a>
+                    </li>
+                    <li class="flex gap-3">
+                        <i class="fa-solid fa-envelope w-4 mt-1 text-blue-700"></i>
+                        <a href="mailto:protocolees@gmail.com" class="hover:text-blue-700 transition-colors break-all">protocolees@gmail.com</a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <!-- MODES DE PAIEMENT & COPYRIGHT -->
-        <div class="mt-12 pt-6 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© {{ date('Y') }} <span class="text-slate-300 font-semibold">SETUP GABON</span>. Tous droits réservés.</p>
-            
-            <!-- Badges Paiements Locaux -->
-           <div class="flex items-center gap-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-2">Paiements acceptés :</span>
-                <span class="px-2 py-1 bg-slate-800 text-slate-300 rounded font-bold text-[10px] border border-slate-700">Espèces</span>
-                <span class="px-2 py-1 bg-red-900/40 text-red-400 rounded font-bold text-[10px] border border-red-800/50">Airtel Money</span>
-                <span class="px-2 py-1 bg-blue-900/40 text-blue-400 rounded font-bold text-[10px] border border-blue-800/50">Moov Money</span>
+        <div class="border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
+                <p>© {{ date('Y') }} SETUP-Gabon. Tous droits réservés.</p>
+                <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span>Paiement :</span>
+                    <span class="text-slate-700 font-medium">espèces</span><span aria-hidden="true">·</span>
+                    <span class="text-slate-700 font-medium">Airtel Money</span><span aria-hidden="true">·</span>
+                    <span class="text-slate-700 font-medium">Moov Money</span>
+                </p>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
+    @endunless
 <script>
 function previewImage(input, previewId, wrapperId, iconId) {
     if (input.files && input.files[0]) {
@@ -664,8 +628,12 @@ function clientPanierComponent() {
         },
 
         ajouterProduit(prod) {
-            const index = this.items.findIndex(i => i.id === prod.id);
+            const index = this.items.findIndex(i => i.id === prod.id && (i.negociation_id || null) === (prod.negociation_id || null));
             if (index > -1) {
+                if (prod.negociation_id) {
+                    alert('Une offre négociée est verrouillée pour une quantité spécifique.');
+                    return;
+                }
                 const qteDemandee = this.items[index].quantite + (prod.quantite || 1);
                 if (prod.stockMax && qteDemandee > prod.stockMax) {
                     alert('Stock maximum atteint (' + prod.stockMax + ' disponible(s)).');
@@ -677,17 +645,24 @@ function clientPanierComponent() {
                     id: prod.id,
                     designation: prod.designation,
                     prix: prod.prix,
+                    prixCatalogue: prod.prixCatalogue || prod.prix,
                     quantite: prod.quantite || 1,
-                    stockMax: prod.stockMax
+                    stockMax: prod.stockMax,
+                    negociation_id: prod.negociation_id || null,
+                    negociation_ref: prod.negociation_ref || null
                 });
             }
             localStorage.setItem('client_panier', JSON.stringify(this.items));
             this.openCart = true;
         },
 
-        modifierQte(id, delta) {
-            const index = this.items.findIndex(i => i.id === id);
+        modifierQte(id, delta, negociation_id = null) {
+            const index = this.items.findIndex(i => i.id === id && (i.negociation_id || null) === (negociation_id || null));
             if (index > -1) {
+                if (negociation_id && delta > 0) {
+                    alert('La quantité d\'un article négocié ne peut pas être augmentée au-delà de l\'accord conclu.');
+                    return;
+                }
                 this.items[index].quantite += delta;
                 if (this.items[index].quantite <= 0) {
                     this.items.splice(index, 1);
@@ -696,8 +671,8 @@ function clientPanierComponent() {
             }
         },
 
-        supprimer(id) {
-            this.items = this.items.filter(i => i.id !== id);
+        supprimer(id, negociation_id = null) {
+            this.items = this.items.filter(i => !(i.id === id && (i.negociation_id || null) === (negociation_id || null)));
             localStorage.setItem('client_panier', JSON.stringify(this.items));
         },
 

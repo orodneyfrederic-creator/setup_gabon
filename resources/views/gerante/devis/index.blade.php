@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice text-blue-700"></i>
-                <span>Gestion des Devis</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Créez et suivez les propositions commerciales</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Devis</h1>
+            <p class="mt-1 text-slate-500">Créez et suivez les propositions commerciales</p>
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('gerante.devis.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -48,18 +45,18 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Référence / Date</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Client</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Montant Total</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Référence / date</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Client</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Montant total</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Statut</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($devis as $d)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-4 py-3">
-                                <p class="text-sm font-bold text-slate-800">{{ $d->reference }}</p>
+                                <p class="text-sm font-bold text-slate-800">{{ $d->numero }}</p>
                                 <p class="text-xs text-slate-500">{{ $d->created_at->format('d/m/Y H:i') }}</p>
                             </td>
                             <td class="px-4 py-3">
@@ -89,13 +86,13 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('gerante.devis.show', $d) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 flex items-center justify-center transition-colors" title="Voir les détails">
+                                    <a href="{{ route('gerante.devis.show', $d) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 flex items-center justify-center transition-colors" title="Voir les détails" aria-label="Voir les détails">
                                         <i class="fa-solid fa-eye text-xs"></i>
                                     </a>
-                                    <a href="{{ route('gerante.devis.pdf', $d) }}?print=1" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 flex items-center justify-center transition-colors" title="Imprimer le PDF">
+                                    <a href="{{ route('gerante.devis.pdf', $d) }}?print=1" target="_blank" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700 flex items-center justify-center transition-colors" title="Imprimer le PDF" aria-label="Imprimer le PDF">
                                         <i class="fa-solid fa-print text-xs"></i>
                                     </a>
-                                    <a href="{{ route('gerante.devis.pdf', $d) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Télécharger PDF">
+                                    <a href="{{ route('gerante.devis.pdf', $d) }}" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Télécharger PDF" aria-label="Télécharger PDF">
                                         <i class="fa-solid fa-download text-xs"></i>
                                     </a>
                                     @if($d->statut === 'brouillon')

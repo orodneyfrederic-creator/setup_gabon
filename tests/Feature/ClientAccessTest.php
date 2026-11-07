@@ -71,7 +71,7 @@ class ClientAccessTest extends TestCase
         $this->actingAs($client, 'web')
             ->get('/checkout')
             ->assertStatus(200)
-            ->assertSee('Finaliser la Commande');
+            ->assertSee('Finaliser ma commande');
     }
 
     public function test_regular_clients_cannot_access_gerante_dashboard(): void

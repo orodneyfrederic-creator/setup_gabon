@@ -5,11 +5,8 @@
     <!-- EN-TÊTE DE PAGE -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-users text-blue-600"></i>
-                <span>Liste des Clients</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Consultez tous les comptes clients inscrits sur la plateforme</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Clients</h1>
+            <p class="mt-1 text-slate-500">Consultez tous les comptes clients inscrits sur la plateforme</p>
         </div>
         <div>
             <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -34,12 +31,12 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Client</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Contact</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Commandes</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Total Dépensé</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Inscrit le</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Client</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Contact</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Commandes</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Total dépensé</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Inscrit le</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

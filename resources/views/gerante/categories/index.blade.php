@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-tags text-amber-600"></i>
-                <span>Gestion des Catégories</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Organisez vos produits par catégories</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Catégories</h1>
+            <p class="mt-1 text-slate-500">Organisez vos produits par catégories</p>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
             <a href="{{ route('gerante.categories.create') }}" class="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -46,9 +43,9 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Nom de la catégorie</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Produits associés</th>
-                        <th class="px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500">Nom de la catégorie</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-center">Produits associés</th>
+                        <th class="px-4 py-3 text-xs font-bold text-slate-500 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

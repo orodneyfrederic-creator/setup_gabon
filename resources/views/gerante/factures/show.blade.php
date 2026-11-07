@@ -4,11 +4,8 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice-dollar text-emerald-600"></i>
-                <span>Facture {{ $facture->numero }}</span>
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Émise le {{ $facture->created_at->format('d/m/Y à H:i') }} @if($facture->devis) (Depuis devis {{ $facture->devis->numero }}) @endif</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Facture {{ $facture->numero }}</h1>
+            <p class="mt-1 text-slate-500">Émise le {{ $facture->created_at->format('d/m/Y à H:i') }} @if($facture->devis) (Depuis devis {{ $facture->devis->numero }}) @endif</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
             <button onclick="window.print()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
@@ -49,7 +46,7 @@
                 </h2>
                 
                 <div class="mb-6 text-center">
-                    @if($facture->statut === 'impayee')
+                    @if($facture->statut === 'emise')
                         <div class="inline-flex items-center px-4 py-2 rounded-xl bg-rose-50 text-rose-800 border border-rose-200">
                             <i class="fa-solid fa-circle-exclamation mr-2"></i> <span class="font-bold">Facture Impayée</span>
                         </div>
@@ -64,7 +61,7 @@
                     @endif
                 </div>
 
-                @if($facture->statut === 'impayee')
+                @if($facture->statut === 'emise')
                     <form action="{{ route('gerante.factures.status', $facture) }}" method="POST" class="space-y-3">
                         @csrf
                         @method('PATCH')
@@ -73,14 +70,18 @@
                             <i class="fa-solid fa-hand-holding-dollar"></i> Enregistrer le paiement
                         </button>
                     </form>
-                    <form action="{{ route('gerante.factures.status', $facture) }}" method="POST" class="mt-3">
+                @endif
+
+                @if(in_array($facture->statut, ['emise', 'payee'], true))
+                    <form action="{{ route('gerante.factures.status', $facture) }}" method="POST" class="mt-3" onsubmit="return confirm('Annuler cette facture ? Les produits facturés seront remis en stock.');">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="statut" value="annulee">
-                        <button type="submit" class="w-full py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl transition-colors flex items-center justify-center gap-2" onsubmit="return confirm('Annuler cette facture ?');">
+                        <button type="submit" class="w-full py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
                             <i class="fa-solid fa-ban"></i> Annuler la facture
                         </button>
                     </form>
+                    <p class="text-[11px] text-slate-400 mt-3 text-center">Une annulation remet les produits en stock et est définitive.</p>
                 @endif
             </div>
 
@@ -128,10 +129,10 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Désignation</th>
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">P.U</th>
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Qté</th>
-                                <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Sous-Total</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500">Désignation</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500 text-right">P.U.</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500 text-center">Qté</th>
+                                <th class="px-6 py-3 text-xs font-bold text-slate-500 text-right">Sous-total</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
