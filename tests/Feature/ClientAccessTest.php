@@ -43,9 +43,11 @@ class ClientAccessTest extends TestCase
             ->assertRedirect(route('login'))
             ->assertSessionHas('info');
 
-        $this->get('/checkout')
-            ->assertRedirect(route('login'))
-            ->assertSessionHas('info');
+    }
+
+    public function test_visitors_can_reach_checkout_without_an_account(): void
+    {
+        $this->get('/checkout')->assertOk();
     }
 
     public function test_authenticated_clients_can_access_protected_client_routes(): void

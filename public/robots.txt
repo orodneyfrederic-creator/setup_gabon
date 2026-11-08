@@ -3,5 +3,6 @@ Disallow: /gerante
 Disallow: /checkout
 Disallow: /mon-compte
 Disallow: /commandes
+Disallow: /suivi-commande
 
 # Plan du site : https://<votre-domaine>/sitemap.xml (à déclarer dans Google Search Console)

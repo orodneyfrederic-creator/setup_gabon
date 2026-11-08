@@ -8,7 +8,7 @@
             <p class="mt-1 text-slate-500">Mise à jour de : {{ $marque->nom }}</p>
         </div>
         <div>
-            <a href="{{ route('gerante.marques.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.marques.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden max-w-2xl mx-auto">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden max-w-2xl mx-auto">
         <div class="p-6">
             <form action="{{ route('gerante.marques.update', $marque) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -33,7 +33,7 @@
                 <div class="space-y-5">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Nom de la marque *</label>
-                        <input type="text" name="nom" value="{{ old('nom', $marque->nom) }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all">
+                        <input type="text" name="nom" value="{{ old('nom', $marque->nom) }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-hidden transition-all">
                     </div>
                     
                     <div>

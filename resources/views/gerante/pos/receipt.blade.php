@@ -17,7 +17,7 @@
         <script>sessionStorage.removeItem('pos_panier');</script>
 
         {{-- Reçu --}}
-        <div id="recu-zone" class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div id="recu-zone" class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
 
             {{-- En-tête reçu --}}
             <div class="bg-slate-900 text-white px-6 py-5 text-center">

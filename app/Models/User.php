@@ -38,6 +38,23 @@ class User extends Authenticatable
         return $this->hasMany(Commande::class, 'id_ut');
     }
 
+    public function avis()
+    {
+        return $this->hasMany(Avis::class, 'id_ut');
+    }
+
+    /**
+     * Commande livrée la plus récente contenant ce produit : elle prouve l'achat et ouvre le droit de laisser un avis.
+     */
+    public function commandeLivreeContenant(Produit $produit): ?Commande
+    {
+        return $this->commandes()
+            ->where('statut', 'livree')
+            ->whereHas('lignesCommandes', fn ($lignes) => $lignes->where('id_p', $produit->id))
+            ->latest('date_c')
+            ->first();
+    }
+
     public function adresses()
     {
         return $this->hasMany(Adresse::class, 'id_ut');

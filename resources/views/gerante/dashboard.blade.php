@@ -33,7 +33,7 @@
                 <i class="fa-solid fa-scale-balanced"></i>
                 Informations légales à compléter avant la mise en ligne
             </h2>
-            <p class="mt-1 text-sm text-amber-900">À renseigner dans le fichier <code class="px-1 rounded bg-amber-100">.env</code> du serveur, puis elles s'affichent automatiquement dans les mentions légales et la politique de confidentialité.</p>
+            <p class="mt-1 text-sm text-amber-900">À renseigner dans le fichier <code class="px-1 rounded-sm bg-amber-100">.env</code> du serveur, puis elles s'affichent automatiquement dans les mentions légales et la politique de confidentialité.</p>
             <ul class="mt-3 grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-amber-950 list-disc pl-5">
                 @foreach($manquesConformite as $manque)
                     <li>{{ $manque }}</li>
@@ -88,7 +88,7 @@
             @forelse($dernieresCommandes as $cmd)
                 <a href="{{ route('gerante.commandes.show', $cmd) }}" class="px-5 py-3 flex items-center gap-4 border-t border-slate-100 hover:bg-slate-50">
                     <span class="chiffres text-sm font-semibold text-slate-900 w-12">#{{ $cmd->id }}</span>
-                    <span class="flex-1 min-w-0 text-sm text-slate-700 truncate">{{ $cmd->user?->prenom }} {{ $cmd->user?->nom }}</span>
+                    <span class="flex-1 min-w-0 text-sm text-slate-700 truncate">{{ $cmd->nomClient() }}</span>
                     @include('account.partials.statut', ['statut' => $cmd->statut])
                     <span class="chiffres text-sm font-semibold text-slate-900 w-32 text-right">{{ number_format($cmd->montant_c, 0, ',', ' ') }} FCFA</span>
                 </a>

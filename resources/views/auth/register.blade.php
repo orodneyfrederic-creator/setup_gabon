@@ -2,11 +2,11 @@
 
 @section('content')
 @php
-    $champ = 'w-full h-12 px-3.5 bg-white border rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
+    $champ = 'w-full h-12 px-3.5 bg-white border rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
 @endphp
 <div class="w-full max-w-md">
 
-    <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 sm:p-8">
+    <div class="bg-white border border-slate-200 rounded-xl shadow-xs p-6 sm:p-8">
         <h1 class="text-2xl font-bold tracking-tight text-slate-900">Créer un compte</h1>
         <p class="text-sm text-slate-500 mt-1 mb-6">Un compte suffit pour commander, suivre vos commandes et négocier un prix.</p>
 

@@ -17,7 +17,7 @@
     </script>
 @endif
 @php
-    $champ = 'w-full h-12 px-3.5 bg-white border border-slate-300 rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
+    $champ = 'w-full h-12 px-3.5 bg-white border border-slate-300 rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
 @endphp
 <div class="max-w-5xl mx-auto" x-data="checkoutComponent()">
 
@@ -59,28 +59,69 @@
                 <section class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6">
                     <h2 class="font-bold text-slate-900">Livraison</h2>
 
-                    <dl class="mt-4 grid sm:grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <dt class="text-slate-500">Client</dt>
-                            <dd class="mt-0.5 font-semibold text-slate-900">{{ $user->prenom }} {{ $user->nom }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-slate-500">Téléphone</dt>
-                            <dd class="chiffres mt-0.5 font-semibold text-slate-900">{{ $user->tel ?: '—' }}</dd>
-                        </div>
-                    </dl>
-
-                    @unless($user->tel)
-                        <p class="mt-4 text-sm bg-amber-50 text-amber-900 px-3.5 py-3 rounded-lg">
-                            Ajoutez votre numéro pour que la boutique puisse vous appeler :
-                            <a href="{{ route('account.profile') }}" class="font-semibold underline">compléter mon profil</a>.
+                    @if($user)
+                        <dl class="mt-4 grid sm:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <dt class="text-slate-500">Client</dt>
+                                <dd class="mt-0.5 font-semibold text-slate-900">{{ $user->prenom }} {{ $user->nom }}</dd>
+                            </div>
+                            @if($user->tel)
+                                <div>
+                                    <dt class="text-slate-500">Téléphone</dt>
+                                    <dd class="chiffres mt-0.5 font-semibold text-slate-900">{{ $user->tel }}</dd>
+                                </div>
+                            @endif
+                        </dl>
+                    @else
+                        <p class="mt-1 text-sm text-slate-500">
+                            Pas besoin de compte.
+                            <a href="{{ route('login') }}" class="font-semibold text-blue-700 underline">Déjà client ? Connectez-vous</a> pour retrouver vos commandes et négocier les prix.
                         </p>
+                        <div class="mt-5">
+                            <label for="client_nom" class="block text-sm font-semibold text-slate-800 mb-1.5">Nom et prénom</label>
+                            <input type="text" id="client_nom" name="client_nom" required maxlength="120" autocomplete="name"
+                                   value="{{ old('client_nom') }}"
+                                   class="{{ $champ }} @error('client_nom') !border-rose-500 @enderror">
+                            @error('client_nom')
+                                <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endif
+
+                    @if(! $user?->tel)
+                        <div class="mt-5">
+                            <label for="client_telephone" class="block text-sm font-semibold text-slate-800 mb-1.5">Téléphone</label>
+                            <input type="tel" id="client_telephone" name="client_telephone" required inputmode="tel" autocomplete="tel"
+                                   value="{{ old('client_telephone') }}" placeholder="Ex. : 066 12 34 56"
+                                   aria-describedby="aide-telephone"
+                                   class="chiffres {{ $champ }} @error('client_telephone') !border-rose-500 @enderror">
+                            <p id="aide-telephone" class="text-xs text-slate-500 mt-1.5">La boutique vous appelle à ce numéro pour confirmer la livraison.</p>
+                            @error('client_telephone')
+                                <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endif
+
+                    @unless($user)
+                        <div class="mt-5">
+                            <label for="client_email" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                                E-mail <span class="font-normal text-slate-500">(facultatif)</span>
+                            </label>
+                            <input type="email" id="client_email" name="client_email" maxlength="255" autocomplete="email" inputmode="email"
+                                   value="{{ old('client_email') }}"
+                                   aria-describedby="aide-email"
+                                   class="{{ $champ }} @error('client_email') !border-rose-500 @enderror">
+                            <p id="aide-email" class="text-xs text-slate-500 mt-1.5">Pour recevoir le récapitulatif et le suivi de votre commande.</p>
+                            @error('client_email')
+                                <p class="text-rose-600 text-sm mt-1.5">{{ $message }}</p>
+                            @enderror
+                        </div>
                     @endunless
 
                     <div class="mt-5">
                         <label for="adresse_livraison" class="block text-sm font-semibold text-slate-800 mb-1.5">Adresse ou lieu de livraison à Libreville</label>
                         <input type="text" id="adresse_livraison" name="adresse_livraison" required autocomplete="street-address"
-                               value="{{ old('adresse_livraison', $user->adresse) }}"
+                               value="{{ old('adresse_livraison', $user?->adresse) }}"
                                placeholder="Ex. : Akanda, carrefour GP, quartier Louis…"
                                class="{{ $champ }} @error('adresse_livraison') !border-rose-500 @enderror">
                         @error('adresse_livraison')
@@ -92,7 +133,7 @@
                 <fieldset class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6">
                     <legend class="sr-only">Mode de paiement</legend>
                     <h2 class="font-bold text-slate-900" aria-hidden="true">Mode de paiement</h2>
-                    <p class="text-sm text-slate-500 mt-1">Rien n'est débité en ligne. Choisissez comment vous réglerez.</p>
+                    <p class="text-sm text-slate-500 mt-1">Rien n'est débité en ligne. Choisissez comment vous réglerez : la boutique vous indique la marche à suivre sur WhatsApp.</p>
 
                     <div class="mt-4 space-y-2">
                         @foreach ([
@@ -120,7 +161,7 @@
                     </ul>
                     <label class="mt-5 flex items-start gap-3 cursor-pointer">
                         <input type="checkbox" name="accepte_conditions" value="1" required @checked(old('accepte_conditions'))
-                               class="mt-0.5 w-5 h-5 rounded border-slate-300 text-blue-700 focus:ring-blue-600 shrink-0">
+                               class="mt-0.5 w-5 h-5 rounded-sm border-slate-300 text-blue-700 focus:ring-blue-600 shrink-0">
                         <span class="text-sm text-slate-800">
                             J'ai lu et j'accepte les <a href="{{ route('legal.cgv') }}" target="_blank" class="font-semibold text-blue-700 underline">conditions générales de vente</a>
                             et la <a href="{{ route('legal.confidentialite') }}" target="_blank" class="font-semibold text-blue-700 underline">politique de confidentialité</a>.
@@ -153,7 +194,7 @@
                                 <p class="chiffres text-slate-500 mt-0.5">
                                     <span x-text="item.quantite"></span> × <span x-text="formatPrix(item.prix)"></span> FCFA
                                     <template x-if="item.negociation_id">
-                                        <span class="ml-1 text-[11px] font-semibold px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded">Prix négocié</span>
+                                        <span class="ml-1 text-[11px] font-semibold px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded-sm">Prix négocié</span>
                                     </template>
                                 </p>
                             </div>
@@ -189,7 +230,7 @@
 function checkoutComponent() {
     return {
         items: JSON.parse(localStorage.getItem('client_panier') || '[]'),
-        payment: 'especes',
+        payment: @js(old('methode_paiement', 'especes')),
 
         get countArticles() {
             return this.items.reduce((total, i) => total + i.quantite, 0);

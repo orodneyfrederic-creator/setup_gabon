@@ -8,7 +8,7 @@
             <p class="mt-1 text-slate-500">Ajouter une nouvelle catégorie de produits</p>
         </div>
         <div>
-            <a href="{{ route('gerante.categories.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.categories.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -25,24 +25,24 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden max-w-2xl mx-auto">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden max-w-2xl mx-auto">
         <div class="p-6">
             <form action="{{ route('gerante.categories.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-5">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Nom de la catégorie *</label>
-                        <input type="text" name="nom" value="{{ old('nom') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none transition-all">
+                        <input type="text" name="nom" value="{{ old('nom') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white outline-hidden transition-all">
                     </div>
                     
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Description (Optionnel)</label>
-                        <textarea name="description" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none transition-all">{{ old('description') }}</textarea>
+                        <textarea name="description" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:bg-white outline-hidden transition-all">{{ old('description') }}</textarea>
                     </div>
                     <div>
                         <label for="garantie_jours" class="block text-sm font-bold text-slate-700 mb-1">Garantie boutique (jours)</label>
                         <input type="number" id="garantie_jours" name="garantie_jours" min="0" max="3650" value="{{ old('garantie_jours', config('boutique.garantie.autres_jours')) }}" required
-                               class="w-40 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+                               class="w-40 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden">
                         <p class="text-xs text-slate-500 mt-1">Affichée sur chaque fiche produit de la catégorie. Engagement actuel : 30 jours pour les ordinateurs, 14 jours pour le reste.</p>
                         @error('garantie_jours') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>

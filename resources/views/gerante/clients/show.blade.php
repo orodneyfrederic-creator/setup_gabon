@@ -9,7 +9,7 @@
             <p class="mt-1 text-slate-500">Détails du compte et historique des activités</p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('gerante.clients.index') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.clients.index') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> <span>Retour aux clients</span>
             </a>
         </div>
@@ -17,7 +17,7 @@
 
     <!-- CARTE D'INFORMATIONS DU CLIENT -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
             <div class="flex items-center gap-4 mb-4">
                 <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-lg">
                     {{ strtoupper(substr($client->prenom ?? $client->nom ?? 'C', 0, 1)) }}
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
             <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total des commandes</p>
                 <p class="text-3xl font-black text-slate-900 mt-2">{{ $client->commandes_count }}</p>
@@ -51,7 +51,7 @@
             <p class="text-xs text-slate-500 mt-4"><i class="fa-solid fa-box text-blue-500 mr-1"></i> Commandes passées sur le site</p>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
             <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Dépensé</p>
                 <p class="text-3xl font-black text-emerald-600 mt-2">{{ number_format($client->commandes_sum_montant_c ?? 0, 0, ',', ' ') }} <span class="text-sm">FCFA</span></p>
@@ -61,7 +61,7 @@
     </div>
 
     <!-- HISTORIQUE DES COMMANDES -->
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-8">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
             <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-receipt text-blue-600"></i> Historique des commandes du client

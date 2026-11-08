@@ -8,7 +8,7 @@
             <p class="mt-1 text-slate-500">Suivi des factures générées à partir des devis</p>
         </div>
         <div>
-            <a href="{{ route('gerante.devis.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.devis.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour aux devis
             </a>
         </div>
@@ -21,14 +21,14 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.factures.index') }}" method="GET" class="w-full flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher (Réf, Client, Entreprise)..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher (Réf, Client, Entreprise)..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-hidden transition-shadow">
                     <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-slate-400"></i>
                 </div>
-                <select name="statut" onchange="this.form.submit()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                <select name="statut" onchange="this.form.submit()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden">
                     <option value="">Tous les statuts</option>
                     <option value="emise" {{ request('statut') === 'emise' ? 'selected' : '' }}>Impayée</option>
                     <option value="payee" {{ request('statut') === 'payee' ? 'selected' : '' }}>Payée</option>

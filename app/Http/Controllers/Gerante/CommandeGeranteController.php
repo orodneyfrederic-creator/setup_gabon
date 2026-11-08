@@ -38,7 +38,7 @@ class CommandeGeranteController extends Controller
     {
         $statut = $request->input('statut');
 
-        $query = Commande::with(['user', 'lignesCommandes.produit', 'lignesCommandes.negociation'])
+        $query = Commande::with(['user', 'paiement', 'lignesCommandes.produit', 'lignesCommandes.negociation'])
             ->latest('id');
 
         if ($statut) {
@@ -65,7 +65,7 @@ class CommandeGeranteController extends Controller
      */
     public function show(Commande $commande)
     {
-        $commande->load(['user', 'lignesCommandes.produit', 'lignesCommandes.negociation']);
+        $commande->load(['user', 'paiement', 'lignesCommandes.produit', 'lignesCommandes.negociation']);
 
         $statutsPossibles = [$commande->statut, ...(self::TRANSITIONS_AUTORISEES[$commande->statut] ?? [])];
 
@@ -153,9 +153,9 @@ class CommandeGeranteController extends Controller
 
             DB::commit();
 
-            if (in_array($nouveauStatut, StatutCommandeModifie::STATUTS_NOTIFIES, true) && $commande->user) {
+            if (in_array($nouveauStatut, StatutCommandeModifie::STATUTS_NOTIFIES, true)) {
                 try {
-                    $commande->user->notify(new StatutCommandeModifie($commande->fresh()));
+                    $commande->notifierClient(new StatutCommandeModifie($commande->fresh()));
                 } catch (\Throwable $erreur) {
                     report($erreur);
                 }

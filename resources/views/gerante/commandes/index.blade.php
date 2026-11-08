@@ -16,7 +16,7 @@
     {{-- STATISTIQUES --}}
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {{-- En attente --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-clock"></i>
             </div>
@@ -27,7 +27,7 @@
         </div>
 
         {{-- Confirmées --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
@@ -38,7 +38,7 @@
         </div>
 
         {{-- Livrées --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-truck"></i>
             </div>
@@ -52,32 +52,32 @@
     {{-- FILTRES PAR STATUT --}}
     <div class="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-semibold">
         <a href="{{ route('gerante.commandes.index') }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ !$statut ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ !$statut ? 'bg-blue-600 text-white border-blue-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Toutes
         </a>
         <a href="{{ route('gerante.commandes.index', ['statut' => 'en_attente']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap flex items-center gap-1.5 {{ $statut === 'en_attente' ? 'bg-amber-600 text-white border-amber-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap flex items-center gap-1.5 {{ $statut === 'en_attente' ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             <span>En attente</span>
             @if($nbEnAttente > 0)
                 <span class="w-2 h-2 rounded-full bg-rose-500"></span>
             @endif
         </a>
         <a href="{{ route('gerante.commandes.index', ['statut' => 'confirmee']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'confirmee' ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'confirmee' ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Confirmées
         </a>
         <a href="{{ route('gerante.commandes.index', ['statut' => 'livree']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'livree' ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'livree' ? 'bg-blue-600 text-white border-blue-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Livrées
         </a>
         <a href="{{ route('gerante.commandes.index', ['statut' => 'annulee']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'annulee' ? 'bg-rose-600 text-white border-rose-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'annulee' ? 'bg-rose-600 text-white border-rose-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Annulées
         </a>
     </div>
 
     {{-- TABLEAU DES COMMANDES --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
@@ -99,8 +99,13 @@
                                 #{{ $cmd->id }}
                             </td>
                             <td class="py-3.5 px-4">
-                                <p class="font-bold text-slate-900">{{ $cmd->user->prenom }} {{ $cmd->user->nom }}</p>
-                                <p class="text-[11px] text-slate-400">{{ $cmd->user->tel ?: $cmd->user->email }}</p>
+                                <p class="font-bold text-slate-900">{{ $cmd->nomClient() }}</p>
+                                <p class="text-[11px] text-slate-400">
+                                    {{ $cmd->telephoneClient() ?: $cmd->emailClient() }}
+                                    @if($cmd->estInvitee())
+                                        · <span class="text-slate-500">sans compte</span>
+                                    @endif
+                                </p>
                             </td>
                             <td class="py-3.5 px-4">
                                 <p class="font-medium text-slate-700">{{ $cmd->lignesCommandes->count() }} article(s)</p>

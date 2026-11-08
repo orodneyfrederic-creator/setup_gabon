@@ -26,10 +26,10 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.stock.index') }}" method="GET" class="w-full sm:w-96 relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un produit..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-shadow">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un produit..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-hidden transition-shadow">
                 <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-slate-400"></i>
             </form>
         </div>

@@ -8,10 +8,10 @@
             <p class="mt-1 text-slate-500">Gérer les marques de produits du catalogue</p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('gerante.marques.create') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.marques.create') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> Nouvelle Marque
             </a>
-            <a href="{{ route('gerante.dashboard') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.dashboard') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -31,10 +31,10 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50">
             <form action="{{ route('gerante.marques.index') }}" method="GET" class="w-full sm:w-96 relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher une marque..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-shadow">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher une marque..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-hidden transition-shadow">
                 <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-slate-400"></i>
             </form>
         </div>

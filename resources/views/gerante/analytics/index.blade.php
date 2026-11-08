@@ -14,21 +14,21 @@
                 <div class="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-chart-line text-lg"></i>
                 </div>
-                <span>Analytics & Rapports Avancés</span>
+                <span>Statistiques</span>
             </h1>
-            <p class="text-xs text-slate-500 mt-0.5">Indicateurs de performance, statistiques des ventes & graphiques interactifs ApexCharts</p>
+            <p class="text-sm text-slate-500 mt-0.5">Ventes en caisse, commandes en ligne et factures sur la période choisie.</p>
         </div>
 
         {{-- FILTRE PÉRIODE --}}
         <form method="GET" action="{{ route('gerante.analytics.index') }}" class="flex items-center gap-2">
-            <div class="inline-flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm text-xs font-bold text-slate-600">
-                <button type="submit" name="period" value="7" class="px-3 py-1.5 rounded-xl transition-all {{ $period == '7' ? 'bg-emerald-600 text-white shadow' : 'hover:text-slate-900' }}">
+            <div class="inline-flex bg-white p-1 rounded-2xl border border-slate-200 shadow-xs text-xs font-bold text-slate-600">
+                <button type="submit" name="period" value="7" class="px-3 py-1.5 rounded-xl transition-all {{ $period == '7' ? 'bg-emerald-600 text-white shadow-sm' : 'hover:text-slate-900' }}">
                     7 jours
                 </button>
-                <button type="submit" name="period" value="30" class="px-3 py-1.5 rounded-xl transition-all {{ $period == '30' ? 'bg-emerald-600 text-white shadow' : 'hover:text-slate-900' }}">
+                <button type="submit" name="period" value="30" class="px-3 py-1.5 rounded-xl transition-all {{ $period == '30' ? 'bg-emerald-600 text-white shadow-sm' : 'hover:text-slate-900' }}">
                     30 jours
                 </button>
-                <button type="submit" name="period" value="90" class="px-3 py-1.5 rounded-xl transition-all {{ $period == '90' ? 'bg-emerald-600 text-white shadow' : 'hover:text-slate-900' }}">
+                <button type="submit" name="period" value="90" class="px-3 py-1.5 rounded-xl transition-all {{ $period == '90' ? 'bg-emerald-600 text-white shadow-sm' : 'hover:text-slate-900' }}">
                     90 jours
                 </button>
             </div>
@@ -39,7 +39,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         
         <!-- CA Total -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs relative overflow-hidden">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Chiffre d'Affaires</p>
@@ -49,13 +49,24 @@
                     <i class="fa-solid fa-wallet"></i>
                 </div>
             </div>
-            <div class="mt-3 flex items-center gap-2 text-[11px] text-slate-500 font-semibold border-t border-slate-100 pt-2">
-                <span class="text-emerald-600 font-bold">POS : {{ number_format($caPos, 0, ',', ' ') }}</span> | <span>En ligne : {{ number_format($caOnline, 0, ',', ' ') }}</span> | <span>Factures : {{ number_format($totalFacturesPayees, 0, ',', ' ') }}</span>
-            </div>
+            <dl class="mt-3 grid grid-cols-3 gap-2 text-[11px] border-t border-slate-100 pt-2">
+                <div>
+                    <dt class="text-slate-500">Caisse</dt>
+                    <dd class="chiffres font-bold text-slate-900 whitespace-nowrap">{{ number_format($caPos, 0, ',', ' ') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-slate-500">En ligne</dt>
+                    <dd class="chiffres font-bold text-slate-900 whitespace-nowrap">{{ number_format($caOnline, 0, ',', ' ') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-slate-500">Factures</dt>
+                    <dd class="chiffres font-bold text-slate-900 whitespace-nowrap">{{ number_format($totalFacturesPayees, 0, ',', ' ') }}</dd>
+                </div>
+            </dl>
         </div>
 
         <!-- Ventes Boutique -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ventes Caisse (POS)</p>
@@ -71,7 +82,7 @@
         </div>
 
         <!-- Devis Générés -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Devis Créés</p>
@@ -87,7 +98,7 @@
         </div>
 
         <!-- Conversion & Performance -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Canal Principal</p>
@@ -108,7 +119,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
         {{-- Graphique Évolution du Chiffre d'Affaires --}}
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h2 class="font-black text-slate-800 text-sm flex items-center gap-2">
@@ -123,7 +134,7 @@
         </div>
 
         {{-- Graphique Donut : Répartition des modes de paiement --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
             <div class="mb-4">
                 <h2 class="font-black text-slate-800 text-sm flex items-center gap-2">
                     <i class="fa-solid fa-pie-chart text-blue-600"></i>
@@ -132,7 +143,11 @@
                 <p class="text-[11px] text-slate-400">Ventilation par méthode de règlement</p>
             </div>
 
-            <div id="chart-payments" class="w-full h-72 flex items-center justify-center"></div>
+            @if(count($paymentData) > 0)
+                <div id="chart-payments" class="w-full h-72 flex items-center justify-center"></div>
+            @else
+                <p class="h-72 flex items-center justify-center text-center text-sm text-slate-500">Aucune vente en caisse sur la période.</p>
+            @endif
         </div>
 
     </div>
@@ -141,20 +156,24 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {{-- Ventes par Catégories --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div class="mb-4">
                 <h2 class="font-black text-slate-800 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-chart-bar text-violet-600"></i>
-                    Ventes par Catégorie
+                    <i class="fa-solid fa-chart-bar text-blue-600"></i>
+                    Ventes par catégorie
                 </h2>
-                <p class="text-[11px] text-slate-400">Top des catégories les plus rentables</p>
+                <p class="text-[11px] text-slate-400">Chiffre d'affaires en caisse par catégorie</p>
             </div>
 
-            <div id="chart-categories" class="w-full h-64"></div>
+            @if(count($catData) > 0)
+                <div id="chart-categories" class="w-full h-64"></div>
+            @else
+                <p class="h-64 flex items-center justify-center text-center text-sm text-slate-500">Aucune vente en caisse sur la période.</p>
+            @endif
         </div>
 
         {{-- Top Produit Vendu --}}
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
                 <div>
                     <h2 class="font-black text-slate-800 text-sm flex items-center gap-2">
@@ -217,11 +236,11 @@
                     type: 'area',
                     height: 280,
                     toolbar: { show: false },
-                    fontFamily: 'Inter, sans-serif'
+                    fontFamily: 'Figtree, sans-serif'
                 },
                 series: [
-                    { name: 'Ventes POS (Caisse)', data: @json($salesPosData) },
-                    { name: 'Ventes En Ligne', data: @json($salesOnlineData) }
+                    { name: 'Caisse', data: @json($salesPosData) },
+                    { name: 'En ligne', data: @json($salesOnlineData) }
                 ],
                 xaxis: {
                     categories: @json($dates),
@@ -235,7 +254,7 @@
                         style: { colors: '#94a3b8', fontSize: '11px' }
                     }
                 },
-                colors: ['#059669', '#3b82f6'],
+                colors: ['#1c9150', '#283888'],
                 fill: {
                     type: 'gradient',
                     gradient: { opacityFrom: 0.4, opacityTo: 0.05 }
@@ -258,11 +277,11 @@
                 chart: {
                     type: 'donut',
                     height: 280,
-                    fontFamily: 'Inter, sans-serif'
+                    fontFamily: 'Figtree, sans-serif'
                 },
                 series: paymentSeries,
                 labels: @json($paymentLabels),
-                colors: ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6'],
+                colors: ['#283888', '#1c9150', '#e0ad06', '#6578c2', '#9299ad'],
                 legend: { position: 'bottom', fontSize: '12px' },
                 tooltip: {
                     y: {
@@ -279,7 +298,7 @@
                     }
                 }
             };
-            new ApexCharts(document.querySelector("#chart-payments"), optionsPayments).render();
+            if (document.querySelector("#chart-payments")) { new ApexCharts(document.querySelector("#chart-payments"), optionsPayments).render(); }
 
             // 3. Graphique Ventes par Catégorie (Bar Chart)
             const optionsCategories = {
@@ -287,7 +306,7 @@
                     type: 'bar',
                     height: 250,
                     toolbar: { show: false },
-                    fontFamily: 'Inter, sans-serif'
+                    fontFamily: 'Figtree, sans-serif'
                 },
                 series: [{
                     name: 'Total CA',
@@ -295,9 +314,18 @@
                 }],
                 xaxis: {
                     categories: @json($catLabels),
-                    labels: { style: { colors: '#94a3b8', fontSize: '11px' } }
+                    tickAmount: 4,
+                    labels: {
+                        style: { colors: '#94a3b8', fontSize: '11px' },
+                        formatter: function (valeur) {
+                            const nombre = Number(valeur);
+                            if (nombre >= 1000000) { return (nombre / 1000000).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' M'; }
+                            if (nombre >= 1000) { return Math.round(nombre / 1000).toLocaleString('fr-FR') + ' k'; }
+                            return nombre.toLocaleString('fr-FR');
+                        }
+                    }
                 },
-                colors: ['#8b5cf6'],
+                colors: ['#283888'],
                 plotOptions: {
                     bar: {
                         borderRadius: 6,
@@ -314,7 +342,7 @@
                     }
                 }
             };
-            new ApexCharts(document.querySelector("#chart-categories"), optionsCategories).render();
+            if (document.querySelector("#chart-categories")) { new ApexCharts(document.querySelector("#chart-categories"), optionsCategories).render(); }
 
         });
     </script>

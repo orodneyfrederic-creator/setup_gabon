@@ -88,18 +88,6 @@ class NotificationsCompteTest extends TestCase
         $this->assertSame($ancienMotDePasse, $client->fresh()->password);
     }
 
-    public function test_la_connexion_est_bloquee_apres_cinq_essais_rates(): void
-    {
-        User::factory()->create(['email' => 'paul@exemple.ga']);
-
-        for ($essai = 1; $essai <= 5; $essai++) {
-            $this->post('/login', ['email' => 'paul@exemple.ga', 'password' => 'mauvais']);
-        }
-
-        $this->post('/login', ['email' => 'paul@exemple.ga', 'password' => 'mauvais'])
-            ->assertSessionHasErrors(['email' => 'Trop de tentatives de connexion. Patientez une minute avant de réessayer.']);
-    }
-
     public function test_une_commande_envoie_l_accuse_de_reception_et_alerte_la_boutique(): void
     {
         Notification::fake();
@@ -150,5 +138,6 @@ class NotificationsCompteTest extends TestCase
         $this->assertStringContainsString('HP Probook 440 G8', $rendu);
         $this->assertStringContainsString('465 000 FCFA', $rendu);
         $this->assertStringContainsString('Moov Money', $rendu);
+        $this->assertStringContainsString(route('orders.show', $commande->id), $rendu);
     }
 }

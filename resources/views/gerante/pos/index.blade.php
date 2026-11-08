@@ -27,7 +27,7 @@
                     name="search"
                     value="{{ $search }}"
                     placeholder="Rechercher un produit..."
-                    class="flex-1 h-11 px-4 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 bg-white"
+                    class="flex-1 h-11 px-4 border border-slate-300 rounded-lg text-sm focus:outline-hidden focus:ring-4 focus:ring-blue-100 focus:border-blue-600 bg-white"
                     id="pos-search-input"
                 >
                 <button type="submit" class="h-11 px-4 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm font-semibold transition-colors" aria-label="Rechercher">
@@ -102,7 +102,7 @@
                             <input type="hidden" name="methode_paiement" :value="value">
                             <div class="relative">
                                 <button type="button" @click="open = !open"
-                                        class="w-full flex items-center justify-between border border-slate-200 rounded-xl px-3.5 py-2.5 bg-white text-sm text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
+                                        class="w-full flex items-center justify-between border border-slate-200 rounded-xl px-3.5 py-2.5 bg-white text-sm text-slate-800 font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-500 shadow-xs transition-all">
                                     <span class="flex items-center gap-2.5">
                                         <i class="fa-solid" :class="icon"></i>
                                         <span x-text="selected"></span>

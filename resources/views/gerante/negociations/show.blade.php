@@ -13,7 +13,7 @@
     </div>
 
     {{-- EN-TÊTE DÉTAIL --}}
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-3 mb-2 flex-wrap">
                 <h1 class="text-xl font-black text-slate-900">Négociation #{{ $negociation->reference }}</h1>
@@ -74,7 +74,7 @@
     {{-- DÉTAILS DU PRODUIT ET CLIENT --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {{-- Fiche Produit --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-box text-blue-600"></i>
                 <span>Équipement concerné</span>
@@ -100,7 +100,7 @@
         </div>
 
         {{-- Fiche Client --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-user text-blue-600"></i>
                 <span>Informations Client</span>
@@ -116,9 +116,9 @@
 
     {{-- FORMULAIRE D'ARBITRAGE GÉRANTE (si en_attente_gerante) --}}
     @if($negociation->statut === 'en_attente_gerante')
-        <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 shadow-xs space-y-4">
             <div class="flex items-center gap-3 text-amber-800">
-                <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shadow">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-sm">
                     <i class="fa-solid fa-gavel"></i>
                 </div>
                 <div>
@@ -165,14 +165,14 @@
                 <div x-show="action === 'contre_offre'" x-cloak class="space-y-1">
                     <label class="block text-xs font-bold text-slate-700">Montant de votre contre-offre (FCFA) *</label>
                     <input type="number" name="montant" min="1" placeholder="Ex: 445000"
-                           class="w-full sm:w-64 px-4 py-2 border border-slate-300 rounded-xl text-xs font-bold focus:outline-none focus:border-amber-500">
+                           class="w-full sm:w-64 px-4 py-2 border border-slate-300 rounded-xl text-xs font-bold focus:outline-hidden focus:border-amber-500">
                 </div>
 
                 {{-- Message explicatif optionnel --}}
                 <div class="space-y-1">
                     <label class="block text-xs font-bold text-slate-700">Message au client (optionnel)</label>
                     <textarea name="message" rows="2" placeholder="Ex: Nous acceptons exceptionnellement votre offre compte tenu de la quantité..."
-                              class="w-full px-4 py-2 border border-slate-300 rounded-xl text-xs focus:outline-none focus:border-amber-500"></textarea>
+                              class="w-full px-4 py-2 border border-slate-300 rounded-xl text-xs focus:outline-hidden focus:border-amber-500"></textarea>
                 </div>
 
                 <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2">
@@ -184,7 +184,7 @@
     @endif
 
     {{-- TIMELINE DES OFFRES --}}
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
         <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
             <i class="fa-solid fa-clock-rotate-left text-blue-600"></i>
             <span>Historique des échanges ({{ $negociation->offres->count() }})</span>
@@ -212,7 +212,7 @@
                             default => 'fa-comment'
                         };
                     @endphp
-                    <div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full {{ $iconBg }} flex items-center justify-center text-[11px] shadow">
+                    <div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full {{ $iconBg }} flex items-center justify-center text-[11px] shadow-sm">
                         <i class="fa-solid {{ $iconClass }}"></i>
                     </div>
 
@@ -233,7 +233,7 @@
                         @if($offre->montant_propose)
                             <div class="pt-1 flex items-center gap-2">
                                 <span class="text-[11px] font-bold text-slate-400 uppercase">Montant :</span>
-                                <span class="text-xs font-black text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
+                                <span class="text-xs font-black text-slate-900 bg-white px-2 py-0.5 rounded-sm border border-slate-200">
                                     {{ number_format($offre->montant_propose, 0, ',', ' ') }} FCFA
                                 </span>
                             </div>

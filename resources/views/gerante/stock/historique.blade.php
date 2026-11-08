@@ -8,10 +8,10 @@
             <p class="mt-1 text-slate-500">Produit : {{ $produit->reference }} - {{ $produit->designation }}</p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('gerante.stock.create_mouvement', $produit) }}" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.stock.create_mouvement', $produit) }}" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus-minus"></i> Nouveau mouvement
             </a>
-            <a href="{{ route('gerante.stock.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.stock.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -21,7 +21,7 @@
         
         <!-- Informations produit -->
         <div class="lg:col-span-1">
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sticky top-6">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-xs p-5 sticky top-6">
                 <div class="text-center mb-4">
                     @if($produit->image)
                         <img src="{{ Storage::url($produit->image) }}" class="w-24 h-24 mx-auto object-cover rounded-xl border border-slate-200 mb-3">
@@ -48,7 +48,7 @@
 
         <!-- Tableau historique -->
         <div class="lg:col-span-3">
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
                 <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                     <h2 class="font-bold text-slate-800 text-sm">Liste des mouvements</h2>
                     <span class="text-xs font-semibold text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-200">{{ $mouvements->total() }} enregistrements</span>

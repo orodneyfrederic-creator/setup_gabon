@@ -8,10 +8,10 @@
             <p class="mt-1 text-slate-500">Créez et suivez les propositions commerciales</p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('gerante.devis.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.devis.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> Créer un devis
             </a>
-            <a href="{{ route('gerante.factures.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.factures.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-file-invoice-dollar"></i> Voir les factures
             </a>
         </div>
@@ -24,14 +24,14 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.devis.index') }}" method="GET" class="w-full flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher (Réf, Client, Entreprise)..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher (Réf, Client, Entreprise)..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden transition-shadow">
                     <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-slate-400"></i>
                 </div>
-                <select name="statut" onchange="this.form.submit()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                <select name="statut" onchange="this.form.submit()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-hidden">
                     <option value="">Tous les statuts</option>
                     <option value="brouillon" {{ request('statut') === 'brouillon' ? 'selected' : '' }}>Brouillon</option>
                     <option value="accepte" {{ request('statut') === 'accepte' ? 'selected' : '' }}>Accepté</option>

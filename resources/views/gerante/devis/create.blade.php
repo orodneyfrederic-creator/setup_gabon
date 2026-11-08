@@ -8,7 +8,7 @@
             <p class="mt-1 text-slate-500">Créer une proposition commerciale pour un client</p>
         </div>
         <div>
-            <a href="{{ route('gerante.devis.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.devis.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -31,7 +31,7 @@
             
             <!-- Informations Client -->
             <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-xs p-6">
                     <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
                         <i class="fa-solid fa-user text-blue-600 mr-2"></i> Informations Client
                     </h2>
@@ -39,34 +39,34 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-1">Nom Complet *</label>
-                            <input type="text" name="client_nom" value="{{ old('client_nom') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+                            <input type="text" name="client_nom" value="{{ old('client_nom') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden transition-all">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-1">Téléphone *</label>
-                            <input type="text" name="client_telephone" value="{{ old('client_telephone') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+                            <input type="text" name="client_telephone" value="{{ old('client_telephone') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden transition-all">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-1">Email</label>
-                            <input type="email" name="client_email" value="{{ old('client_email') }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+                            <input type="email" name="client_email" value="{{ old('client_email') }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden transition-all">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-1">Entreprise (Optionnel)</label>
-                            <input type="text" name="client_entreprise" value="{{ old('client_entreprise') }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+                            <input type="text" name="client_entreprise" value="{{ old('client_entreprise') }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden transition-all">
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-xs p-6">
                     <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
                         <i class="fa-solid fa-note-sticky text-blue-600 mr-2"></i> Notes & Conditions
                     </h2>
-                    <textarea name="notes" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" placeholder="Ex: Devis valable 30 jours...">{{ old('notes', "Devis valable 30 jours à compter de la date d'émission.") }}</textarea>
+                    <textarea name="notes" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden transition-all" placeholder="Ex: Devis valable 30 jours...">{{ old('notes', "Devis valable 30 jours à compter de la date d'émission.") }}</textarea>
                 </div>
             </div>
 
             <!-- Produits et Lignes -->
             <div class="lg:col-span-2">
-                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden flex flex-col h-full">
                     <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                         <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider">
                             <i class="fa-solid fa-list text-blue-600 mr-2"></i> Produits du Devis
@@ -103,7 +103,7 @@
                     </div>
 
                     <div class="p-6 border-t border-slate-100 flex justify-end">
-                        <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2 text-lg">
+                        <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2 text-lg">
                             <i class="fa-solid fa-save"></i> Enregistrer le Devis
                         </button>
                     </div>
@@ -117,7 +117,7 @@
     <template id="ligneTemplate">
         <tr class="ligne-devis hover:bg-slate-50 transition-colors">
             <td class="px-6 py-3">
-                <select name="lignes[__INDEX__][id_p]" onchange="majLigne(this)" required class="produit-select w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+                <select name="lignes[__INDEX__][id_p]" onchange="majLigne(this)" required class="produit-select w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden">
                     <option value="" data-prix="0">Sélectionner un produit...</option>
                     @foreach($produits as $p)
                         <option value="{{ $p->id }}" data-prix="{{ $p->prix_unitaire }}">{{ $p->reference }} - {{ $p->designation }} (Stock: {{ $p->quantite }})</option>
@@ -128,7 +128,7 @@
                 <input type="text" readonly class="prix-unitaire w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 text-right" value="0">
             </td>
             <td class="px-6 py-3">
-                <input type="number" name="lignes[__INDEX__][quantite]" value="1" min="1" oninput="majLigne(this)" required class="quantite w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none text-center">
+                <input type="number" name="lignes[__INDEX__][quantite]" value="1" min="1" oninput="majLigne(this)" required class="quantite w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-hidden text-center">
             </td>
             <td class="px-6 py-3 text-right">
                 <span class="sous-total font-bold text-slate-800">0</span>

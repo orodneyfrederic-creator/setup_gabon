@@ -36,10 +36,13 @@
 <body class="bg-slate-50 text-slate-900 leading-normal min-h-screen flex flex-col">
 
     @php
-        $estGerante = Auth::guard('staff')->check() && Auth::guard('staff')->user()->role === 'gerante';
+        // Personnel de la boutique (gérante ou vendeur) : interface de gestion avec menu latéral
+        $membreStaff = Auth::guard('staff')->user();
+        $estPersonnel = $membreStaff !== null && $membreStaff->estActif();
+        $estGerante = $estPersonnel && $membreStaff->estGerante();
     @endphp
 
-    @unless($estGerante)
+    @unless($estPersonnel)
     <!-- BANDEAU INFOS PRATIQUES -->
     <div class="bg-blue-700 text-blue-50 text-[12px]">
         <div class="max-w-7xl mx-auto px-4 h-8 flex items-center justify-between gap-4">
@@ -59,10 +62,10 @@
 
     <!-- EN-TÊTE -->
     <header class="bg-white text-slate-900 sticky top-0 z-40 border-b border-slate-200">
-        <div class="{{ $estGerante ? 'px-4 lg:px-6' : 'max-w-7xl mx-auto px-4' }} h-16 flex items-center gap-3 sm:gap-6">
+        <div class="{{ $estPersonnel ? 'px-4 lg:px-6' : 'max-w-7xl mx-auto px-4' }} h-16 flex items-center gap-3 sm:gap-6">
 
             <div class="flex items-center gap-1 sm:gap-3 shrink-0">
-                <button id="openSidebar" class="-ml-2 w-10 h-10 rounded-lg flex items-center justify-center text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-colors {{ $estGerante ? 'lg:hidden' : '' }}" aria-label="Ouvrir le menu">
+                <button id="openSidebar" class="-ml-2 w-10 h-10 rounded-lg flex items-center justify-center text-slate-600 hover:text-blue-700 hover:bg-blue-50 transition-colors {{ $estPersonnel ? 'lg:hidden' : '' }}" aria-label="Ouvrir le menu">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
                 <a href="{{ route('home') }}" class="flex items-center" aria-label="SETUP-Gabon, accueil">
@@ -70,8 +73,8 @@
                 </a>
             </div>
 
-            @if($estGerante)
-                <span class="hidden sm:inline-flex items-center h-7 px-2.5 rounded-md bg-blue-50 text-blue-800 text-xs font-semibold">Espace gérante</span>
+            @if($estPersonnel)
+                <span class="hidden sm:inline-flex items-center h-7 px-2.5 rounded-md bg-blue-50 text-blue-800 text-xs font-semibold">{{ $estGerante ? 'Espace gérante' : 'Espace vendeur' }}</span>
             @else
             <!-- RECHERCHE (bureau) -->
             <form action="{{ route('home') }}" method="GET" role="search" class="hidden md:flex flex-1 max-w-xl">
@@ -83,7 +86,7 @@
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
                     <input id="recherche-entete" type="search" name="search" value="{{ request('search') }}"
                            placeholder="Ordinateur, imprimante, écran…"
-                           class="w-full h-11 pl-10 pr-28 bg-slate-100 border border-transparent rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none transition">
+                           class="w-full h-11 pl-10 pr-28 bg-slate-100 border border-transparent rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-hidden transition">
                     <button type="submit" class="absolute right-1.5 top-1.5 h-8 px-4 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold transition-colors">
                         Rechercher
                     </button>
@@ -117,10 +120,14 @@
                                 <p class="text-sm font-semibold text-slate-900 truncate">{{ $userFullName }}</p>
                                 <p class="text-xs text-slate-500 truncate">{{ $currentUser->email }}</p>
                             </div>
-                            @if($estGerante)
-                                <a href="{{ route('gerante.dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                            @if($estPersonnel)
+                                <a href="{{ route($membreStaff->routeAccueil()) }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
                                     <i class="fa-solid fa-gauge-high w-4 text-slate-400"></i>
-                                    <span>Espace gérante</span>
+                                    <span>{{ $estGerante ? 'Espace gérante' : 'Espace vendeur' }}</span>
+                                </a>
+                                <a href="{{ route('gerante.compte.edit') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
+                                    <i class="fa-solid fa-key w-4 text-slate-400"></i>
+                                    <span>Mon compte et mot de passe</span>
                                 </a>
                             @else
                                 <a href="{{ route('account.profile') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-700 transition-colors">
@@ -196,7 +203,7 @@
                                         <p class="text-sm font-medium text-slate-900 line-clamp-2" x-text="item.designation"></p>
                                         <div class="flex items-center gap-2 mt-1 flex-wrap">
                                             <template x-if="item.negociation_id">
-                                                <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded">Prix négocié</span>
+                                                <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded-sm">Prix négocié</span>
                                             </template>
                                             <template x-if="item.prixCatalogue && item.prixCatalogue > item.prix">
                                                 <span class="chiffres text-xs text-slate-400 line-through" x-text="formatPrix(item.prixCatalogue)"></span>
@@ -238,7 +245,7 @@
             </div>
         </div>
 
-        @unless($estGerante)
+        @unless($estPersonnel)
         <!-- RECHERCHE (mobile) -->
         <form action="{{ route('home') }}" method="GET" role="search" class="md:hidden px-4 pb-3">
             @if(request('category'))
@@ -249,7 +256,7 @@
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
                 <input id="recherche-mobile" type="search" name="search" value="{{ request('search') }}"
                        placeholder="Rechercher un produit…"
-                       class="w-full h-11 pl-10 pr-4 bg-slate-100 border border-transparent rounded-xl text-[15px] text-slate-900 placeholder-slate-500 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-none transition">
+                       class="w-full h-11 pl-10 pr-4 bg-slate-100 border border-transparent rounded-xl text-[15px] text-slate-900 placeholder-slate-500 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 focus:outline-hidden transition">
             </div>
         </form>
         @endunless
@@ -258,41 +265,51 @@
     <!-- MENU LATÉRAL -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-slate-950/50 z-50 hidden opacity-0 transition-opacity duration-300"></div>
 
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-[19rem] max-w-[85vw] bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col {{ $estGerante ? 'lg:translate-x-0 lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-64 lg:shadow-none lg:border-r lg:border-slate-200 lg:z-30' : '' }}" aria-label="Menu">
-        <div class="h-16 px-4 flex items-center justify-between border-b border-slate-200 shrink-0 {{ $estGerante ? 'lg:hidden' : '' }}">
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-[19rem] max-w-[85vw] bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col {{ $estPersonnel ? 'lg:translate-x-0 lg:top-16 lg:h-[calc(100vh-4rem)] lg:w-64 lg:shadow-none lg:border-r lg:border-slate-200 lg:z-30' : '' }}" aria-label="Menu">
+        <div class="h-16 px-4 flex items-center justify-between border-b border-slate-200 shrink-0 {{ $estPersonnel ? 'lg:hidden' : '' }}">
             <img src="{{ asset('img/logo.png') }}" alt="SETUP-Gabon" class="h-9 w-auto object-contain">
             <button id="closeSidebar" class="w-10 h-10 -mr-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-colors" aria-label="Fermer le menu">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
-        <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5 text-sm" aria-label="{{ $estGerante ? 'Espace gérante' : 'Navigation' }}">
-            @if($estGerante)
+        <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5 text-sm" aria-label="{{ $estPersonnel ? ($estGerante ? 'Espace gérante' : 'Espace vendeur') : 'Navigation' }}">
+            @if($estPersonnel)
                 @php
                     $nbCmdEnAttente = \App\Models\Commande::where('statut', 'en_attente')->count();
-                    $nbNegoEnAttente = \App\Models\Negociation::where('statut', 'en_attente_gerante')->count();
-                    $menuGerante = [
+                    $nbNegoEnAttente = $estGerante ? \App\Models\Negociation::where('statut', 'en_attente_gerante')->count() : 0;
+                    // [libellé, route, motif actif, icône, badge, réservé à la gérante]
+                    $menuComplet = [
                         null => [
-                            ['Tableau de bord', 'gerante.dashboard', 'gerante.dashboard', 'fa-solid fa-house', null],
+                            ['Tableau de bord', 'gerante.dashboard', 'gerante.dashboard', 'fa-solid fa-house', null, true],
                         ],
                         'Ventes' => [
-                            ['Caisse', 'gerante.pos.index', 'gerante.pos.*', 'fa-solid fa-cash-register', null],
-                            ['Commandes en ligne', 'gerante.commandes.index', 'gerante.commandes.*', 'fa-solid fa-bag-shopping', $nbCmdEnAttente ?: null],
-                            ['Négociations', 'gerante.negociations.index', 'gerante.negociations.*', 'fa-solid fa-handshake-simple', $nbNegoEnAttente ?: null],
-                            ['Statistiques', 'gerante.analytics.index', 'gerante.analytics.*', 'fa-solid fa-chart-line', null],
+                            ['Caisse', 'gerante.pos.index', 'gerante.pos.*', 'fa-solid fa-cash-register', null, false],
+                            ['Commandes en ligne', 'gerante.commandes.index', 'gerante.commandes.*', 'fa-solid fa-bag-shopping', $nbCmdEnAttente ?: null, false],
+                            ['Négociations', 'gerante.negociations.index', 'gerante.negociations.*', 'fa-solid fa-handshake-simple', $nbNegoEnAttente ?: null, true],
+                            ['Statistiques', 'gerante.analytics.index', 'gerante.analytics.*', 'fa-solid fa-chart-line', null, true],
                         ],
                         'Catalogue' => [
-                            ['Produits', 'gerante.produits.index', 'gerante.produits.*', 'fa-solid fa-box', null],
-                            ['Stock', 'gerante.stock.index', 'gerante.stock.*', 'fa-solid fa-warehouse', null],
-                            ['Catégories', 'gerante.categories.index', 'gerante.categories.*', 'fa-solid fa-tags', null],
-                            ['Marques', 'gerante.marques.index', 'gerante.marques.*', 'fa-solid fa-copyright', null],
+                            ['Produits', 'gerante.produits.index', 'gerante.produits.*', 'fa-solid fa-box', null, true],
+                            ['Stock', 'gerante.stock.index', 'gerante.stock.*', 'fa-solid fa-warehouse', null, false],
+                            ['Catégories', 'gerante.categories.index', 'gerante.categories.*', 'fa-solid fa-tags', null, true],
+                            ['Marques', 'gerante.marques.index', 'gerante.marques.*', 'fa-solid fa-copyright', null, true],
+                            ['Avis clients', 'gerante.avis.index', 'gerante.avis.*', 'fa-solid fa-star', null, true],
                         ],
                         'Clients & documents' => [
-                            ['Clients', 'gerante.clients.index', 'gerante.clients.*', 'fa-solid fa-users', null],
-                            ['Devis', 'gerante.devis.index', 'gerante.devis.*', 'fa-solid fa-file-lines', null],
-                            ['Factures', 'gerante.factures.index', 'gerante.factures.*', 'fa-solid fa-file-invoice', null],
-                            ['Service après-vente', 'gerante.sav.index', 'gerante.sav.*', 'fa-solid fa-screwdriver-wrench', null],
+                            ['Clients', 'gerante.clients.index', 'gerante.clients.*', 'fa-solid fa-users', null, true],
+                            ['Devis', 'gerante.devis.index', 'gerante.devis.*', 'fa-solid fa-file-lines', null, true],
+                            ['Factures', 'gerante.factures.index', 'gerante.factures.*', 'fa-solid fa-file-invoice', null, true],
+                            ['Service après-vente', 'gerante.sav.index', 'gerante.sav.*', 'fa-solid fa-screwdriver-wrench', null, false],
+                        ],
+                        'Boutique' => [
+                            ['Personnel', 'gerante.personnel.index', 'gerante.personnel.*', 'fa-solid fa-id-badge', null, true],
                         ],
                     ];
+                    // Un vendeur ne voit que les écrans auxquels il a accès
+                    $menuGerante = collect($menuComplet)
+                        ->map(fn ($liens) => array_values(array_filter($liens, fn ($lien) => $estGerante || ! $lien[5])))
+                        ->filter()
+                        ->all();
                 @endphp
 
                 @foreach($menuGerante as $groupe => $liens)
@@ -392,7 +409,7 @@
                         <i class="fa-solid fa-right-to-bracket text-slate-400 text-sm w-4"></i>
                         <span>Se connecter</span>
                     </a>
-                    <a href="{{ route('register') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-colors shadow">
+                    <a href="{{ route('register') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-colors shadow-sm">
                         <i class="fa-solid fa-user-plus text-sm"></i>
                         <span>Créer un compte</span>
                     </a>
@@ -436,7 +453,7 @@
     </div>
 
     <!-- CONTENU PRINCIPAL -->
-    <main class="flex-1 w-full px-4 py-6 sm:py-8 {{ $estGerante ? 'lg:pl-72 lg:pr-8 xl:pr-10' : 'max-w-7xl mx-auto' }}">
+    <main class="flex-1 w-full px-4 py-6 sm:py-8 {{ $estPersonnel ? 'lg:pl-72 lg:pr-8 xl:pr-10' : 'max-w-7xl mx-auto' }}">
         @yield('content')
     </main>
 
@@ -506,7 +523,7 @@
             });
         });
     </script>
-    @unless($estGerante)
+    @unless($estPersonnel)
     <!-- PIED DE PAGE -->
     <footer class="mt-16 bg-white border-t border-slate-200 text-slate-600">
         <div class="h-1 flex" aria-hidden="true">

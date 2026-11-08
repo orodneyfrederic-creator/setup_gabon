@@ -18,7 +18,7 @@
                     <label class="block cursor-pointer group">
                         <img src="{{ asset('storage/'.$photo->chemin) }}" alt="Photo {{ $loop->iteration }}" class="w-full aspect-square object-cover rounded-lg border border-slate-200 group-has-[:checked]:opacity-40">
                         <span class="mt-1.5 flex items-center gap-1.5 text-xs text-slate-600">
-                            <input type="checkbox" name="supprimer_photos[]" value="{{ $photo->id }}" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500">
+                            <input type="checkbox" name="supprimer_photos[]" value="{{ $photo->id }}" class="rounded-sm border-slate-300 text-rose-600 focus:ring-rose-500">
                             Supprimer
                         </span>
                     </label>
@@ -41,9 +41,9 @@
         <template x-for="(ligne, index) in lignes" :key="index">
             <div class="flex gap-2 items-start">
                 <input type="text" :name="`caracteristiques[${index}][libelle]`" x-model="ligne.libelle" placeholder="Caractéristique" maxlength="60" aria-label="Caractéristique"
-                       class="w-2/5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+                       class="w-2/5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden">
                 <input type="text" :name="`caracteristiques[${index}][valeur]`" x-model="ligne.valeur" placeholder="Valeur" maxlength="255" aria-label="Valeur"
-                       class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+                       class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-hidden">
                 <button type="button" @click="lignes.splice(index, 1); if (lignes.length === 0) lignes.push({ libelle: '', valeur: '' })"
                         class="w-9 h-9 shrink-0 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center" aria-label="Retirer la ligne">
                     <i class="fa-solid fa-xmark"></i>

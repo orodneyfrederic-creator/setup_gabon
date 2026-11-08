@@ -8,13 +8,13 @@
             <p class="mt-1 text-slate-500">Créer une nouvelle fiche produit dans le catalogue</p>
         </div>
         <div>
-            <a href="{{ route('gerante.produits.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.produits.index') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
     </div>
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6 max-w-4xl mx-auto">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6 max-w-4xl mx-auto">
         <form action="{{ route('gerante.produits.store') }}" method="POST" enctype="multipart/form-data" class="p-6">
             @csrf
 
@@ -22,21 +22,21 @@
                 <!-- Référence -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Référence *</label>
-                    <input type="text" name="reference" value="{{ old('reference') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                    <input type="text" name="reference" value="{{ old('reference') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                     @error('reference') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Désignation -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Désignation *</label>
-                    <input type="text" name="designation" value="{{ old('designation') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                    <input type="text" name="designation" value="{{ old('designation') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                     @error('designation') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Catégorie -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Catégorie *</label>
-                    <select name="id_cat" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                    <select name="id_cat" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                         <option value="">Sélectionner une catégorie</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}" {{ old('id_cat') == $cat->id ? 'selected' : '' }}>{{ $cat->nom }}</option>
@@ -48,7 +48,7 @@
                 <!-- Marque -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Marque *</label>
-                    <select name="id_m" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                    <select name="id_m" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                         <option value="">Sélectionner une marque</option>
                         @foreach($marques as $marque)
                             <option value="{{ $marque->id }}" {{ old('id_m') == $marque->id ? 'selected' : '' }}>{{ $marque->nom }}</option>
@@ -60,14 +60,14 @@
                 <!-- Prix de Vente -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Prix de Vente (FCFA) *</label>
-                    <input type="number" step="1" name="prix_unitaire" value="{{ old('prix_unitaire') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                    <input type="number" step="1" name="prix_unitaire" value="{{ old('prix_unitaire') }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                     @error('prix_unitaire') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Prix d'Achat (Garde-fou) -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-1">Prix d'Achat (FCFA) <span class="text-xs text-slate-400 font-normal">(garde-fou)</span></label>
-                    <input type="number" step="1" name="prix_achat" value="{{ old('prix_achat') }}" placeholder="Ex: 380000" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                    <input type="number" step="1" name="prix_achat" value="{{ old('prix_achat') }}" placeholder="Ex: 380000" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                     @error('prix_achat') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -75,12 +75,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Stock Initial *</label>
-                        <input type="number" name="quantite" value="{{ old('quantite', 0) }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                        <input type="number" name="quantite" value="{{ old('quantite', 0) }}" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                         @error('quantite') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Seuil d'alerte</label>
-                        <input type="number" name="seuil_alerte" value="{{ old('seuil_alerte', 5) }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">
+                        <input type="number" name="seuil_alerte" value="{{ old('seuil_alerte', 5) }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">
                         @error('seuil_alerte') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Autoriser la négociation</label>
-                        <select name="negociable" x-model="nego" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+                        <select name="negociable" x-model="nego" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 outline-hidden">
                             <option value="inherit">Hériter de la catégorie</option>
                             <option value="1">Oui (Forcer activé)</option>
                             <option value="0">Non (Forcer désactivé)</option>
@@ -108,17 +108,17 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Remise Max Spécifique (%)</label>
-                        <input type="number" min="0" max="50" name="remise_max_pct" value="{{ old('remise_max_pct') }}" placeholder="Vide = selon catégorie" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+                        <input type="number" min="0" max="50" name="remise_max_pct" value="{{ old('remise_max_pct') }}" placeholder="Vide = selon catégorie" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 outline-hidden">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Nombre de tours max</label>
-                        <input type="number" min="1" max="10" name="nb_tours_max" value="{{ old('nb_tours_max', 3) }}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+                        <input type="number" min="1" max="10" name="nb_tours_max" value="{{ old('nb_tours_max', 3) }}" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 outline-hidden">
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2 pt-1">
-                    <input type="checkbox" id="decision_manuelle" name="decision_manuelle" value="1" {{ old('decision_manuelle') ? 'checked' : '' }} class="rounded border-slate-300 text-amber-600 focus:ring-amber-500">
+                    <input type="checkbox" id="decision_manuelle" name="decision_manuelle" value="1" {{ old('decision_manuelle') ? 'checked' : '' }} class="rounded-sm border-slate-300 text-amber-600 focus:ring-amber-500">
                     <label for="decision_manuelle" class="text-xs text-slate-700 font-semibold cursor-pointer">
                         Mode décision manuelle obligatoire (mettre toute offre en attente d'arbitrage gérante)
                     </label>
@@ -128,7 +128,7 @@
             <!-- Description -->
             <div class="mb-6">
                 <label class="block text-sm font-bold text-slate-700 mb-1">Description</label>
-                <textarea name="description" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-none transition-all">{{ old('description') }}</textarea>
+                <textarea name="description" rows="4" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:bg-white outline-hidden transition-all">{{ old('description') }}</textarea>
                 @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -154,7 +154,7 @@
 
             <!-- Submit -->
             <div class="flex justify-end pt-4 border-t border-slate-100">
-                <button type="submit" class="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                     <i class="fa-solid fa-save"></i> Enregistrer le produit
                 </button>
             </div>

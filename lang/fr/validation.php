@@ -39,10 +39,32 @@ return [
         'array' => 'Le tableau :attribute ne peut pas avoir plus de :max éléments.',
     ],
 
+    'min' => [
+        'numeric' => 'La valeur de :attribute doit être supérieure ou égale à :min.',
+        'file' => 'Le fichier :attribute doit faire au moins :min kilo-octets.',
+        'string' => 'Le champ :attribute doit contenir au moins :min caractères.',
+        'array' => 'Le tableau :attribute doit contenir au moins :min éléments.',
+    ],
+
+    'boolean' => 'Le champ :attribute doit être vrai ou faux.',
+    'in' => 'La valeur choisie pour :attribute n\'est pas valide.',
     'mimes' => 'Le fichier :attribute doit être un fichier de type : :values.',
     'mimetype' => 'Le fichier :attribute doit être un fichier de type : :values.',
     'numeric' => 'Le champ :attribute doit être un nombre.',
+    'regex' => 'Le format du champ :attribute n\'est pas valide.',
     'required' => 'Le champ :attribute est obligatoire.',
+    'required_if' => 'Le champ :attribute est obligatoire dans ce cas.',
+    'required_with' => 'Le champ :attribute est obligatoire.',
+    'string' => 'Le champ :attribute doit être un texte.',
+    'unique' => 'Cette valeur de :attribute est déjà utilisée.',
+
+    'password' => [
+        'letters' => 'Le champ :attribute doit contenir au moins une lettre.',
+        'mixed' => 'Le champ :attribute doit contenir au moins une majuscule et une minuscule.',
+        'numbers' => 'Le champ :attribute doit contenir au moins un chiffre.',
+        'symbols' => 'Le champ :attribute doit contenir au moins un symbole.',
+        'uncompromised' => 'Ce :attribute est apparu dans une fuite de données. Choisissez-en un autre.',
+    ],
 
     'attributes' => [
         'image' => 'l\'image',
@@ -50,6 +72,21 @@ return [
         'nom' => 'le nom',
         'email' => 'l\'adresse e-mail',
         'password' => 'le mot de passe',
+        'mot_de_passe' => 'mot de passe',
+        'nouveau_mot_de_passe' => 'nouveau mot de passe',
+        'mot_de_passe_actuel' => 'mot de passe actuel',
+        'role' => 'rôle',
+        'actif' => 'accès',
+        'note' => 'note',
+        'commentaire' => 'commentaire',
+        'client_nom' => 'nom',
+        'client_telephone' => 'téléphone',
+        'client_email' => 'e-mail',
+        'adresse_livraison' => 'adresse de livraison',
+        'reference_transaction' => 'référence de la transaction',
+        'numero_payeur' => 'numéro qui a payé',
+        'motif_refus' => 'motif du refus',
+        'motif_masquage' => 'motif du masquage',
     ],
 
 ];

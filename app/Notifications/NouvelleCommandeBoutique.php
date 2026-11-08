@@ -27,12 +27,16 @@ class NouvelleCommandeBoutique extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $commande = $this->commande->loadMissing(['user', 'lignesCommandes.produit']);
-        $client = $commande->user;
+        $coordonnees = array_filter([
+            $commande->nomClient().($commande->estInvitee() ? ' (sans compte)' : ''),
+            $commande->telephoneClient() ?: 'téléphone non renseigné',
+            $commande->emailClient(),
+        ]);
 
         $message = (new MailMessage)
             ->subject('Nouvelle commande n° '.$commande->id.' – '.number_format($commande->montant_c, 0, ',', ' ').' FCFA')
             ->greeting('Nouvelle commande en ligne')
-            ->line('Client : '.trim($client?->prenom.' '.$client?->nom).' · '.($client?->tel ?: 'téléphone non renseigné').' · '.$client?->email)
+            ->line('Client : '.implode(' · ', $coordonnees))
             ->line('Livraison : '.$commande->adresse_livraison.' · Paiement : '.$commande->libelleMethodePaiement());
 
         foreach ($commande->lignesCommandes as $ligne) {

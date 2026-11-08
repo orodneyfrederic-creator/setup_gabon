@@ -14,7 +14,7 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# /public/build est versionné : le serveur n'a pas forcément Node.js. Relancer « npm run build » après toute modification de vue.
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage

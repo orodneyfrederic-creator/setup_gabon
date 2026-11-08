@@ -53,9 +53,9 @@ class StatutCommandeModifie extends Notification
 
         return (new MailMessage)
             ->subject($sujet.' – SETUP-Gabon')
-            ->greeting('Bonjour '.$notifiable->prenom.',')
+            ->greeting('Bonjour '.$commande->prenomClient().',')
             ->line($texte)
-            ->action('Voir ma commande', route('orders.show', $commande->id))
+            ->action('Voir ma commande', $commande->urlSuivi())
             ->salutation('L\'équipe SETUP-Gabon · '.config('boutique.telephone'));
     }
 }

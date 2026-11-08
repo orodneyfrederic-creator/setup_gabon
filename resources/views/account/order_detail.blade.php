@@ -7,11 +7,26 @@
     $etapes = ['en_attente' => 'Reçue', 'confirmee' => 'Confirmée', 'livree' => 'Livrée'];
     $rangActuel = array_search($commande->statut, array_keys($etapes), true);
     $estAnnulee = $commande->statut === 'annulee';
+    $vueInvitee = $vueInvitee ?? false;
+    $lienWhatsAppBoutique = 'https://wa.me/'.config('boutique.whatsapp').'?text='.rawurlencode('Bonjour, je vous contacte au sujet de ma commande n° '.$commande->id.'.');
 @endphp
+@if ($vueInvitee)
+    {{-- Lien secret : ni indexé par les moteurs, ni transmis aux sites ouverts depuis cette page --}}
+    @push('styles')
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="referrer" content="no-referrer">
+    @endpush
+@endif
 <div class="max-w-4xl mx-auto">
-    <a href="{{ route('orders.index') }}" class="text-sm text-slate-500 hover:text-blue-700 inline-flex items-center gap-1.5">
-        <i class="fa-solid fa-arrow-left text-xs"></i> Mes commandes
-    </a>
+    @if ($vueInvitee)
+        <a href="{{ route('home') }}" class="text-sm text-slate-500 hover:text-blue-700 inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Retour à la boutique
+        </a>
+    @else
+        <a href="{{ route('orders.index') }}" class="text-sm text-slate-500 hover:text-blue-700 inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Mes commandes
+        </a>
+    @endif
 
     <div class="mt-3 mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
         <h1 class="chiffres text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Commande n° {{ $commande->id }}</h1>
@@ -36,7 +51,16 @@
                             Envoyer ma commande sur WhatsApp
                         </a>
                     @endif
-                    <p class="mt-3 text-xs text-slate-600">Ce récapitulatif reste disponible à tout moment dans « Mes commandes ».</p>
+                    @if ($vueInvitee)
+                        <p class="mt-3 text-xs text-slate-600">
+                            Gardez le lien de cette page (ajoutez-la à vos favoris) : il vous permet de suivre votre commande.
+                            @if ($commande->client_email)
+                                Nous vous l'avons aussi envoyé par e-mail.
+                            @endif
+                        </p>
+                    @else
+                        <p class="mt-3 text-xs text-slate-600">Ce récapitulatif reste disponible à tout moment dans « Mes commandes ».</p>
+                    @endif
                 </div>
             </div>
         </section>
@@ -48,7 +72,7 @@
             <p class="text-sm text-slate-700 flex items-start gap-3">
                 <i class="fa-solid fa-ban text-slate-400 mt-0.5"></i>
                 <span>Cette commande a été annulée. Pour toute question, contactez la boutique sur
-                    <a href="https://wa.me/24166131270?text={{ rawurlencode('Bonjour, je vous contacte au sujet de ma commande n° '.$commande->id.'.') }}" target="_blank" rel="noopener" class="font-semibold text-blue-700 underline">WhatsApp</a>.
+                    <a href="{{ $lienWhatsAppBoutique }}" target="_blank" rel="noopener" class="font-semibold text-blue-700 underline">WhatsApp</a>.
                 </span>
             </p>
         @else
@@ -91,13 +115,18 @@
                     <div class="min-w-0">
                         @if ($ligne->produit)
                             <a href="{{ route('produits.show', $ligne->produit->id) }}" class="font-medium text-slate-900 hover:text-blue-700">{{ $ligne->produit->designation }}</a>
+                            @if (! $vueInvitee && $commande->statut === 'livree')
+                                <a href="{{ route('produits.show', $ligne->produit->id) }}#avis" class="ml-2 text-xs font-semibold text-blue-700 underline whitespace-nowrap">
+                                    <i class="fa-regular fa-star"></i> Donner mon avis
+                                </a>
+                            @endif
                         @else
                             <p class="font-medium text-slate-900">Produit retiré du catalogue</p>
                         @endif
                         <p class="chiffres text-sm text-slate-500 mt-0.5">
                             {{ $ligne->quantite_com }} × {{ number_format($prixPaye, 0, ',', ' ') }} FCFA
                             @if ($ligne->negociation_id)
-                                <span class="ml-1 text-[11px] font-semibold px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded">Prix négocié</span>
+                                <span class="ml-1 text-[11px] font-semibold px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded-sm">Prix négocié</span>
                             @endif
                         </p>
                     </div>
@@ -115,7 +144,7 @@
                 @endif
                 @if ($commande->methode_paiement)
                     <div>
-                        <dt class="text-slate-500">Paiement à la réception</dt>
+                        <dt class="text-slate-500">Mode de paiement</dt>
                         <dd class="mt-0.5 text-slate-900">{{ $commande->libelleMethodePaiement() }}</dd>
                     </div>
                 @endif

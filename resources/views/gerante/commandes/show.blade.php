@@ -13,7 +13,7 @@
     </div>
 
     {{-- EN-TÊTE DE COMMANDE --}}
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-3 mb-2 flex-wrap">
                 <h1 class="text-xl font-black text-slate-900">Commande en ligne #{{ $commande->id }}</h1>
@@ -50,21 +50,34 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {{-- Colonne Gauche : Client (1 col) --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-user text-blue-600"></i>
                 <span>Client</span>
             </h3>
             <div class="space-y-2 text-xs text-slate-700">
-                <p class="font-bold text-sm text-slate-900">{{ $commande->user->prenom }} {{ $commande->user->nom }}</p>
-                <p><i class="fa-solid fa-phone text-slate-400 mr-2"></i>{{ $commande->user->tel ?: 'Non renseigné' }}</p>
-                <p><i class="fa-solid fa-envelope text-slate-400 mr-2"></i>{{ $commande->user->email }}</p>
-                <p><i class="fa-solid fa-location-dot text-slate-400 mr-2"></i>{{ $commande->user->adresse ?: 'Non renseignée' }}</p>
+                <p class="font-bold text-sm text-slate-900">
+                    {{ $commande->nomClient() }}
+                    @if($commande->estInvitee())
+                        <span class="ml-1 align-middle px-1.5 py-0.5 rounded-sm bg-slate-100 text-slate-600 text-[11px] font-semibold">Sans compte</span>
+                    @endif
+                </p>
+                <p><i class="fa-solid fa-phone text-slate-400 mr-2"></i>{{ $commande->telephoneClient() ?: 'Non renseigné' }}</p>
+                <p><i class="fa-solid fa-envelope text-slate-400 mr-2"></i>{{ $commande->emailClient() ?: 'Non renseigné' }}</p>
+                <p><i class="fa-solid fa-location-dot text-slate-400 mr-2"></i>{{ $commande->adresse_livraison ?: ($commande->user?->adresse ?: 'Non renseignée') }}</p>
+                @if($commande->methode_paiement)
+                    <p><i class="fa-solid fa-wallet text-slate-400 mr-2"></i>{{ $commande->libelleMethodePaiement() }}</p>
+                @endif
 
-                @if($commande->user->tel)
+                @php
+                    // Numéro gabonais saisi sans indicatif : on ajoute le 241 pour WhatsApp
+                    $chiffresTel = preg_replace('/[^0-9]/', '', (string) $commande->telephoneClient());
+                    $numeroWhatsApp = str_starts_with($chiffresTel, '241') ? $chiffresTel : '241'.ltrim($chiffresTel, '0');
+                @endphp
+                @if($chiffresTel !== '')
                     <div class="pt-3">
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $commande->user->tel) }}" target="_blank" 
-                           class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <a href="https://wa.me/{{ $numeroWhatsApp }}" target="_blank" rel="noopener"
+                           class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-xs">
                             <i class="fa-brands fa-whatsapp text-sm"></i>
                             <span>Écrire sur WhatsApp</span>
                         </a>
@@ -74,7 +87,7 @@
         </div>
 
         {{-- Colonne Droite : Gestion du statut (2 cols) --}}
-        <div class="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <div class="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-gears text-blue-600"></i>
                 <span>Changer le statut de la commande</span>
@@ -131,7 +144,7 @@
     </div>
 
     {{-- ARTICLES COMMANDÉS --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between">
             <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-bag-shopping text-blue-600"></i>
@@ -169,8 +182,13 @@
                             {{ number_format($ligne->prix_final_unitaire ?? $ligne->prix_unitaire_com, 0, ',', ' ') }} FCFA
                         </td>
                         <td class="py-3.5 px-4 text-center">
-                            @if($ligne->negociation)
-                                <a href="{{ route('gerante.negociations.show', $ligne->negociation) }}" 
+                            @if($ligne->negociation && ! auth('staff')->user()?->estGerante())
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i class="fa-solid fa-handshake-simple"></i>
+                                    <span>#{{ $ligne->negociation->reference }}</span>
+                                </span>
+                            @elseif($ligne->negociation)
+                                <a href="{{ route('gerante.negociations.show', $ligne->negociation) }}"
                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200 hover:bg-amber-200 transition-colors">
                                     <i class="fa-solid fa-handshake-simple"></i>
                                     <span>#{{ $ligne->negociation->reference }}</span>

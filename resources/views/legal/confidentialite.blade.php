@@ -41,6 +41,14 @@
                 <td>Produits, quantités, prix, adresse de livraison, mode de paiement choisi, date et version des conditions de vente acceptées</td>
             </tr>
             <tr>
+                <td>Commande sans compte</td>
+                <td>Nom, téléphone et, si vous le donnez, adresse e-mail, enregistrés avec la commande</td>
+            </tr>
+            <tr>
+                <td>Avis sur un produit</td>
+                <td>Note, commentaire et date. Sur le site, l'avis est affiché avec votre prénom et l'initiale de votre nom uniquement</td>
+            </tr>
+            <tr>
                 <td>Négociation de prix</td>
                 <td>Offres proposées et réponses, avec leur date</td>
             </tr>
@@ -50,11 +58,15 @@
             </tr>
         </tbody>
     </table>
-    <p>Aucune donnée bancaire n'est collectée : aucun paiement n'est effectué sur le site.</p>
+    <p>
+        Aucune donnée bancaire et aucun code secret de mobile money ne sont collectés : aucun paiement n'est effectué sur le site.
+        Ne communiquez jamais votre code secret, ni à la boutique ni à personne.
+    </p>
 
     <h2 id="finalites">3. Pourquoi nous les utilisons</h2>
     <ul>
         <li><strong>Gérer votre compte et vos commandes</strong> : enregistrement, confirmation, livraison, suivi, service après-vente. C'est nécessaire à l'exécution de la vente.</li>
+        <li><strong>Publier votre avis</strong>, si vous choisissez d'en laisser un, pour informer les autres clients. Vous pouvez le modifier ou demander sa suppression.</li>
         <li><strong>Vous écrire au sujet de vos commandes</strong> : accusé de réception, confirmation, livraison ou annulation, et lien de réinitialisation du mot de passe à votre demande. Ce sont des messages de service, pas de la publicité.</li>
         <li><strong>Respecter nos obligations légales</strong> : conservation des commandes et pièces comptables, preuve de l'acceptation des conditions de vente.</li>
         <li><strong>Sécuriser le site</strong> : authentification, protection contre les envois de formulaires frauduleux.</li>
@@ -68,11 +80,12 @@
     <ul>
         <li>La gérante et le personnel de la boutique, pour traiter vos commandes ;</li>
         <li>L'hébergeur du site, qui stocke les données pour notre compte ;</li>
+        <li>Google (Gmail), qui achemine les e-mails que nous vous envoyons ;</li>
         <li>WhatsApp (Meta), uniquement lorsque vous choisissez d'envoyer votre commande ou un message par ce service depuis votre téléphone.</li>
     </ul>
     <p>Vos données ne sont ni vendues ni louées.</p>
     <p>
-        Pour s'afficher, le site charge des polices et des outils techniques depuis des services spécialisés (Google Fonts, cdnjs, jsDelivr, Tailwind CSS),
+        Pour s'afficher, le site charge des polices et des outils techniques depuis des services spécialisés (Google Fonts, cdnjs, jsDelivr),
         qui reçoivent à cette occasion l'adresse IP de votre appareil. Aucune donnée de votre compte ne leur est transmise.
     </p>
 
@@ -92,6 +105,10 @@
             <tr>
                 <td>Commandes, factures et pièces comptables</td>
                 <td>10 ans (obligation comptable du droit OHADA)</td>
+            </tr>
+            <tr>
+                <td>Avis sur un produit</td>
+                <td>Tant que le produit est au catalogue, ou jusqu'à ce que vous demandiez sa suppression</td>
             </tr>
             <tr>
                 <td>Négociations de prix</td>

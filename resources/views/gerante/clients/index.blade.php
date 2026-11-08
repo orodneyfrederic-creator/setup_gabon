@@ -9,17 +9,17 @@
             <p class="mt-1 text-slate-500">Consultez tous les comptes clients inscrits sur la plateforme</p>
         </div>
         <div>
-            <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> <span>Dashboard</span>
             </a>
         </div>
     </div>
 
     <!-- RECHERCHE & CONTENEUR TABLEAU -->
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.clients.index') }}" method="GET" class="w-full sm:w-96 relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, email, téléphone..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par nom, prénom, email, téléphone..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden transition-shadow">
                 <i class="fa-solid fa-search absolute left-3.5 top-2.5 sm:top-3 text-slate-400 text-xs"></i>
             </form>
             <span class="text-xs font-semibold text-slate-500">

@@ -8,6 +8,7 @@ use App\Models\Produit;
 use App\Services\ImagePartageService;
 use App\Services\NegociationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProduitController extends Controller
@@ -100,7 +101,15 @@ class ProduitController extends Controller
         $categories = Category::all(); // On les passe au cas où le layout en a besoin
         $estNegociable = $this->negociationService->isNegociable($produit);
 
-        return view('produits.show', compact('produit', 'categories', 'estNegociable'));
+        $avisPublies = $produit->avis()->publies()->with('user')->latest()->get();
+        $client = Auth::guard('web')->user();
+        $monAvis = $client ? $produit->avis()->where('id_ut', $client->id)->first() : null;
+        $peutDonnerAvis = $client !== null && ($monAvis?->estPublie() ?? true) && $client->commandeLivreeContenant($produit) !== null;
+        $produitsSimilaires = $produit->produitsSimilaires();
+
+        return view('produits.show', compact(
+            'produit', 'categories', 'estNegociable', 'avisPublies', 'monAvis', 'peutDonnerAvis', 'produitsSimilaires'
+        ));
     }
 
     /**

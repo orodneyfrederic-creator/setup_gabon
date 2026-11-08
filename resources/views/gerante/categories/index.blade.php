@@ -8,10 +8,10 @@
             <p class="mt-1 text-slate-500">Organisez vos produits par catégories</p>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
-            <a href="{{ route('gerante.categories.create') }}" class="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.categories.create') }}" class="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> <span>Nouvelle Catégorie</span>
             </a>
-            <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> <span>Dashboard</span>
             </a>
         </div>
@@ -31,10 +31,10 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.categories.index') }}" method="GET" class="w-full sm:w-96 relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher une catégorie..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-shadow">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher une catégorie..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-hidden transition-shadow">
                 <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-slate-400"></i>
             </form>
         </div>

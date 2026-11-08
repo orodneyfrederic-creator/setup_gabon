@@ -4,7 +4,7 @@
 
 @section('content')
 @php
-    $champ = 'w-full h-12 px-3.5 bg-white border rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
+    $champ = 'w-full h-12 px-3.5 bg-white border rounded-lg text-[15px] text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-4 focus:ring-blue-100 focus:border-blue-600 transition';
     $bordure = fn (string $nom) => $errors->has($nom) ? 'border-rose-500' : 'border-slate-300';
 @endphp
 <div class="max-w-4xl mx-auto">

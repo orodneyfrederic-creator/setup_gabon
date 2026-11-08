@@ -14,10 +14,26 @@ class Staff extends Authenticatable
 
     protected $primaryKey = 'id_staff';
 
+    public const ROLE_GERANTE = 'gerante';
+
+    public const ROLE_VENDEUR = 'vendeur';
+
+    /**
+     * Rôles du personnel et ce qu'ils permettent.
+     *
+     * @var array<string, string>
+     */
+    public const ROLES = [
+        self::ROLE_GERANTE => 'Gérante : accès complet',
+        self::ROLE_VENDEUR => 'Vendeur : caisse, commandes en ligne, stock et SAV',
+    ];
+
     protected $fillable = [
+        'nom',
         'email',
         'passwd',
         'role',
+        'actif',
     ];
 
     protected $hidden = [
@@ -28,7 +44,38 @@ class Staff extends Authenticatable
     {
         return [
             'passwd' => 'hashed',
+            'actif' => 'boolean',
         ];
+    }
+
+    public function estGerante(): bool
+    {
+        return $this->role === self::ROLE_GERANTE;
+    }
+
+    /**
+     * Un compte créé avant l'ajout de la colonne « actif » (valeur nulle) reste actif.
+     */
+    public function estActif(): bool
+    {
+        return $this->actif !== false;
+    }
+
+    public function libelleRole(): string
+    {
+        return match ($this->role) {
+            self::ROLE_GERANTE => 'Gérante',
+            self::ROLE_VENDEUR => 'Vendeur',
+            default => ucfirst((string) $this->role),
+        };
+    }
+
+    /**
+     * Page d'arrivée après connexion : le tableau de bord pour la gérante, la caisse pour un vendeur.
+     */
+    public function routeAccueil(): string
+    {
+        return $this->estGerante() ? 'gerante.dashboard' : 'gerante.pos.index';
     }
 
     public function getAuthPassword()

@@ -9,24 +9,26 @@
             <p class="mt-1 text-slate-500">Gérez les retours, réparations et garanties de vos clients</p>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
-            <a href="{{ route('gerante.sav.create') }}" class="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> <span>Nouveau Ticket SAV</span>
+            <a href="{{ route('gerante.sav.create') }}" class="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> <span>Nouveau ticket</span>
             </a>
-            <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
-                <i class="fa-solid fa-arrow-left"></i> <span>Dashboard</span>
-            </a>
+            @if(auth('staff')->user()?->estGerante())
+                <a href="{{ route('gerante.dashboard') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Tableau de bord</span>
+                </a>
+            @endif
         </div>
     </div>
 
     <!-- RECHERCHE & FILTRES -->
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.sav.index') }}" method="GET" class="w-full flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par référence, client, produit..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par référence, client, produit..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden transition-shadow">
                     <i class="fa-solid fa-search absolute left-3.5 top-2.5 sm:top-3 text-slate-400 text-xs"></i>
                 </div>
-                <select name="statut" onchange="this.form.submit()" class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <select name="statut" onchange="this.form.submit()" class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-hidden">
                     <option value="">Tous les statuts</option>
                     <option value="ouvert" {{ request('statut') === 'ouvert' ? 'selected' : '' }}>Ouvert</option>
                     <option value="en_cours" {{ request('statut') === 'en_cours' ? 'selected' : '' }}>En cours</option>

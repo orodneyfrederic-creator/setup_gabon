@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Notification as Notifications;
 
 class Commande extends Model
 {
@@ -14,6 +16,10 @@ class Commande extends Model
         'statut',
         'montant_c',
         'id_ut',
+        'client_nom',
+        'client_telephone',
+        'client_email',
+        'jeton_suivi',
         'adresse_livraison',
         'methode_paiement',
         'conditions_acceptees_at',
@@ -38,6 +44,54 @@ class Commande extends Model
             'airtel_money' => 'Airtel Money',
             'moov_money' => 'Moov Money',
         ][$this->methode_paiement] ?? $this->methode_paiement;
+    }
+
+    public function estInvitee(): bool
+    {
+        return $this->id_ut === null;
+    }
+
+    public function nomClient(): string
+    {
+        return $this->client_nom ?: (trim(($this->user?->prenom ?? '').' '.($this->user?->nom ?? '')) ?: 'Client');
+    }
+
+    public function prenomClient(): string
+    {
+        return $this->user?->prenom ?: (string) strtok($this->nomClient(), ' ');
+    }
+
+    public function telephoneClient(): ?string
+    {
+        return $this->client_telephone ?: $this->user?->tel;
+    }
+
+    public function emailClient(): ?string
+    {
+        return $this->client_email ?: $this->user?->email;
+    }
+
+    /**
+     * Lien de suivi : l'espace client pour un compte, le lien secret pour une commande sans compte.
+     */
+    public function urlSuivi(): string
+    {
+        return $this->estInvitee()
+            ? route('commandes.suivi', $this->jeton_suivi)
+            : route('orders.show', $this->id);
+    }
+
+    /**
+     * Envoie un e-mail au client, qu'il ait un compte ou seulement une adresse donnée à la commande.
+     * Ne fait rien pour un client sans compte qui n'a pas donné d'e-mail.
+     */
+    public function notifierClient(Notification $notification): void
+    {
+        if ($this->user) {
+            $this->user->notify($notification);
+        } elseif ($this->client_email) {
+            Notifications::route('mail', $this->client_email)->notify($notification);
+        }
     }
 
     public function user()

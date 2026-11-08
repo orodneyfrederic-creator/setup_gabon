@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -80,6 +81,32 @@ class Produit extends Model
             $this->caracteristiques ?? [],
             fn ($ligne) => filled($ligne['libelle'] ?? null) && filled($ligne['valeur'] ?? null)
         ));
+    }
+
+    public function avis()
+    {
+        return $this->hasMany(Avis::class, 'id_p');
+    }
+
+    /**
+     * Produits de la même catégorie, en stock d'abord, puis par prix le plus proche.
+     *
+     * @return Collection<int, Produit>
+     */
+    public function produitsSimilaires(int $nombre = 4): Collection
+    {
+        if (! $this->id_cat) {
+            return new Collection;
+        }
+
+        return self::query()
+            ->with('category')
+            ->where('id_cat', $this->id_cat)
+            ->whereKeyNot($this->getKey())
+            ->orderByRaw('CASE WHEN quantite > 0 THEN 0 ELSE 1 END')
+            ->orderByRaw('ABS(prix_unitaire - ?)', [(int) $this->prix_unitaire])
+            ->limit($nombre)
+            ->get();
     }
 
     public function category()

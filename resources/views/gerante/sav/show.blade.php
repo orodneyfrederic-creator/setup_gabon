@@ -9,7 +9,7 @@
             <p class="mt-1 text-slate-500">Détails du dossier et suivi de la réparation / garantie</p>
         </div>
         <div>
-            <a href="{{ route('gerante.sav.index') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.sav.index') }}" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> <span>Retour aux tickets</span>
             </a>
         </div>
@@ -18,7 +18,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <!-- FICHE DU TICKET -->
-        <div class="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+        <div class="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Produit concerné</span>
@@ -58,7 +58,7 @@
 
         <!-- MISE À JOUR STATUT & INFOS CLIENT -->
         <div class="space-y-6">
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
                 <h3 class="font-bold text-sm text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                     <i class="fa-solid fa-user text-blue-600"></i> Informations Client
                 </h3>
@@ -71,7 +71,7 @@
             </div>
 
             <!-- MISE À JOUR STATUT -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
                 <h3 class="font-bold text-sm text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                     <i class="fa-solid fa-sliders text-blue-600"></i> Mettre à jour le statut
                 </h3>
@@ -81,7 +81,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Nouveau statut</label>
-                        <select name="statut" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+                        <select name="statut" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-500 outline-hidden">
                             <option value="ouvert" {{ $sav->statut === 'ouvert' ? 'selected' : '' }}>Ouvert</option>
                             <option value="en_cours" {{ $sav->statut === 'en_cours' ? 'selected' : '' }}>En cours de réparation</option>
                             <option value="resolu" {{ $sav->statut === 'resolu' ? 'selected' : '' }}>Résolu / Prêt</option>
@@ -91,10 +91,10 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Mettre à jour les notes</label>
-                        <textarea name="notes" rows="2" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none">{{ old('notes', $sav->notes) }}</textarea>
+                        <textarea name="notes" rows="2" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-hidden">{{ old('notes', $sav->notes) }}</textarea>
                     </div>
 
-                    <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-colors shadow-sm">
+                    <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-colors shadow-xs">
                         Enregistrer les modifications
                     </button>
                 </form>

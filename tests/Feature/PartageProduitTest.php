@@ -34,10 +34,17 @@ class PartageProduitTest extends TestCase
             ->assertSee('<meta property="og:type" content="product">', false)
             ->assertSee('<meta property="og:image" content="'.route('produits.apercu', $produit->id).'">', false)
             ->assertSee('<link rel="canonical" href="'.route('produits.show', $produit->id).'">', false)
-            ->assertSee('"@type":"Product"', false)
+            ->assertSee('{"@context":"https://schema.org","@type":"Product"', false)
             ->assertSee('"price":465000', false)
             ->assertSee('"priceCurrency":"XAF"', false)
             ->assertSee('"availability":"https://schema.org/InStock"', false);
+    }
+
+    public function test_l_accueil_expose_la_fiche_boutique_pour_google(): void
+    {
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('{"@context":"https://schema.org","@type":"Store"', false);
     }
 
     public function test_l_apercu_d_un_produit_sans_photo_renvoie_le_visuel_de_la_boutique(): void

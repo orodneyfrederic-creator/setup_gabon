@@ -8,10 +8,10 @@
             <p class="mt-1 text-slate-500">Catalogue des produits de la boutique</p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('gerante.produits.create') }}" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.produits.create') }}" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> Nouveau produit
             </a>
-            <a href="{{ route('gerante.dashboard') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.dashboard') }}" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -24,10 +24,10 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden mb-6">
         <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row gap-4 justify-between items-center">
             <form action="{{ route('gerante.produits.index') }}" method="GET" class="w-full sm:w-96 relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par désignation ou référence..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-shadow">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher par désignation ou référence..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-hidden transition-shadow">
                 <i class="fa-solid fa-search absolute left-3.5 top-2.5 text-slate-400"></i>
             </form>
         </div>
@@ -70,7 +70,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <p class="text-sm font-black text-slate-900">{{ number_format($produit->prix_unitaire, 0, ',', ' ') }} FCFA</p>
+                                <p class="chiffres text-sm font-black text-slate-900 whitespace-nowrap">{{ number_format($produit->prix_unitaire, 0, ',', ' ') }} FCFA</p>
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if($produit->quantite <= $produit->seuil_alerte)

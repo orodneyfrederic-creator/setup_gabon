@@ -9,17 +9,17 @@
         </div>
         <div class="flex flex-wrap items-center gap-2">
             @if($devi->statut === 'brouillon')
-                <a href="{{ route('gerante.devis.edit', $devi) }}" class="px-3 py-2 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+                <a href="{{ route('gerante.devis.edit', $devi) }}" class="px-3 py-2 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                     <i class="fa-solid fa-pen"></i> Modifier
                 </a>
             @endif
-            <button onclick="window.print()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <button onclick="window.print()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-print"></i> Imprimer
             </button>
-            <a href="{{ route('gerante.devis.pdf', $devi) }}" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.devis.pdf', $devi) }}" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-download"></i> PDF
             </a>
-            <a href="{{ route('gerante.devis.index') }}" class="px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            <a href="{{ route('gerante.devis.index') }}" class="px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -52,7 +52,7 @@
         <div class="lg:col-span-1 space-y-6">
             
             <!-- Actions Statut / Facturation -->
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-xs p-6">
                 <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
                     <i class="fa-solid fa-bolt text-amber-500 mr-2"></i> Actions & Statut
                 </h2>
@@ -78,7 +78,7 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="statut" value="accepte">
-                        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
+                        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2">
                             <i class="fa-solid fa-check"></i> Marquer comme Accepté
                         </button>
                     </form>
@@ -94,7 +94,7 @@
                     @if(!$devi->facture)
                         <form action="{{ route('gerante.factures.create_from_devis', $devi) }}" method="POST">
                             @csrf
-                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-black rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-black rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-file-invoice-dollar"></i> Générer Facture
                             </button>
                         </form>
@@ -107,7 +107,7 @@
             </div>
 
             <!-- Client Info -->
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-xs p-6">
                 <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">
                     <i class="fa-solid fa-user text-blue-600 mr-2"></i> Client
                 </h2>
@@ -139,7 +139,7 @@
 
         <!-- Colonne Droite : Lignes & Total -->
         <div class="lg:col-span-2">
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden h-full flex flex-col">
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden h-full flex flex-col">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
                     <h2 class="text-sm font-black text-slate-800 uppercase tracking-wider">
                         <i class="fa-solid fa-list text-blue-600 mr-2"></i> Lignes du devis

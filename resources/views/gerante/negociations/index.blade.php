@@ -12,7 +12,7 @@
             </p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('gerante.negociations.regles') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm">
+            <a href="{{ route('gerante.negociations.regles') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs">
                 <i class="fa-solid fa-sliders"></i>
                 <span>Règles par catégorie</span>
             </a>
@@ -22,7 +22,7 @@
     {{-- STATISTIQUES --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {{-- En attente --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-hourglass-half"></i>
             </div>
@@ -33,7 +33,7 @@
         </div>
 
         {{-- Acceptées --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
@@ -44,7 +44,7 @@
         </div>
 
         {{-- Taux d'acceptation --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-chart-pie"></i>
             </div>
@@ -55,7 +55,7 @@
         </div>
 
         {{-- Remise moyenne --}}
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl shrink-0">
                 <i class="fa-solid fa-tag"></i>
             </div>
@@ -69,40 +69,40 @@
     {{-- FILTRES PAR STATUT --}}
     <div class="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-semibold">
         <a href="{{ route('gerante.negociations.index') }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ !$statut ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ !$statut ? 'bg-blue-600 text-white border-blue-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Toutes
         </a>
         <a href="{{ route('gerante.negociations.index', ['statut' => 'en_attente_gerante']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap flex items-center gap-1.5 {{ $statut === 'en_attente_gerante' ? 'bg-amber-600 text-white border-amber-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap flex items-center gap-1.5 {{ $statut === 'en_attente_gerante' ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             <span>En attente gérante</span>
             @if($nbEnAttente > 0)
                 <span class="w-2 h-2 rounded-full bg-rose-500"></span>
             @endif
         </a>
         <a href="{{ route('gerante.negociations.index', ['statut' => 'en_cours']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'en_cours' ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'en_cours' ? 'bg-blue-600 text-white border-blue-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             En cours
         </a>
         <a href="{{ route('gerante.negociations.index', ['statut' => 'acceptee']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'acceptee' ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'acceptee' ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Acceptées
         </a>
         <a href="{{ route('gerante.negociations.index', ['statut' => 'utilisee']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'utilisee' ? 'bg-violet-600 text-white border-violet-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'utilisee' ? 'bg-violet-600 text-white border-violet-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Utilisées
         </a>
         <a href="{{ route('gerante.negociations.index', ['statut' => 'refusee']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'refusee' ? 'bg-rose-600 text-white border-rose-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'refusee' ? 'bg-rose-600 text-white border-rose-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Refusées
         </a>
         <a href="{{ route('gerante.negociations.index', ['statut' => 'expiree']) }}" 
-           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'expiree' ? 'bg-slate-600 text-white border-slate-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
+           class="px-3.5 py-1.5 rounded-xl border transition-all whitespace-nowrap {{ $statut === 'expiree' ? 'bg-slate-600 text-white border-slate-600 shadow-xs' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' }}">
             Expirées
         </a>
     </div>
 
     {{-- TABLEAU DES NÉGOCIATIONS --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>

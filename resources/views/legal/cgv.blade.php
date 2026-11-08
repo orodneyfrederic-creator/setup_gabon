@@ -6,7 +6,7 @@
 
 @section('resume_legal')
     <strong>L'essentiel :</strong> livraison gratuite à Libreville sous {{ $boutique['livraison']['delai_heures'] }} h après confirmation,
-    paiement à la réception (espèces, Airtel Money ou Moov Money), {{ $boutique['retractation_jours'] }} jours pour changer d'avis,
+    paiement à la réception en espèces, par Airtel Money ou par Moov Money, {{ $boutique['retractation_jours'] }} jours pour changer d'avis,
     garantie boutique de 1 mois sur les ordinateurs et de 2 semaines sur les autres produits.
 @endsection
 
@@ -47,21 +47,26 @@
     <h2 id="commande">4. Étapes de la commande</h2>
     <ol>
         <li>Le client ajoute des produits à son panier. Il peut à tout moment modifier les quantités ou retirer un produit.</li>
-        <li>Il se connecte à son compte ou en crée un.</li>
+        <li>Il se connecte à son compte, ou commande sans compte en indiquant son nom, son téléphone et, s'il le souhaite, son adresse e-mail. La négociation de prix est réservée aux clients qui ont un compte.</li>
         <li>Sur la page « Finaliser ma commande », il vérifie le récapitulatif (produits, quantités, prix, total), indique son adresse de livraison et choisit son mode de paiement. Il peut encore corriger chacun de ces éléments.</li>
         <li>Il accepte les présentes conditions, puis confirme.</li>
-        <li>La commande est immédiatement enregistrée : un accusé de réception récapitulant la commande s'affiche et est envoyé par e-mail à l'adresse du compte. La commande reste consultable à tout moment dans l'espace « Mes commandes ».</li>
+        <li>La commande est immédiatement enregistrée : un accusé de réception récapitulant la commande s'affiche et est envoyé par e-mail (à l'adresse du compte, ou à celle indiquée lors d'une commande sans compte). La commande reste consultable à tout moment dans l'espace « Mes commandes » ou, sans compte, grâce au lien de suivi personnel affiché à la fin de la commande et rappelé dans l'e-mail et le message WhatsApp.</li>
         <li>Le client transmet sa commande à la boutique par WhatsApp en un clic. La boutique le recontacte pour confirmer la disponibilité et le rendez-vous de livraison.</li>
     </ol>
     <p>
-        Le contrat est conclu en français. Les commandes sont archivées par la boutique et restent accessibles au client dans son compte.
+        Le contrat est conclu en français. Les commandes sont archivées par la boutique et restent accessibles au client dans son compte ou par son lien de suivi.
+        Ce lien donne accès à la commande sans mot de passe : le client ne doit le partager qu'avec des personnes de confiance.
     </p>
     <p class="reference-loi">Loi n°025/2021, art. 49, 51, 52 et 56 (étapes techniques, correction des erreurs, accusé de réception, confirmation).</p>
 
     <h2 id="paiement">5. Paiement</h2>
     <p>
-        Aucun paiement n'est demandé en ligne. Le client règle à la livraison ou au retrait en boutique, au choix :
-        en espèces, par Airtel Money ou par Moov Money. Le produit reste la propriété de la boutique jusqu'au paiement complet.
+        Aucun paiement n'est demandé en ligne, et aucune donnée bancaire n'est saisie sur le site. Le client règle à la livraison ou au retrait en boutique, au choix :
+        en espèces, par Airtel Money ou par Moov Money.
+    </p>
+    <p>
+        En cas de rétractation ou d'annulation après paiement, la boutique rembourse par le même moyen de paiement
+        (<a href="#retractation">article 7</a>). Le produit reste la propriété de la boutique jusqu'au paiement complet.
     </p>
 
     <h2 id="livraison">6. Livraison et retrait</h2>

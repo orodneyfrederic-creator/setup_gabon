@@ -63,15 +63,24 @@ class AnalyticsController extends Controller
         $paymentLabels = [];
         $paymentData = [];
 
+        $libellesPaiement = [
+            'especes' => 'Espèces',
+            'airtel_money' => 'Airtel Money',
+            'moov_money' => 'Moov Money',
+            'carte' => 'Carte bancaire',
+            'mobile_money' => 'Mobile Money',
+        ];
+
         foreach ($methodePaiements as $method => $total) {
-            $paymentLabels[] = $method ?? 'Espèces';
+            $cle = strtolower((string) ($method ?: 'especes'));
+            $paymentLabels[] = $libellesPaiement[$cle] ?? ucfirst(str_replace('_', ' ', $cle));
             $paymentData[] = (float) $total;
         }
 
-        // Si aucune vente enregistrée sur la période, afficher une répartition indicative
-        if (empty($paymentData) || array_sum($paymentData) == 0) {
-            $paymentLabels = ['Espèces', 'Carte Bancaire', 'Mobile Money'];
-            $paymentData = [1, 1, 1];
+        // Aucune vente sur la période : la vue affiche un état vide plutôt qu'une répartition inventée
+        if (array_sum($paymentData) == 0) {
+            $paymentLabels = [];
+            $paymentData = [];
         }
 
         // 4. Ventes par Catégorie

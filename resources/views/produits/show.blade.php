@@ -9,9 +9,10 @@
 @section('url_canonique', route('produits.show', $produit->id))
 
 @push('donnees_structurees')
+    {{-- « @@context » : le double @ empêche Blade de le prendre pour sa directive @@context (Laravel 13) --}}
     <script type="application/ld+json">
         {!! json_encode(array_filter([
-            '@context' => 'https://schema.org',
+            '@@context' => 'https://schema.org',
             '@type' => 'Product',
             'name' => $produit->designation,
             'sku' => $produit->reference,
@@ -29,6 +30,14 @@
                 'availability' => $produit->quantite > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
                 'seller' => ['@type' => 'Organization', 'name' => 'SETUP-Gabon'],
             ],
+            // Note moyenne issue des avis réels et visibles sur la page (règle Google pour les avis produits)
+            'aggregateRating' => $avisPublies->isNotEmpty() ? [
+                '@type' => 'AggregateRating',
+                'ratingValue' => round($avisPublies->avg('note'), 1),
+                'reviewCount' => $avisPublies->count(),
+                'bestRating' => 5,
+                'worstRating' => 1,
+            ] : null,
         ]), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}
     </script>
 @endpush
@@ -147,7 +156,7 @@
                     <div class="flex items-center justify-between gap-3">
                         <label for="quantite-negociation" class="text-sm font-medium text-slate-700">Quantité</label>
                         <input id="quantite-negociation" type="number" x-model.number="quantiteNego" min="1" :max="stockMax"
-                               class="chiffres w-20 h-10 px-3 border border-slate-300 rounded-lg text-center font-semibold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+                               class="chiffres w-20 h-10 px-3 border border-slate-300 rounded-lg text-center font-semibold focus:outline-hidden focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
                     </div>
                     <button @click="demarrer()" :disabled="loading"
                             class="w-full h-11 bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm rounded-lg transition-colors disabled:opacity-50">
@@ -163,7 +172,7 @@
                             <label for="offre-client" class="sr-only">Votre prix en FCFA</label>
                             <div class="relative flex-1">
                                 <input id="offre-client" type="number" inputmode="numeric" x-model.number="offreClient" min="1" placeholder="Votre prix"
-                                       class="chiffres w-full h-11 pl-3.5 pr-14 border border-slate-300 rounded-lg font-semibold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+                                       class="chiffres w-full h-11 pl-3.5 pr-14 border border-slate-300 rounded-lg font-semibold focus:outline-hidden focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
                                 <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-500">FCFA</span>
                             </div>
                             <button type="submit" :disabled="!offreClient || offreClient < 1"
@@ -185,7 +194,7 @@
                                     <label for="contre-offre-client" class="sr-only">Autre prix en FCFA</label>
                                     <div class="relative flex-1">
                                         <input id="contre-offre-client" type="number" inputmode="numeric" x-model.number="offreClient" min="1" placeholder="Proposer un autre prix"
-                                               class="chiffres w-full h-11 pl-3.5 pr-14 border border-slate-300 rounded-lg font-semibold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+                                               class="chiffres w-full h-11 pl-3.5 pr-14 border border-slate-300 rounded-lg font-semibold focus:outline-hidden focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
                                         <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-500">FCFA</span>
                                     </div>
                                     <button type="submit" :disabled="!offreClient || offreClient < 1"
@@ -314,6 +323,14 @@
             <span>Réf. {{ $produit->reference }}</span>
         </p>
 
+        @if($avisPublies->isNotEmpty())
+            <a href="#avis" class="mt-2 inline-flex items-center gap-2 text-sm text-slate-600 hover:text-blue-700">
+                @include('produits.partials.etoiles', ['note' => round($avisPublies->avg('note'), 1)])
+                <span class="chiffres">{{ number_format($avisPublies->avg('note'), 1, ',', ' ') }}</span>
+                <span class="underline">{{ $avisPublies->count() }} avis</span>
+            </a>
+        @endif
+
         <p class="chiffres mt-5 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
             {{ number_format($produit->prix_unitaire, 0, ',', ' ') }} <span class="text-lg font-semibold text-slate-500">FCFA</span>
         </p>
@@ -338,7 +355,7 @@
                         </button>
                         <label for="qte" class="sr-only">Quantité</label>
                         <input type="number" id="qte" name="quantite" value="1" min="1" max="{{ $produit->quantite }}"
-                               class="chiffres w-10 h-full text-center font-semibold text-slate-900 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                               class="chiffres w-10 h-full text-center font-semibold text-slate-900 bg-transparent focus:outline-hidden [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
                                oninput="if(this.value > {{ $produit->quantite }}) this.value = {{ $produit->quantite }}; if(this.value !== '' && this.value < 1) this.value = 1;">
                         <button type="button" class="w-11 h-full text-slate-500 hover:text-blue-700" onclick="document.getElementById('qte').stepUp()" aria-label="Augmenter la quantité">
                             <i class="fa-solid fa-plus text-xs"></i>
@@ -431,6 +448,19 @@
     </section>
 @endif
 
+@include('produits.partials.avis')
+
+@if($produitsSimilaires->isNotEmpty())
+    <section class="mt-8 pt-8 lg:mt-12 lg:pt-10 border-t border-slate-200" aria-labelledby="titre-similaires">
+        <h2 id="titre-similaires" class="text-xl font-bold tracking-tight text-slate-900">Dans la même catégorie</h2>
+        <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            @foreach($produitsSimilaires as $similaire)
+                @include('produits.partials.carte', ['produit' => $similaire])
+            @endforeach
+        </div>
+    </section>
+@endif
+
 {{-- BARRE D'ACHAT MOBILE --}}
 @if($enStock)
     <div class="h-20 lg:hidden" aria-hidden="true"></div>
@@ -474,7 +504,7 @@ function commanderMaintenant() {
                    playsinline
                    preload="none"
                    disablepictureinpicture
-                   class="w-full bg-black outline-none"
+                   class="w-full bg-black outline-hidden"
                    style="display:block; width:100%; max-height:85vh;">
                 <source src="{{ route('produits.video', $produit->id) }}" type="video/mp4">
                 Votre navigateur ne supporte pas la balise vidéo.

@@ -52,6 +52,6 @@ return [
     'apdpvp_recepisse' => env('BOUTIQUE_APDPVP_RECEPISSE'),
 
     // À incrémenter à chaque modification substantielle des CGV : la version acceptée est enregistrée sur chaque commande
-    'version_conditions' => '2026-11-07',
+    'version_conditions' => '2026-11-08.2',
 
 ];

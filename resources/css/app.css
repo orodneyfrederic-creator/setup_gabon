@@ -1,9 +1,245 @@
+/*
+ * Système visuel SETUP-Gabon (Tailwind CSS v4, compilé par Vite).
+ * Palette dérivée du logo : bleu roi #283888, vert et jaune du « U » (couleurs du Gabon).
+ * Les autres teintes décoratives (indigo, violet, cyan...) sont ramenées au bleu pour une interface cohérente.
+ */
 @import 'tailwindcss';
 
+@source '../views';
+@source '../../app';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+
+/* Le site est conçu en clair : les variantes dark: (pagination Laravel) ne suivent pas le mode sombre du téléphone */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+    --font-weight-black: 800;
+
+    --radius-xl: 0.625rem;
+    --radius-2xl: 0.75rem;
+    --radius-3xl: 1rem;
+
+    /* Ombres teintées de bleu nuit. Noms Tailwind v4 : xs = ancien « sm », sm = ancien « shadow » par défaut */
+    --shadow-xs: 0 1px 2px rgba(16, 24, 58, 0.06);
+    --shadow-sm: 0 1px 3px rgba(16, 24, 58, 0.08), 0 1px 2px rgba(16, 24, 58, 0.04);
+    --shadow-md: 0 4px 10px -2px rgba(16, 24, 58, 0.08), 0 2px 4px -2px rgba(16, 24, 58, 0.05);
+    --shadow-lg: 0 10px 24px -6px rgba(16, 24, 58, 0.12), 0 4px 8px -4px rgba(16, 24, 58, 0.06);
+    --shadow-xl: 0 18px 36px -12px rgba(16, 24, 58, 0.18), 0 6px 12px -6px rgba(16, 24, 58, 0.08);
+    --shadow-2xl: 0 28px 56px -16px rgba(16, 24, 58, 0.24);
+
+    --color-blue-50: #eef1fa;
+    --color-blue-100: #dde3f4;
+    --color-blue-200: #bcc6e8;
+    --color-blue-300: #93a3d8;
+    --color-blue-400: #6578c2;
+    --color-blue-500: #4458ad;
+    --color-blue-600: #30449d;
+    --color-blue-700: #283888;
+    --color-blue-800: #212f71;
+    --color-blue-900: #1b275b;
+    --color-blue-950: #10183a;
+    --color-indigo-50: #eef1fa;
+    --color-indigo-100: #dde3f4;
+    --color-indigo-200: #bcc6e8;
+    --color-indigo-300: #93a3d8;
+    --color-indigo-400: #6578c2;
+    --color-indigo-500: #4458ad;
+    --color-indigo-600: #30449d;
+    --color-indigo-700: #283888;
+    --color-indigo-800: #212f71;
+    --color-indigo-900: #1b275b;
+    --color-indigo-950: #10183a;
+    --color-violet-50: #eef1fa;
+    --color-violet-100: #dde3f4;
+    --color-violet-200: #bcc6e8;
+    --color-violet-300: #93a3d8;
+    --color-violet-400: #6578c2;
+    --color-violet-500: #4458ad;
+    --color-violet-600: #30449d;
+    --color-violet-700: #283888;
+    --color-violet-800: #212f71;
+    --color-violet-900: #1b275b;
+    --color-violet-950: #10183a;
+    --color-purple-50: #eef1fa;
+    --color-purple-100: #dde3f4;
+    --color-purple-200: #bcc6e8;
+    --color-purple-300: #93a3d8;
+    --color-purple-400: #6578c2;
+    --color-purple-500: #4458ad;
+    --color-purple-600: #30449d;
+    --color-purple-700: #283888;
+    --color-purple-800: #212f71;
+    --color-purple-900: #1b275b;
+    --color-purple-950: #10183a;
+    --color-sky-50: #eef1fa;
+    --color-sky-100: #dde3f4;
+    --color-sky-200: #bcc6e8;
+    --color-sky-300: #93a3d8;
+    --color-sky-400: #6578c2;
+    --color-sky-500: #4458ad;
+    --color-sky-600: #30449d;
+    --color-sky-700: #283888;
+    --color-sky-800: #212f71;
+    --color-sky-900: #1b275b;
+    --color-sky-950: #10183a;
+    --color-cyan-50: #eef1fa;
+    --color-cyan-100: #dde3f4;
+    --color-cyan-200: #bcc6e8;
+    --color-cyan-300: #93a3d8;
+    --color-cyan-400: #6578c2;
+    --color-cyan-500: #4458ad;
+    --color-cyan-600: #30449d;
+    --color-cyan-700: #283888;
+    --color-cyan-800: #212f71;
+    --color-cyan-900: #1b275b;
+    --color-cyan-950: #10183a;
+    --color-teal-50: #eef1fa;
+    --color-teal-100: #dde3f4;
+    --color-teal-200: #bcc6e8;
+    --color-teal-300: #93a3d8;
+    --color-teal-400: #6578c2;
+    --color-teal-500: #4458ad;
+    --color-teal-600: #30449d;
+    --color-teal-700: #283888;
+    --color-teal-800: #212f71;
+    --color-teal-900: #1b275b;
+    --color-teal-950: #10183a;
+    --color-fuchsia-50: #eef1fa;
+    --color-fuchsia-100: #dde3f4;
+    --color-fuchsia-200: #bcc6e8;
+    --color-fuchsia-300: #93a3d8;
+    --color-fuchsia-400: #6578c2;
+    --color-fuchsia-500: #4458ad;
+    --color-fuchsia-600: #30449d;
+    --color-fuchsia-700: #283888;
+    --color-fuchsia-800: #212f71;
+    --color-fuchsia-900: #1b275b;
+    --color-fuchsia-950: #10183a;
+    --color-emerald-50: #ecf8f0;
+    --color-emerald-100: #d2efdc;
+    --color-emerald-200: #a6debb;
+    --color-emerald-300: #6fc692;
+    --color-emerald-400: #3aaa69;
+    --color-emerald-500: #1c9150;
+    --color-emerald-600: #137a42;
+    --color-emerald-700: #106337;
+    --color-emerald-800: #0f4f2e;
+    --color-emerald-900: #0c4026;
+    --color-emerald-950: #052414;
+    --color-green-50: #ecf8f0;
+    --color-green-100: #d2efdc;
+    --color-green-200: #a6debb;
+    --color-green-300: #6fc692;
+    --color-green-400: #3aaa69;
+    --color-green-500: #1c9150;
+    --color-green-600: #137a42;
+    --color-green-700: #106337;
+    --color-green-800: #0f4f2e;
+    --color-green-900: #0c4026;
+    --color-green-950: #052414;
+    --color-amber-50: #fffbe6;
+    --color-amber-100: #fff3bf;
+    --color-amber-200: #ffe680;
+    --color-amber-300: #fdd841;
+    --color-amber-400: #f7c91a;
+    --color-amber-500: #e0ad06;
+    --color-amber-600: #b98603;
+    --color-amber-700: #8f6207;
+    --color-amber-800: #764e0d;
+    --color-amber-900: #644110;
+    --color-amber-950: #3a2204;
+    --color-yellow-50: #fffbe6;
+    --color-yellow-100: #fff3bf;
+    --color-yellow-200: #ffe680;
+    --color-yellow-300: #fdd841;
+    --color-yellow-400: #f7c91a;
+    --color-yellow-500: #e0ad06;
+    --color-yellow-600: #b98603;
+    --color-yellow-700: #8f6207;
+    --color-yellow-800: #764e0d;
+    --color-yellow-900: #644110;
+    --color-yellow-950: #3a2204;
+    --color-orange-50: #fffbe6;
+    --color-orange-100: #fff3bf;
+    --color-orange-200: #ffe680;
+    --color-orange-300: #fdd841;
+    --color-orange-400: #f7c91a;
+    --color-orange-500: #e0ad06;
+    --color-orange-600: #b98603;
+    --color-orange-700: #8f6207;
+    --color-orange-800: #764e0d;
+    --color-orange-900: #644110;
+    --color-orange-950: #3a2204;
+    --color-slate-50: #f6f7fa;
+    --color-slate-100: #eef0f5;
+    --color-slate-200: #e1e4ec;
+    --color-slate-300: #c9cedb;
+    --color-slate-400: #9299ad;
+    --color-slate-500: #666e85;
+    --color-slate-600: #4b536a;
+    --color-slate-700: #373e53;
+    --color-slate-800: #232a3d;
+    --color-slate-900: #151b2b;
+    --color-slate-950: #0b0f1b;
+    --color-gray-50: #f6f7fa;
+    --color-gray-100: #eef0f5;
+    --color-gray-200: #e1e4ec;
+    --color-gray-300: #c9cedb;
+    --color-gray-400: #9299ad;
+    --color-gray-500: #666e85;
+    --color-gray-600: #4b536a;
+    --color-gray-700: #373e53;
+    --color-gray-800: #232a3d;
+    --color-gray-900: #151b2b;
+    --color-gray-950: #0b0f1b;
+}
+
+/* Comportements par défaut de Tailwind v3, conservés pour un rendu identique */
+@layer base {
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    input::placeholder, textarea::placeholder {
+        color: var(--color-gray-400);
+    }
+
+    button:not(:disabled), [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+[x-cloak] { display: none !important; }
+
+:root { color-scheme: light; accent-color: #283888; caret-color: #283888; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 6rem; }
+body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+::selection { background: #283888; color: #fff; }
+
+:focus-visible { outline: 2px solid #30449d; outline-offset: 2px; border-radius: 6px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 0; }
+
+a { text-underline-offset: 3px; }
+
+/* Les prix et quantités restent alignés quand les chiffres changent */
+.chiffres { font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+* { scrollbar-width: thin; scrollbar-color: #c9cedb transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: #c9cedb; border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-thumb:hover { background-color: #9299ad; }
+
+/* Défilement au doigt sur mobile : barre masquée. À la souris (grand écran) : barre fine visible */
+@media (max-width: 1023px) {
+    .scrollbar-none { scrollbar-width: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+@media (min-width: 1024px) {
+    .scrollbar-none { padding-bottom: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

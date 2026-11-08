@@ -25,23 +25,22 @@ class AuthController extends Controller
 
         // Attempt Staff authentication first
         if (Auth::guard('staff')->attempt(['email' => $credentials['email'], 'password' => $credentials['password']], $request->remember)) {
-            $request->session()->regenerate();
             $staff = Auth::guard('staff')->user();
 
-            if ($staff->role === 'gerante') {
-                return redirect()->route('gerante.dashboard')->with('success', 'Bienvenue, Gérante !');
+            if (! $staff->estActif()) {
+                Auth::guard('staff')->logout();
+
+                return back()->withErrors(['email' => 'Ce compte a été désactivé. Contactez la gérante.'])->onlyInput('email');
             }
 
-            return redirect()->route('gerante.dashboard')->with('success', 'Bienvenue, Membre du Staff !');
+            $request->session()->regenerate();
+
+            return redirect()->route($staff->routeAccueil())->with('success', 'Bienvenue, '.($staff->nom ?: $staff->libelleRole()).' !');
         }
 
         // Attempt Web User authentication
         if (Auth::guard('web')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-
-            if (Auth::user()->role === 'gerante') {
-                return redirect()->route('gerante.dashboard')->with('success', 'Bienvenue, Gérante !');
-            }
 
             return redirect()->intended(route('home'))->with('success', 'Bienvenue !');
         }

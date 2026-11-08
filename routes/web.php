@@ -2,15 +2,19 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AvisController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Gerante\AnalyticsController;
+use App\Http\Controllers\Gerante\AvisGeranteController;
 use App\Http\Controllers\Gerante\CategorieController;
 use App\Http\Controllers\Gerante\ClientGeranteController;
 use App\Http\Controllers\Gerante\CommandeGeranteController;
+use App\Http\Controllers\Gerante\CompteStaffController;
 use App\Http\Controllers\Gerante\DevisController;
 use App\Http\Controllers\Gerante\FactureController;
 use App\Http\Controllers\Gerante\MarqueController;
 use App\Http\Controllers\Gerante\NegociationGeranteController;
+use App\Http\Controllers\Gerante\PersonnelController;
 use App\Http\Controllers\Gerante\PosController;
 use App\Http\Controllers\Gerante\ProduitGeranteController;
 use App\Http\Controllers\Gerante\SavController;
@@ -20,6 +24,7 @@ use App\Http\Controllers\MotDePasseOublieController;
 use App\Http\Controllers\NegociationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\SuiviCommandeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,17 +88,60 @@ Route::middleware('auth:web,staff')->group(function () {
     Route::post('/negociations/{negociation}/accepter', [NegociationController::class, 'accepterContreOffre'])->name('negociations.accepter');
     Route::post('/negociations/{negociation}/abandonner', [NegociationController::class, 'abandonner'])->name('negociations.abandonner');
 
-    // Passage à la Caisse / Validation de Commande
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    // Avis clients (réservés aux clients qui ont reçu le produit)
+    Route::post('/produits/{produit}/avis', [AvisController::class, 'store'])->middleware('throttle:10,1')->name('avis.store');
 });
+
+/*
+|--------------------------------------------------------------------------
+| 3 bis. COMMANDE, AVEC OU SANS COMPTE
+|--------------------------------------------------------------------------
+*/
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('checkout.store');
+
+// Suivi par lien secret (commande sans compte) et déclaration d'un paiement Airtel Money / Moov Money
+Route::get('/suivi-commande/{jeton}', [SuiviCommandeController::class, 'show'])->where('jeton', '[A-Za-z0-9]{40}')->name('commandes.suivi');
 
 /*
 |--------------------------------------------------------------------------
 | 4. ESPACE GÉRANTE / ADMINISTRATION (Réservé au rôle 'gerante')
 |--------------------------------------------------------------------------
 */
+// 4 a. Partagé entre la gérante et les vendeurs : ventes du quotidien
+Route::middleware(['auth:staff,web', 'role:gerante,vendeur'])->prefix('gerante')->name('gerante.')->group(function () {
+
+    // Mon compte (nom affiché et mot de passe)
+    Route::get('mon-compte', [CompteStaffController::class, 'edit'])->name('compte.edit');
+    Route::put('mon-compte', [CompteStaffController::class, 'update'])->name('compte.update');
+
+    // Caisse (POS)
+    Route::get('pos', [PosController::class, 'index'])->name('pos.index');
+    Route::post('pos', [PosController::class, 'store'])->name('pos.store');
+    Route::get('pos/{id}/receipt', [PosController::class, 'receipt'])->name('pos.receipt');
+
+    // Commandes en ligne (confirmation, sortie de stock, vérification des paiements mobiles)
+    Route::get('commandes', [CommandeGeranteController::class, 'index'])->name('commandes.index');
+    Route::get('commandes/{commande}', [CommandeGeranteController::class, 'show'])->name('commandes.show');
+    Route::patch('commandes/{commande}/statut', [CommandeGeranteController::class, 'updateStatut'])->name('commandes.statut');
+
+    // Stock
+    Route::get('stock', [StockController::class, 'index'])->name('stock.index');
+    Route::get('stock/{produit}/historique', [StockController::class, 'historique'])->name('stock.historique');
+    Route::get('stock/{produit}/mouvement', [StockController::class, 'createMouvement'])->name('stock.create_mouvement');
+    Route::post('stock/{produit}/mouvement', [StockController::class, 'storeMouvement'])->name('stock.store_mouvement');
+
+    // SAV
+    Route::resource('sav', SavController::class)->except(['edit', 'destroy']);
+});
+
+// 4 b. Réservé à la gérante : catalogue, prix, documents, statistiques, personnel
 Route::middleware(['auth:staff,web', 'role:gerante'])->prefix('gerante')->name('gerante.')->group(function () {
+
+    // Comptes du personnel
+    Route::get('personnel', [PersonnelController::class, 'index'])->name('personnel.index');
+    Route::post('personnel', [PersonnelController::class, 'store'])->name('personnel.store');
+    Route::put('personnel/{membre}', [PersonnelController::class, 'update'])->name('personnel.update');
 
     Route::get('/dashboard', [GeranteController::class, 'dashboard'])->name('dashboard');
 
@@ -109,12 +157,6 @@ Route::middleware(['auth:staff,web', 'role:gerante'])->prefix('gerante')->name('
     Route::patch('factures/{facture}/status', [FactureController::class, 'status'])->name('factures.status');
     Route::post('devis/{devi}/facturer', [FactureController::class, 'createFromDevis'])->name('factures.create_from_devis');
 
-    // Stock
-    Route::get('stock', [StockController::class, 'index'])->name('stock.index');
-    Route::get('stock/{produit}/historique', [StockController::class, 'historique'])->name('stock.historique');
-    Route::get('stock/{produit}/mouvement', [StockController::class, 'createMouvement'])->name('stock.create_mouvement');
-    Route::post('stock/{produit}/mouvement', [StockController::class, 'storeMouvement'])->name('stock.store_mouvement');
-
     // Produits (avec Upload vidéo)
     Route::resource('produits', ProduitGeranteController::class);
 
@@ -128,14 +170,6 @@ Route::middleware(['auth:staff,web', 'role:gerante'])->prefix('gerante')->name('
     Route::get('clients', [ClientGeranteController::class, 'index'])->name('clients.index');
     Route::get('clients/{id}', [ClientGeranteController::class, 'show'])->name('clients.show');
 
-    // SAV
-    Route::resource('sav', SavController::class)->except(['edit', 'destroy']);
-
-    // Caisse (POS)
-    Route::get('pos', [PosController::class, 'index'])->name('pos.index');
-    Route::post('pos', [PosController::class, 'store'])->name('pos.store');
-    Route::get('pos/{id}/receipt', [PosController::class, 'receipt'])->name('pos.receipt');
-
     // Analytics
     Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
@@ -146,8 +180,7 @@ Route::middleware(['auth:staff,web', 'role:gerante'])->prefix('gerante')->name('
     Route::get('negociations/{negociation}', [NegociationGeranteController::class, 'show'])->name('negociations.show');
     Route::post('negociations/{negociation}/decision', [NegociationGeranteController::class, 'decider'])->name('negociations.decider');
 
-    // Commandes en ligne Gérante (Confirmation et Sortie Stock)
-    Route::get('commandes', [CommandeGeranteController::class, 'index'])->name('commandes.index');
-    Route::get('commandes/{commande}', [CommandeGeranteController::class, 'show'])->name('commandes.show');
-    Route::patch('commandes/{commande}/statut', [CommandeGeranteController::class, 'updateStatut'])->name('commandes.statut');
+    // Modération des avis clients
+    Route::get('avis', [AvisGeranteController::class, 'index'])->name('avis.index');
+    Route::patch('avis/{avis}', [AvisGeranteController::class, 'moderer'])->name('avis.moderer');
 });
